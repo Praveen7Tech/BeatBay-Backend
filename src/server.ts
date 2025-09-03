@@ -1,16 +1,11 @@
-// src/server.ts
-import app from './app';
-import logger from './infrastructure/utils/logger/logger';
-import Sample from './routes/sample';
+import connectDB from "./infrastructure/mongoose/config/db";
+import app from "./interfaces/express/app";
+import dotenv from "dotenv"
+dotenv.config()
+const PORT = process.env.PORT
 
-const PORT =  3000;
+connectDB()
 
-// console.log("console log")
-// logger.warn("warning log")
-// logger.info("info log")
-// logger.debug("debug log")
-
-//Sample()
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

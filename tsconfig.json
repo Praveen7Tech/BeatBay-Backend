@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es2016",
+    "module": "commonjs", // Use commonjs for modules
+    "outDir": "./dist/src",
+    "rootDir": "./src",
+    "strict": true,
+    "verbatimModuleSyntax": false, // Disable the strict check
+    "esModuleInterop": true, // Enables default imports for commonjs modules
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}

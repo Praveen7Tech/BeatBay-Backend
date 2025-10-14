@@ -1,5 +1,5 @@
 import mongoose, { Schema, Model, HydratedDocument } from 'mongoose';
-import { User } from '../../../domain/entities/user.entity';
+import { User } from '../../../../domain/entities/user.entity'; 
 
 // Define the hydrated document type using HydratedDocument
 export type UserDocument = HydratedDocument<User>;

@@ -1,7 +1,7 @@
 import { getRedisClient } from "../../config/redis";
-import { ICatcheService } from "../../../domain/services/cache.service";
+import { ICacheService } from "../../../domain/services/cache.service";
 
-export class RedisCacheServive implements ICatcheService {
+export class RedisCacheServive implements ICacheService {
   private client = getRedisClient();
 
   async set(key: string, value: string, expirationInSeconds: number): Promise<void> {

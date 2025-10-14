@@ -1,19 +1,13 @@
-import { Router } from "express";
-import { AuthController } from "../controllers/auth.controller";
-import { SignupUsecase } from "../../../usecases/auth/signup.useCase";
-import { MongooseUserRepository } from "../../../infrastructure/presistence/mongoose/repositories/mongoose.user.repository";
-import { RedisCacheServive } from "../../../infrastructure/presistence/services/redis-cache.service";
+import { Router } from 'express';
+import { AuthController } from '../controllers/auth.controller';
+import { AwilixContainer } from 'awilix';
 
-const authRouter = Router();
+export default (container: AwilixContainer): Router => {
+  const router = Router();
+  const authController = container.resolve<AuthController>('authController');
 
-authRouter.post("/signup", async (req, res) => {
-  // Create dependencies inside the route handler, AFTER Redis is connected
-  const mongoUserRepository = new MongooseUserRepository();
-  const redisCacheServive = new RedisCacheServive();
-  const signupUsecase = new SignupUsecase(mongoUserRepository, redisCacheServive);
-  const authController = new AuthController(signupUsecase);
-
-  await authController.signup(req, res);
-});
-
-export default authRouter;
+  router.post('/signup', (req, res) => authController.signup(req, res));
+  router.post('/verify-otp', (req, res) => authController.verifyOtp(req, res));
+  // Add other routes here, e.g., login, resend-otp
+  return router;
+};

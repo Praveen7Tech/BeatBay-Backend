@@ -1,26 +1,25 @@
-import { IUserRepository } from '../../../../domain/repositories/user.repository';
-import { User } from '../../../../domain/entities/user.entity';
-import { UserModel } from '../../../mongoose/models/user.model';
-import { hash, genSalt } from 'bcrypt';
-
+import { IUserRepository } from '../../../../domain/repositories/user.repository'; 
+import { User } from '../../../../domain/entities/user.entity'; 
+import { UserModel } from '../models/user.model';
+import { PasswordService } from '../../../services/password/password-service'; 
 export class MongooseUserRepository implements IUserRepository {
+  constructor(private readonly passwordService: PasswordService) {}
+
   async create(entity: User): Promise<User> {
-    const salt = await genSalt(10);
-    const password = await hash(entity.passwordHash, salt);
-    const user = new UserModel({ ...entity, password });
+    const passwordHash = await this.passwordService.hash(entity.passwordHash);
+    const user = new UserModel({ ...entity, passwordHash });
     const createdUser = await user.save();
     return createdUser.toObject();
   }
+  // All methods from IBaseRepository must be implemented here.
+  async findById(id: string): Promise<User | null> {
+    return UserModel.findById(id).lean();
+  }
 
-  // Other methods (findById, findByEmail etc.)
   async findByEmail(email: string): Promise<User | null> {
     return UserModel.findOne({ email }).lean();
   }
-
-  // Other methods would be implemented here to fulfill the IBaseRepository contract
-  async findById(id: string): Promise<User | null> {
-    throw new Error('Method not implemented.');
-  }
+  
   async findAll(): Promise<User[]> {
     throw new Error('Method not implemented.');
   }

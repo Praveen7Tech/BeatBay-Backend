@@ -8,6 +8,7 @@ export default (container: AwilixContainer): Router => {
 
   router.post('/signup', (req, res) => authController.signup(req, res));
   router.post('/verify-otp', (req, res) => authController.verifyOtp(req, res));
+  router.post('/resend-otp', (req,res) => authController.resendOtp(req, res))
   // Add other routes here, e.g., login, resend-otp
   return router;
 };

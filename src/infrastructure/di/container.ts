@@ -8,6 +8,7 @@ import { AuthController } from '../../interfaces/http/controllers/auth.controlle
 import { ICacheService } from '../../domain/services/cache.service';
 import { IPasswordService } from '../../domain/services/password.service';
 import { IUserRepository } from '../../domain/repositories/user.repository';
+import { ResendOtpUseCase } from '../../usecases/auth/resend-otp.useCase';
 
 const container = createContainer({ injectionMode: InjectionMode.CLASSIC });
 console.log("con-",container)
@@ -21,6 +22,7 @@ container.register({
   // Use cases
   signupUsecase: asClass(SignupUsecase).scoped(),
   verifyOtpUsecase: asClass(VerifyOtpUsecase).scoped(),
+  resendOtpUsecase: asClass(ResendOtpUseCase).scoped(),
 
   // Controllers
   authController: asClass(AuthController).scoped(),

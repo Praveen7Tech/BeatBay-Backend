@@ -8,6 +8,7 @@ export class MongooseUserRepository implements IUserRepository {
   async create(entity: User): Promise<User> {
     const passwordHash = await this.passwordService.hash(entity.passwordHash);
     const user = new UserModel({ ...entity, passwordHash });
+    console.log("user created -",user)
     const createdUser = await user.save();
     return createdUser.toObject();
   }

@@ -9,7 +9,13 @@ export class RedisCacheServive implements ICacheService {
   }
 
   async get(key: string): Promise<string | null> {
-    return await this.client.get(key);
+    const cacheval = await this.client.get(key);
+    if(cacheval){
+      const {otp} = JSON.parse(cacheval)
+      console.log("key-",otp)
+      return otp
+    }
+    return cacheval
   }
 
   async delete(key: string): Promise<void> {

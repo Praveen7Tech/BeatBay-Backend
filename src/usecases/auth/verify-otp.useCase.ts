@@ -17,9 +17,12 @@ export class VerifyOtpUsecase {
   async execute(request: VerifyOtpRequest): Promise<{ status: StatusCode; message: string }> {
     const cacheKey = `otp:${request.email}`;
     const storedOtp = await this.cacheService.get(cacheKey);
+    console.log("req otp - ",request.otp, storedOtp)
 
-    if (!storedOtp || storedOtp !== request.otp) {
-      return { status: StatusCode.BAD_REQUEST, message: 'Invalid or expired OTP.' };
+    if(storedOtp)
+
+    if (storedOtp !== request.otp) {
+      return { status: StatusCode.BAD_REQUEST, message: 'Invalid OTP' };
     }
 
     // 

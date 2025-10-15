@@ -3,12 +3,14 @@ import { SignupUsecase } from '../../../usecases/auth/signup.useCase';
 import { VerifyOtpUsecase } from '../../../usecases/auth/verify-otp.useCase';
 import { StatusCode } from '../../../common/status.enum';
 import logger from '../../../infrastructure/utils/logger/logger';
+import { ResendOtpUseCase } from '../../../usecases/auth/resend-otp.useCase';
 
 export class AuthController {
   constructor(
     // Remove the underscores
     private readonly signupUsecase: SignupUsecase,
-    private readonly verifyOtpUsecase: VerifyOtpUsecase
+    private readonly verifyOtpUsecase: VerifyOtpUsecase,
+    private readonly resendOtpUsecase: ResendOtpUseCase
   ) {}
 
   async signup(req: Request, res: Response): Promise<Response> {
@@ -33,11 +35,24 @@ export class AuthController {
 
   async verifyOtp(req: Request, res: Response): Promise<Response> {
     const { email, otp } = req.body;
+    console.log("e otp",email, otp)
     logger.info(`Received OTP verification request for: ${email}`);
     if (!email || !otp) {
       return res.status(StatusCode.BAD_REQUEST).json({ message: 'Email and OTP are required' });
     }
     const result = await this.verifyOtpUsecase.execute({ email, otp });
     return res.status(result.status).json({ message: result.message });
+  }
+
+  async resendOtp(req: Request, res: Response) : Promise<Response> {
+    console.log("resend otp-",req.body)
+    const {name, email, password} = req.body
+
+    const result = await this.resendOtpUsecase.execute({name,email, password})
+    if(result.status === StatusCode.OK) {
+      return res.status(result.status).json({message: result.message})
+    }
+
+    return res.status(result.status).json({message: result.message})
   }
 }

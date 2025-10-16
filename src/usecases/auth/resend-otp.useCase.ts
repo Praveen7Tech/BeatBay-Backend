@@ -4,9 +4,7 @@ import { ICacheService } from "../../domain/services/cache.service";
 import { IOtpService } from "../../domain/services/otp.service";
 
 interface ResendOtpRequest {
-    name : string,
-    email : string,
-    password : string
+    email : string
 }
 
 export class ResendOtpUseCase {
@@ -16,19 +14,17 @@ export class ResendOtpUseCase {
     ){}
 
     async execute(request: ResendOtpRequest) : Promise<{status :  StatusCode ; message: string; otp?: string}>{
-
+        
         const cacheKey = `otp:${request.email}`
         const otp = await this.otpService.generate()
-        const otpExpirationInSeconds = 300
-        const name = request.name, email = request.email, password = request.password
-        const cachedData = {name,email,password,otp}
-        console.log("resend data-",cachedData)
-        
-        //await this.cacheService.set(cacheKey,cachedData, otpExpirationInSeconds)
+        const otpExpiredAt = Date.now() + 60 * 1000
+
+        await this.cacheService.update(cacheKey,{otp, otpExpiredAt})
 
         return {
             status: StatusCode.OK,
-            message: MESSAGES.OTP_SEND
+            message: MESSAGES.OTP_SEND,
+            otp:otp
         }
     }
 }

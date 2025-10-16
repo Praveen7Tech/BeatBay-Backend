@@ -7,7 +7,6 @@ import { ResendOtpUseCase } from '../../../usecases/auth/resend-otp.useCase';
 
 export class AuthController {
   constructor(
-    // Remove the underscores
     private readonly signupUsecase: SignupUsecase,
     private readonly verifyOtpUsecase: VerifyOtpUsecase,
     private readonly resendOtpUsecase: ResendOtpUseCase
@@ -46,9 +45,9 @@ export class AuthController {
 
   async resendOtp(req: Request, res: Response) : Promise<Response> {
     console.log("resend otp-",req.body)
-    const {name, email, password} = req.body
+    const {email} = req.body
 
-    const result = await this.resendOtpUsecase.execute({name,email, password})
+    const result = await this.resendOtpUsecase.execute({email})
     if(result.status === StatusCode.OK) {
       return res.status(result.status).json({message: result.message})
     }

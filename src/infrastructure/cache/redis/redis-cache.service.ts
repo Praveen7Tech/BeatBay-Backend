@@ -10,13 +10,23 @@ export class RedisCacheServive implements ICacheService {
 
   async get(key: string): Promise<CachedData | null> {
     const cacheval = await this.client.get(key);
-    
     if(!cacheval) return null
-
     return JSON.parse(cacheval) as CachedData
   }
 
   async delete(key: string): Promise<void> {
     await this.client.del(key);
+  }
+
+  async update(key: string, newOtp: Partial<CachedData>): Promise<void> {
+    const cachedData = await this.get(key)
+    if(!cachedData) throw new Error("cache not found")
+
+    const updatedData = {
+      ...cachedData,
+      ...newOtp
+    };
+
+    await this.set(key,updatedData,300)
   }
 }

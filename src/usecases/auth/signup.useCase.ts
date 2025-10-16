@@ -4,17 +4,19 @@ import { User } from '../../domain/entities/user.entity';
 import { MESSAGES } from '../../common/constants.message';
 import { StatusCode } from '../../common/status.enum';
 import logger from '../../infrastructure/utils/logger/logger';
+import { IOtpService } from '../../domain/services/otp.service';
 
 interface SignupRequest {
   name: string,
   email: string;
-  passwordHash: string;
+  password: string;
 }
 
 export class SignupUsecase {
   constructor(
     private readonly userRepository: IUserRepository,
-    private readonly cacheService: ICacheService
+    private readonly cacheService: ICacheService,
+    private readonly otpService: IOtpService
   ) {}
 
   async execute(request: SignupRequest): Promise<{ user?: User; status: StatusCode; message: string; otp?: string }> {
@@ -25,14 +27,14 @@ export class SignupUsecase {
     }
 
     const cacheKey = `otp:${request.email}`;
-    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+    const otp = await this.otpService.generate()
 
     const otpExpirationInSeconds = 300;
-    const name = request.name, email = request.email, password = request.passwordHash
-
+    const name = request.name, email = request.email, password = request.password
+//
     const cachedData = {name,email,password,otp, otpExpiredAt: Date.now() + 60 * 1000}
 
-    await this.cacheService.set(cacheKey, JSON.stringify(cachedData), otpExpirationInSeconds);
+    await this.cacheService.set(cacheKey, cachedData, otpExpirationInSeconds);
 
     // setup mail service
     return {

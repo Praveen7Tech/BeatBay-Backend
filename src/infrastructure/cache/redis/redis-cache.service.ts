@@ -1,21 +1,19 @@
 import { getRedisClient } from "../../config/redis";
-import { ICacheService } from "../../../domain/services/cache.service";
+import { CachedData, ICacheService } from "../../../domain/services/cache.service";
 
 export class RedisCacheServive implements ICacheService {
   private client = getRedisClient();
 
-  async set(key: string, value: string, expirationInSeconds: number): Promise<void> {
-    await this.client.setEx(key, expirationInSeconds, value);
+  async set(key: string, value: CachedData, expirationInSeconds: number): Promise<void> {
+    await this.client.setEx(key, expirationInSeconds,JSON.stringify(value));
   }
 
-  async get(key: string): Promise<string | null> {
+  async get(key: string): Promise<CachedData | null> {
     const cacheval = await this.client.get(key);
-    if(cacheval){
-      const {otp} = JSON.parse(cacheval)
-      console.log("key-",otp)
-      return otp
-    }
-    return cacheval
+    
+    if(!cacheval) return null
+
+    return JSON.parse(cacheval) as CachedData
   }
 
   async delete(key: string): Promise<void> {

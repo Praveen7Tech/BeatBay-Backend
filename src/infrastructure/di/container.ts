@@ -9,6 +9,8 @@ import { ICacheService } from '../../domain/services/cache.service';
 import { IPasswordService } from '../../domain/services/password.service';
 import { IUserRepository } from '../../domain/repositories/user.repository';
 import { ResendOtpUseCase } from '../../usecases/auth/resend-otp.useCase';
+import { IOtpService } from '../../domain/services/otp.service';
+import { OtpService } from '../services/otp/otp-service';
 
 const container = createContainer({ injectionMode: InjectionMode.CLASSIC });
 console.log("con-",container)
@@ -18,6 +20,7 @@ container.register({
   userRepository: asClass<IUserRepository>(MongooseUserRepository).scoped(),
   cacheService: asClass<ICacheService>(RedisCacheServive).singleton(),
   passwordService: asClass<IPasswordService>(PasswordService).scoped(),
+  otpService: asClass<IOtpService>(OtpService).scoped(),
 
   // Use cases
   signupUsecase: asClass(SignupUsecase).scoped(),

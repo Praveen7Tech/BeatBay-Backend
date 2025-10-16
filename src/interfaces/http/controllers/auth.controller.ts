@@ -23,7 +23,7 @@ export class AuthController {
     }
 
     // Update the method call to use the new name
-    const result = await this.signupUsecase.execute({ name, email, passwordHash: password }); 
+    const result = await this.signupUsecase.execute({ name, email, password }); 
     console.log("result-", result);
 
     if (result.status === StatusCode.CREATED) {

@@ -2,12 +2,22 @@ import { IUserRepository } from '../../../../domain/repositories/user.repository
 import { User } from '../../../../domain/entities/user.entity'; 
 import { UserModel } from '../models/user.model';
 import { PasswordService } from '../../../services/password/password-service'; 
+import { RedisCacheServive } from '../../../cache/redis/redis-cache.service';
+
 export class MongooseUserRepository implements IUserRepository {
-  constructor(private readonly passwordService: PasswordService) {}
+  constructor(
+    private readonly passwordService: PasswordService
+  ) {}
 
   async create(entity: User): Promise<User> {
-    const passwordHash = await this.passwordService.hash(entity.passwordHash);
-    const user = new UserModel({ ...entity, passwordHash });
+
+    const passwordHash = await this.passwordService.hash(entity.password);
+    const user = new UserModel({
+      name: entity.name,
+      email: entity.email,
+      password: passwordHash,
+    });
+    
     console.log("user created -",user)
     const createdUser = await user.save();
     return createdUser.toObject();

@@ -14,7 +14,7 @@ const userSchema = new Schema<UserDocument>(
       required: true,
       unique: true,
     },
-    passwordHash: { 
+    password: { 
       type: String,
     },
   },

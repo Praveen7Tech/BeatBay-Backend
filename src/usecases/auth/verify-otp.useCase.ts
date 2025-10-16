@@ -2,6 +2,7 @@ import { ICacheService } from '../../domain/services/cache.service';
 import { IUserRepository } from '../../domain/repositories/user.repository';
 import { MESSAGES } from '../../common/constants.message';
 import { StatusCode } from '../../common/status.enum';
+import { CachedData } from '../../domain/services/cache.service';
 
 interface VerifyOtpRequest {
   email: string;
@@ -16,17 +17,25 @@ export class VerifyOtpUsecase {
 
   async execute(request: VerifyOtpRequest): Promise<{ status: StatusCode; message: string }> {
     const cacheKey = `otp:${request.email}`;
-    const storedOtp = await this.cacheService.get(cacheKey);
-    console.log("req otp - ",request.otp, storedOtp)
+    const cachedData = await this.cacheService.get(cacheKey);
+    
+    if(!cachedData){
+      return {status: StatusCode.NOT_FOUND, message: "OTP expired or not found"}
+    }
 
-    if(storedOtp)
+    const {otp, otpExpiredAt} = cachedData
 
-    if (storedOtp !== request.otp) {
-      return { status: StatusCode.BAD_REQUEST, message: 'Invalid OTP' };
+    if (Date.now() > otpExpiredAt){
+      return {status: StatusCode.NOT_FOUND, message: MESSAGES.OTP_EXPIRED}
+    }
+    console.log("suii -",cachedData.otp)
+
+    if (otp !== request.otp) {
+      return { status: StatusCode.BAD_REQUEST, message: MESSAGES.INVALID_OTP };
     }
 
     // 
-    await this.userRepository.create({ email: request.email, passwordHash: 'temporary_hash_until_login' });
+    await this.userRepository.create(cachedData);
 
     // Clean up the OTP from cache
     await this.cacheService.delete(cacheKey);

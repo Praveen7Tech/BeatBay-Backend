@@ -5,5 +5,7 @@ export const MESSAGES = {
   INVALID_CREDENTIALS: 'Invalid email or password.',
   UNAUTHORIZED: 'Unauthorized access.',
   OTP_SEND: 'Otp sent successfully',
-  UNEXPECTED_ERROR: 'An Unexpected Error Occured..!'
+  UNEXPECTED_ERROR: 'An Unexpected Error Occured..!',
+  OTP_EXPIRED: 'OTP Expired',
+  INVALID_OTP: 'Invalid OTP, plase check your otp.'
 };

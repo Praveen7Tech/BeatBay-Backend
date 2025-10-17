@@ -28,7 +28,6 @@ export class VerifyOtpUsecase {
     if (Date.now() > otpExpiredAt){
       return {status: StatusCode.NOT_FOUND, message: MESSAGES.OTP_EXPIRED}
     }
-    console.log("suii -",cachedData.otp)
 
     if (otp !== request.otp) {
       return { status: StatusCode.BAD_REQUEST, message: MESSAGES.INVALID_OTP };

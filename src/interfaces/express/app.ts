@@ -1,21 +1,22 @@
 import expres, { ErrorRequestHandler, urlencoded } from "express"
 import cors from "cors"
-import authRouter from "../http/routes/auth.routes"
 import { scopePerRequest } from "awilix-express"
 import container from "../../infrastructure/di/container"
 import logger from "../../infrastructure/utils/logger/logger"
-import { STATES } from "mongoose"
 import { StatusCode } from "../../common/status.enum"
 import { MESSAGES } from "../../common/constants.message"
+import cookieParser from "cookie-parser"
 
 const app = expres()
 
 app.use(expres.json())
 app.use(urlencoded({extended: true}))
+app.use(cookieParser())
 app.use(
     cors({
         origin:"http://localhost:5173",
-        //credentials:true
+        credentials:true,
+        methods: ['GET','POST','PUT','DELETE','OPTIONS']
     })
 );
 
@@ -25,7 +26,6 @@ app.use(scopePerRequest(container))
 // Error handling MD
 const errorHandler: ErrorRequestHandler = (err, req, res, next)=> {
     logger.error("API Error", err)
-    console.log("error happend in api", err)
 
     const status = err.status || StatusCode.INTERNAL_SERVER_ERROR
     const message = err.message || MESSAGES.UNEXPECTED_ERROR

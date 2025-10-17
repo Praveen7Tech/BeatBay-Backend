@@ -17,7 +17,7 @@ async function startServer() {
     // Attach the auth router configured with DI after all the infrastructure connection is done
     const authRouter = authRouterFactory(container);
     app.use('/user', authRouter);
-    console.log("Container resolved authController:", container.resolve('authController'))
+    //console.log("Container resolved authController:", container.resolve('authController'))
 
     app.listen(PORT, () => {
       console.log(`✅ Server running on http://localhost:${PORT}`);

@@ -4,18 +4,22 @@ import { VerifyOtpUsecase } from '../../../usecases/auth/verify-otp.useCase';
 import { StatusCode } from '../../../common/status.enum';
 import logger from '../../../infrastructure/utils/logger/logger';
 import { ResendOtpUseCase } from '../../../usecases/auth/resend-otp.useCase';
+import { LoginUsecase } from '../../../usecases/auth/login.useCase';
+import { MESSAGES } from '../../../common/constants.message';
+import { AuthStatusUsecase } from '../../../usecases/auth/authStatus.useCase';
 
 export class AuthController {
   constructor(
     private readonly signupUsecase: SignupUsecase,
     private readonly verifyOtpUsecase: VerifyOtpUsecase,
-    private readonly resendOtpUsecase: ResendOtpUseCase
+    private readonly resendOtpUsecase: ResendOtpUseCase,
+    private readonly loginUsecase: LoginUsecase,
+    private readonly authStatusUsecase: AuthStatusUsecase
   ) {}
 
   async signup(req: Request, res: Response): Promise<Response> {
     const {name, email, password } = req.body;
     logger.info(`Received signup request for: ${email}`);
-    console.log("body--",req.body)
 
     if (!email || !password) {
       return res.status(StatusCode.BAD_REQUEST).json({ message: 'Email and password are required' });
@@ -23,7 +27,6 @@ export class AuthController {
 
     // Update the method call to use the new name
     const result = await this.signupUsecase.execute({ name, email, password }); 
-    console.log("result-", result);
 
     if (result.status === StatusCode.CREATED) {
       return res.status(result.status).json({ message: result.message, otp: result.otp });
@@ -34,7 +37,6 @@ export class AuthController {
 
   async verifyOtp(req: Request, res: Response): Promise<Response> {
     const { email, otp } = req.body;
-    console.log("e otp",email, otp)
     logger.info(`Received OTP verification request for: ${email}`);
     if (!email || !otp) {
       return res.status(StatusCode.BAD_REQUEST).json({ message: 'Email and OTP are required' });
@@ -44,7 +46,6 @@ export class AuthController {
   }
 
   async resendOtp(req: Request, res: Response) : Promise<Response> {
-    console.log("resend otp-",req.body)
     const {email} = req.body
 
     const result = await this.resendOtpUsecase.execute({email})
@@ -54,4 +55,66 @@ export class AuthController {
 
     return res.status(result.status).json({message: result.message})
   }
+
+  async login(req: Request, res: Response) : Promise<Response> {
+    const {email, password} = req.body
+    if(!email || !password){
+      return res.status(StatusCode.BAD_REQUEST).json({message: "Email and password are required"})
+    }
+
+    const result = await this.loginUsecase.execute({email, password})
+    if(result.status !== 200){
+      return res.status(result.status).json({message:result.message})
+    }
+
+    // send access and refresh token
+    res.cookie('refreshToken', result.refreshToken, {
+      httpOnly: true,
+      sameSite: "strict",
+      maxAge: 7*24*60*60*1000
+    });
+
+    return res.status(result.status).json({message: result.message, accessToken:result.accessToken})
+  }
+
+  async authStatus(req:Request, res: Response) : Promise<Response> {
+    const refreshToken = req.cookies?.refreshToken;
+
+    if(!refreshToken){
+      return res.status(StatusCode.UNAUTHORIZED).json({message: "REFRESHTOKEN IS MISSING"})
+    }
+
+    const result = await this.authStatusUsecase.execute(refreshToken)
+    return res.status(StatusCode.OK).json(result)
+  }
+
+  // src/infrastructure/controllers/auth.controller.ts (add method)
+  async refreshToken(req: Request, res: Response): Promise<Response> {
+    try {
+      const refreshToken = req.cookies?.refreshToken;
+      if (!refreshToken) {
+        return res.status(StatusCode.UNAUTHORIZED).json({ message: 'Refresh token missing' });
+      }
+
+      const result = await this.authStatusUsecase.execute(refreshToken);
+      // authStatusUsecase returns { user, accessToken } — keep same contract
+      return res.status(StatusCode.OK).json({ accessToken: result.accessToken });
+    } catch (err: any) {
+      logger.error('refresh token error', err);
+      return res.status(StatusCode.UNAUTHORIZED).json({ message: 'Invalid or expired refresh token' });
+    }
+  }
+
+ async logout(req: Request, res: Response): Promise<Response> {
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    path: '/',
+  });
+
+  return res.status(200).json({ message: 'Logged out successfully' });
+}
+
+
 }

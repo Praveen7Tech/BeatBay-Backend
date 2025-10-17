@@ -16,9 +16,9 @@ export class MongooseUserRepository implements IUserRepository {
       name: entity.name,
       email: entity.email,
       password: passwordHash,
+      role:"user"
     });
     
-    console.log("user created -",user)
     const createdUser = await user.save();
     return createdUser.toObject();
   }

@@ -11,9 +11,12 @@ import { IUserRepository } from '../../domain/repositories/user.repository';
 import { ResendOtpUseCase } from '../../usecases/auth/resend-otp.useCase';
 import { IOtpService } from '../../domain/services/otp.service';
 import { OtpService } from '../services/otp/otp-service';
+import { LoginUsecase } from '../../usecases/auth/login.useCase';
+import { JwtTokenService } from '../services/token/jwt-token.service';
+import { ITokenService } from '../../domain/services/token.service';
+import { AuthStatusUsecase } from '../../usecases/auth/authStatus.useCase';
 
 const container = createContainer({ injectionMode: InjectionMode.CLASSIC });
-console.log("con-",container)
 
 container.register({
   // Infrastructure
@@ -21,11 +24,15 @@ container.register({
   cacheService: asClass<ICacheService>(RedisCacheServive).singleton(),
   passwordService: asClass<IPasswordService>(PasswordService).scoped(),
   otpService: asClass<IOtpService>(OtpService).scoped(),
+  tokenService: asClass<ITokenService>(JwtTokenService).scoped(),
 
   // Use cases
   signupUsecase: asClass(SignupUsecase).scoped(),
   verifyOtpUsecase: asClass(VerifyOtpUsecase).scoped(),
   resendOtpUsecase: asClass(ResendOtpUseCase).scoped(),
+  loginUsecase: asClass(LoginUsecase).scoped(),
+  jwtTokenUsecase: asClass(JwtTokenService).scoped(),
+  authStatusUsecase: asClass(AuthStatusUsecase),
 
   // Controllers
   authController: asClass(AuthController).scoped(),

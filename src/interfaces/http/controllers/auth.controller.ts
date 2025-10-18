@@ -25,7 +25,6 @@ export class AuthController {
       return res.status(StatusCode.BAD_REQUEST).json({ message: 'Email and password are required' });
     }
 
-    // Update the method call to use the new name
     const result = await this.signupUsecase.execute({ name, email, password }); 
 
     if (result.status === StatusCode.CREATED) {
@@ -71,6 +70,7 @@ export class AuthController {
     res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
       sameSite: "strict",
+      secure:false,
       maxAge: 7*24*60*60*1000
     });
 
@@ -85,31 +85,31 @@ export class AuthController {
     }
 
     const result = await this.authStatusUsecase.execute(refreshToken)
-    return res.status(StatusCode.OK).json(result)
+    return res.status(StatusCode.OK).json({
+      user:result.user, accessToken: result.accessToken
+    })
   }
 
   async refreshToken(req: Request, res: Response): Promise<Response> {
-    try {
-      const refreshToken = req.cookies?.refreshToken;
-      if (!refreshToken) {
-        return res.status(StatusCode.UNAUTHORIZED).json({ message: 'Refresh token missing' });
-      }
-
-      const result = await this.authStatusUsecase.execute(refreshToken);
-      // overwriting refresh token
-      res.cookie('refreshToken',result.refreshToken, {
-        httpOnly:true,
-        sameSite:"strict",
-        secure:false,
-        maxAge: 7*24*60*60*100,
-        path:'/'
-      })
-
-      return res.status(StatusCode.OK).json({ accessToken: result.accessToken });
-    } catch (err: any) {
-      logger.error('refresh token error', err);
-      return res.status(StatusCode.UNAUTHORIZED).json({ message: 'Invalid or expired refresh token' });
+    const refreshToken = req.cookies?.refreshToken;
+    if (!refreshToken) {
+      return res.status(StatusCode.UNAUTHORIZED).json({ message: "Refresh token missing" });
     }
+
+    const result = await this.authStatusUsecase.execute(refreshToken);
+
+    // Rotation
+    res.cookie("refreshToken", result.refreshToken, {
+      httpOnly: true,
+      sameSite: "strict",
+      secure: false, 
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(StatusCode.OK).json({
+      accessToken: result.accessToken
+    });
   }
 
  async logout(req: Request, res: Response): Promise<Response> {
@@ -122,6 +122,5 @@ export class AuthController {
 
   return res.status(200).json({ message: 'Logged out successfully' });
 }
-
 
 }

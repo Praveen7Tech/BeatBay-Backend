@@ -3,7 +3,7 @@ import { StatusCode } from "../../common/status.enum";
 import { MESSAGES } from "../../common/constants.message";
 import jwt from "jsonwebtoken";
 
-// Explicitly type it as RequestHandler (so Express knows it's valid middleware)
+
 export const authMiddleware: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
   
   const authHeader = req.headers["authorization"]; 
@@ -20,7 +20,6 @@ export const authMiddleware: RequestHandler = (req: Request, res: Response, next
   try {
     const decoded = jwt.verify(token, process.env.JWT_TOKEN_SECRET as string);
     console.log("verify complete ✅");
-    // Optionally attach user info to req for later use
     (req as any).user = decoded;
     next();
   } catch (error) {

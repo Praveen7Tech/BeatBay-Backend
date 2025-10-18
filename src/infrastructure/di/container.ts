@@ -15,6 +15,8 @@ import { LoginUsecase } from '../../usecases/auth/login.useCase';
 import { JwtTokenService } from '../services/token/jwt-token.service';
 import { ITokenService } from '../../domain/services/token.service';
 import { AuthStatusUsecase } from '../../usecases/auth/authStatus.useCase';
+import { IEmailService } from '../../domain/services/mail.service';
+import { EmailService } from '../services/email/email-service';
 
 const container = createContainer({ injectionMode: InjectionMode.CLASSIC });
 
@@ -25,6 +27,7 @@ container.register({
   passwordService: asClass<IPasswordService>(PasswordService).scoped(),
   otpService: asClass<IOtpService>(OtpService).scoped(),
   tokenService: asClass<ITokenService>(JwtTokenService).scoped(),
+  emailService: asClass<IEmailService>(EmailService).scoped(),
 
   // Use cases
   signupUsecase: asClass(SignupUsecase).scoped(),

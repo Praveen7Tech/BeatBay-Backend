@@ -5,6 +5,8 @@ import { MESSAGES } from '../../common/constants.message';
 import { StatusCode } from '../../common/status.enum';
 import logger from '../../infrastructure/utils/logger/logger';
 import { IOtpService } from '../../domain/services/otp.service';
+import { IEmailService } from '../../domain/services/mail.service';
+import { EmailFormat } from '../../infrastructure/services/email/email-format';
 
 interface SignupRequest {
   name: string,
@@ -16,7 +18,8 @@ export class SignupUsecase {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly cacheService: ICacheService,
-    private readonly otpService: IOtpService
+    private readonly otpService: IOtpService,
+    private readonly emailService: IEmailService
   ) {}
 
   async execute(request: SignupRequest): Promise<{ user?: User; status: StatusCode; message: string; otp?: string }> {
@@ -32,12 +35,20 @@ export class SignupUsecase {
 
     const otpExpirationInSeconds = 300;
     const name = request.name, email = request.email, password = request.password
-//
+
     const cachedData = {name,email,password,otp, otpExpiredAt: Date.now() + 60 * 1000}
 
     await this.cacheService.set(cacheKey, cachedData, otpExpirationInSeconds);
 
-    // setup mail service
+    // send email
+    const otpMail = EmailFormat.otp(otp)
+    await this.emailService.sendMail(
+      request.email,
+      otpMail.subject,
+      otpMail.text,
+      otpMail.html
+    )
+
     return {
       status: StatusCode.CREATED,
       message: MESSAGES.OTP_SEND,

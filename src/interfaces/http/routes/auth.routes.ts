@@ -11,8 +11,8 @@ export default (container: AwilixContainer): Router => {
   router.post('/verify-otp', (req, res) => authController.verifyOtp(req, res));
   router.post('/resend-otp', (req,res) => authController.resendOtp(req, res))
   router.post('/login', (req,res) => authController.login(req, res))
-  router.get('/check-auth-status', (req,res)=> authController.authStatus(req,res))
-  router.post('/refresh-token',authMiddleware, (req,res) => authController.refreshToken(req,res))
-  router.post('/logout',authMiddleware , (req,res) => authController.logout(req,res))
+  router.get('/check-auth-status',authMiddleware, (req,res)=> authController.authStatus(req,res))
+  router.post('/refresh-token',(req,res) => authController.refreshToken(req,res))
+  router.post('/logout' , (req,res) => authController.logout(req,res))
   return router;
 };

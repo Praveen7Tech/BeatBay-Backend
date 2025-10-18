@@ -33,7 +33,6 @@ export class VerifyOtpUsecase {
       return { status: StatusCode.BAD_REQUEST, message: MESSAGES.INVALID_OTP };
     }
 
-    // 
     await this.userRepository.create(cachedData);
 
     // Clean up the OTP from cache

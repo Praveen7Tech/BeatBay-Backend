@@ -22,7 +22,7 @@ export class MongooseUserRepository implements IUserRepository {
     const createdUser = await user.save();
     return createdUser.toObject();
   }
-  // All methods from IBaseRepository must be implemented here.
+  
   async findById(id: string): Promise<User | null> {
     return UserModel.findById(id).lean();
   }

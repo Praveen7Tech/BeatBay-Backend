@@ -10,14 +10,14 @@ interface authStatusResponse{
     accessToken?: string
 }
 
-// src/usecases/auth/authStatus.useCase.ts
+
 export class AuthStatusUsecase {
   constructor(
     private readonly tokenService: ITokenService,
     private readonly userRepository: IUserRepository
   ){}
 
-  async execute(refreshToken: string) : Promise<{user?: User, accessToken?: string}> {
+  async execute(refreshToken: string) : Promise<{user?: User, accessToken?: string, refreshToken: string}> {
     if (!refreshToken) {
       throw new Error("No refresh token provided");
     }
@@ -34,7 +34,8 @@ export class AuthStatusUsecase {
 
     const payloadTkn = { id: user._id, email: user.email };
     const newAccessToken = await this.tokenService.generateAccessToken(payloadTkn);
+    const newRefreshToken = await this.tokenService.generateRefressToken(payloadTkn)
 
-    return { user, accessToken: newAccessToken };
+    return { user, accessToken: newAccessToken, refreshToken: newRefreshToken};
   }
 }

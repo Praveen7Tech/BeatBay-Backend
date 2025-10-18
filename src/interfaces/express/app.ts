@@ -35,4 +35,14 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next)=> {
 
 app.use(errorHandler)
 
+// Prevent browser from caching sensitive pages
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store'); // Do not cache
+  res.setHeader('Pragma', 'no-cache');        // For older browsers
+  res.setHeader('Expires', '0');              // Ensure no expiry
+  next();
+});
+
+
+
 export default app;

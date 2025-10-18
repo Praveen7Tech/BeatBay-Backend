@@ -16,20 +16,20 @@ export class JwtTokenService implements ITokenService {
     }
 
     async verifyAccessToken(token?: string) {
-    if (!token) return null;
-    try {
-      return jwt.verify(token, ACCESS_TOKEN_SECRET);
-    } catch (err) {
-      return null;
+        if (!token) return null;
+        try {
+        return jwt.verify(token, ACCESS_TOKEN_SECRET);
+        } catch (err) {
+        return null;
+            }
         }
-    }
 
     async verifyRefreshToken(token?: string) {
         if (!token) return null;
         try {
-        return jwt.verify(token, REFRESH_TOKEN_SECRET);
+           return jwt.verify(token, REFRESH_TOKEN_SECRET);
         } catch (err) {
-        return null;
+           return null;
         }
     }
 }

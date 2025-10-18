@@ -17,6 +17,7 @@ export class ResendOtpUseCase {
         
         const cacheKey = `otp:${request.email}`
         const otp = await this.otpService.generate()
+        console.log("resend otp ", otp)
         const otpExpiredAt = Date.now() + 60 * 1000
 
         await this.cacheService.update(cacheKey,{otp, otpExpiredAt})

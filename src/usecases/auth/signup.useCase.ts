@@ -28,6 +28,7 @@ export class SignupUsecase {
 
     const cacheKey = `otp:${request.email}`;
     const otp = await this.otpService.generate()
+    console.log("otp ",otp)
 
     const otpExpirationInSeconds = 300;
     const name = request.name, email = request.email, password = request.password

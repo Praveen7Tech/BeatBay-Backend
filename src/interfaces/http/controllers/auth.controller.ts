@@ -88,7 +88,6 @@ export class AuthController {
     return res.status(StatusCode.OK).json(result)
   }
 
-  // src/infrastructure/controllers/auth.controller.ts (add method)
   async refreshToken(req: Request, res: Response): Promise<Response> {
     try {
       const refreshToken = req.cookies?.refreshToken;
@@ -97,7 +96,15 @@ export class AuthController {
       }
 
       const result = await this.authStatusUsecase.execute(refreshToken);
-      // authStatusUsecase returns { user, accessToken } — keep same contract
+      // overwriting refresh token
+      res.cookie('refreshToken',result.refreshToken, {
+        httpOnly:true,
+        sameSite:"strict",
+        secure:false,
+        maxAge: 7*24*60*60*100,
+        path:'/'
+      })
+
       return res.status(StatusCode.OK).json({ accessToken: result.accessToken });
     } catch (err: any) {
       logger.error('refresh token error', err);
@@ -108,8 +115,8 @@ export class AuthController {
  async logout(req: Request, res: Response): Promise<Response> {
   res.clearCookie('refreshToken', {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    secure: false,
+    sameSite: "strict",
     path: '/',
   });
 

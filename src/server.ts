@@ -4,6 +4,7 @@ import { connectRedis } from './infrastructure/config/redis';
 import app from './interfaces/express/app';
 import container from './infrastructure/di/container';
 import authRouterFactory from './interfaces/http/routes/auth.routes';
+import { loggerMiddleware } from './interfaces/middleware/loggerMiddleware';
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ async function startServer() {
 
     // Attach the auth router configured with DI after all the infrastructure connection is done
     const authRouter = authRouterFactory(container);
+    app.use(loggerMiddleware);
     app.use('/user', authRouter);
     //console.log("Container resolved authController:", container.resolve('authController'))
 

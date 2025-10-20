@@ -1,18 +1,14 @@
 import { IUserRepository } from '../../domain/repositories/user.repository';
 import { ICacheService } from '../../domain/services/cache.service';
 import { User } from '../../domain/entities/user.entity';
-import { MESSAGES } from '../../common/constants.message';
-import { StatusCode } from '../../common/status.enum';
-import logger from '../../infrastructure/utils/logger/logger';
 import { IOtpService } from '../../domain/services/otp.service';
 import { IEmailService } from '../../domain/services/mail.service';
 import { EmailFormat } from '../../infrastructure/services/email/email-format';
+import { UserAlreadyExistsError } from '../../common/errors/user.auth.error'; 
+import { SignupRequestDTO } from './dto/request.dto';
+import { SignupResponseDTO } from './dto/response.dto';
 
-interface SignupRequest {
-  name: string,
-  email: string;
-  password: string;
-}
+
 
 export class SignupUsecase {
   constructor(
@@ -22,37 +18,23 @@ export class SignupUsecase {
     private readonly emailService: IEmailService
   ) {}
 
-  async execute(request: SignupRequest): Promise<{ user?: User; status: StatusCode; message: string; otp?: string }> {
-    logger.info("reach usecase user")
+  async execute(request: SignupRequestDTO): Promise<SignupResponseDTO> {
     const existingUser = await this.userRepository.findByEmail(request.email);
     if (existingUser) {
-      return { status: StatusCode.CONFLICT, message: MESSAGES.USER_ALREADY_EXISTS };
+      throw new UserAlreadyExistsError();
     }
 
+    const otp = await this.otpService.generate();
     const cacheKey = `otp:${request.email}`;
-    const otp = await this.otpService.generate()
-    console.log("otp ",otp)
-
     const otpExpirationInSeconds = 300;
-    const name = request.name, email = request.email, password = request.password
-
-    const cachedData = {name,email,password,otp, otpExpiredAt: Date.now() + 60 * 1000}
+    const cachedData = { ...request, otp, otpExpiredAt: Date.now() + otpExpirationInSeconds * 1000 };
 
     await this.cacheService.set(cacheKey, cachedData, otpExpirationInSeconds);
 
-    // send email
-    const otpMail = EmailFormat.otp(otp)
-    await this.emailService.sendMail(
-      request.email,
-      otpMail.subject,
-      otpMail.text,
-      otpMail.html
-    )
+    const otpMail = EmailFormat.otp(otp);
+    await this.emailService.sendMail(request.email, otpMail.subject, otpMail.text, otpMail.html);
 
-    return {
-      status: StatusCode.CREATED,
-      message: MESSAGES.OTP_SEND,
-      otp, 
-    };
+    console.log("otp ",otp)
+    return { otp };
   }
 }

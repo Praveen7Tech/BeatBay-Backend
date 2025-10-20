@@ -23,17 +23,8 @@ app.use(
 // middlewre for dependency injection
 app.use(scopePerRequest(container))
 
-// Error handling MD
-const errorHandler: ErrorRequestHandler = (err, req, res, next)=> {
-    logger.error("API Error", err)
 
-    const status = err.status || StatusCode.INTERNAL_SERVER_ERROR
-    const message = err.message || MESSAGES.UNEXPECTED_ERROR
 
-    res.status(status).json({message})
-}
-
-app.use(errorHandler)
 
 // Prevent browser from caching sensitive pages
 app.use((req, res, next) => {

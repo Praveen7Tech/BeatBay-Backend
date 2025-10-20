@@ -7,12 +7,12 @@ export default (container: AwilixContainer): Router => {
   const router = Router();
   const authController = container.resolve<AuthController>('authController');
 
-  router.post('/signup', (req, res) => authController.signup(req, res));
-  router.post('/verify-otp', (req, res) => authController.verifyOtp(req, res));
-  router.post('/resend-otp', (req,res) => authController.resendOtp(req, res))
-  router.post('/login', (req,res) => authController.login(req, res))
-  router.get('/check-auth-status',authMiddleware, (req,res)=> authController.authStatus(req,res))
-  router.post('/refresh-token',(req,res) => authController.refreshToken(req,res))
-  router.post('/logout' , (req,res) => authController.logout(req,res))
+  router.post('/signup', (req, res, next) => authController.signup(req, res, next));
+  router.post('/verify-otp', (req, res, next) => authController.verifyOtp(req, res, next));
+  router.post('/resend-otp', (req,res, next) => authController.resendOtp(req, res, next))
+  router.post('/login', (req,res, next) => authController.login(req, res, next))
+  router.get('/check-auth-status',authMiddleware, (req,res, next)=> authController.authStatus(req,res, next))
+  router.post('/refresh-token',(req,res, next) => authController.refreshToken(req,res, next))
+  router.post('/logout' , (req,res, next) => authController.logout(req,res, next))
   return router;
 };

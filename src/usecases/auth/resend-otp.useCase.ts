@@ -4,10 +4,10 @@ import { ICacheService } from "../../domain/services/cache.service";
 import { IEmailService } from "../../domain/services/mail.service";
 import { IOtpService } from "../../domain/services/otp.service";
 import { EmailFormat } from "../../infrastructure/services/email/email-format";
+import { ResendOtpRequestDTO } from "./dto/request.dto";
+import { ResendOtpResponseDTO } from "./dto/response.dto";
 
-interface ResendOtpRequest {
-    email : string
-}
+
 
 export class ResendOtpUseCase {
     constructor(
@@ -16,7 +16,7 @@ export class ResendOtpUseCase {
         private readonly emailService: IEmailService
     ){}
 
-    async execute(request: ResendOtpRequest) : Promise<{status :  StatusCode ; message: string; otp?: string}>{
+    async execute(request: ResendOtpRequestDTO) : Promise<ResendOtpResponseDTO>{
         
         const cacheKey = `otp:${request.email}`
         const otp = await this.otpService.generate()
@@ -32,10 +32,6 @@ export class ResendOtpUseCase {
         )
         await this.cacheService.update(cacheKey,{otp, otpExpiredAt})
 
-        return {
-            status: StatusCode.OK,
-            message: MESSAGES.OTP_SEND,
-            otp:otp
-        }
+        return {otp}
     }
 }

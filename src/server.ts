@@ -5,6 +5,7 @@ import app from './interfaces/express/app';
 import container from './infrastructure/di/container';
 import authRouterFactory from './interfaces/http/routes/auth.routes';
 import { loggerMiddleware } from './interfaces/middleware/loggerMiddleware';
+import { errorHandlerMiddleware } from './interfaces/middleware/errorHandler';
 
 dotenv.config();
 
@@ -20,6 +21,8 @@ async function startServer() {
     app.use(loggerMiddleware);
     app.use('/user', authRouter);
     //console.log("Container resolved authController:", container.resolve('authController'))
+
+    app.use(errorHandlerMiddleware)
 
     app.listen(PORT, () => {
       console.log(`✅ Server running on http://localhost:${PORT}`);

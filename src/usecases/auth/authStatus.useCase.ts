@@ -1,14 +1,9 @@
 import { User } from "../../domain/entities/user.entity"
 import { IUserRepository } from "../../domain/repositories/user.repository"
 import { ITokenService } from "../../domain/services/token.service"
+import { AuthStatusRequestDTO } from "./dto/request.dto"
+import { authStatusResponseDTO } from "./dto/response.dto";
 
-interface authStatusRequest {
-    refreshToken : string
-}
-interface authStatusResponse{
-    user?: User
-    accessToken?: string
-}
 
 
 export class AuthStatusUsecase {
@@ -17,12 +12,9 @@ export class AuthStatusUsecase {
     private readonly userRepository: IUserRepository
   ){}
 
-  async execute(refreshToken: string) : Promise<{user?: User, accessToken?: string, refreshToken: string}> {
-    if (!refreshToken) {
-      throw new Error("No refresh token provided");
-    }
+  async execute(request: AuthStatusRequestDTO) : Promise<authStatusResponseDTO> {
 
-    const payload: any = await this.tokenService.verifyRefreshToken(refreshToken);
+    const payload: any = await this.tokenService.verifyRefreshToken(request.refreshToken);
     if (!payload) {
       throw new Error("Invalid refresh token");
     }

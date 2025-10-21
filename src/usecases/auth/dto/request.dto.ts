@@ -35,3 +35,18 @@ export const AuthStatusRequestSchema = z.object({
   refreshToken: z.string().min(1, "Refresh token is required")
 });
 export type AuthStatusRequestDTO = z.infer<typeof AuthStatusRequestSchema>;
+
+// verify email for ret password
+export const VerifyEmailRequestSchema = z.object({
+  email: z.string().email("Invalid email")
+})
+
+export type VerifyEmailRequestDTO = z.infer<typeof VerifyEmailRequestSchema>
+
+// reset password
+export const ResetPassRequestSchema = z.object({
+  password: z.string().min(6, "password must be atleast 6 charecters"),
+  token: z.string().min(1, "token is required")
+})
+
+export type ResetPasswordDTO = z.infer<typeof ResetPassRequestSchema>

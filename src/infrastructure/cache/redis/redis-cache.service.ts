@@ -29,4 +29,16 @@ export class RedisCacheServive implements ICacheService {
 
     await this.set(key,updatedData,300)
   }
+
+  async storeResetToken(key: string, value:string, expirationInSeconds: number){
+    await this.client.setEx(key, expirationInSeconds, value)
+  }
+
+  async getResetToken(key: string): Promise<string | null>{
+    const cacheVal = await this.client.get(key)
+
+    if(!cacheVal) return null
+     return cacheVal
+  }
+
 }

@@ -8,7 +8,9 @@ import { LoginUsecase } from '../../../usecases/auth/login.useCase';
 import { MESSAGES } from '../../../common/constants.message';
 import { AuthStatusUsecase } from '../../../usecases/auth/authStatus.useCase';
 import { COOKIE_OPTIONS } from '../../../common/cookie/cookieOptions';
-import { AuthStatusRequestDTO, AuthStatusRequestSchema, LoginRequestDTO, LoginRequestSchema, ResendOtpRequestDTO, ResendOtpRequestSchema, SignupRequestDTO, SignupRequestSchema, VerifyOtpRequestDTO, VerifyOtpRequestSchema } from '../../../usecases/auth/dto/request.dto';
+import { AuthStatusRequestDTO, AuthStatusRequestSchema, LoginRequestDTO, LoginRequestSchema, ResendOtpRequestDTO, ResendOtpRequestSchema, ResetPassRequestSchema, ResetPasswordDTO, SignupRequestDTO, SignupRequestSchema, VerifyEmailRequestDTO, VerifyEmailRequestSchema, VerifyOtpRequestDTO, VerifyOtpRequestSchema } from '../../../usecases/auth/dto/request.dto';
+import { VerifyEmailUsecase } from '../../../usecases/auth/verify-email.useCase';
+import { ResetPasswordUsecase } from '../../../usecases/auth/reset-password.useCase';
 
 export class AuthController {
   constructor(
@@ -16,7 +18,9 @@ export class AuthController {
     private readonly verifyOtpUsecase: VerifyOtpUsecase,
     private readonly resendOtpUsecase: ResendOtpUseCase,
     private readonly loginUsecase: LoginUsecase,
-    private readonly authStatusUsecase: AuthStatusUsecase
+    private readonly authStatusUsecase: AuthStatusUsecase,
+    private readonly verifyEmailUsecase: VerifyEmailUsecase,
+    private readonly resetPasswordUsecase: ResetPasswordUsecase,
   ) {}
 
   async signup(req: Request, res: Response, next: NextFunction) {
@@ -59,16 +63,13 @@ export class AuthController {
   async login(req: Request, res: Response, next: NextFunction){
     try {
       const dto: LoginRequestDTO= LoginRequestSchema.parse(req.body)
-      // if(!req.body.email || !req.body.password){
-      //   throw new Error("email and password required")
-      // }
 
       const result = await this.loginUsecase.execute(dto)
 
       // send access and refresh token
       res.cookie('refreshToken', result.refreshToken, COOKIE_OPTIONS);
 
-      return res.status(StatusCode.OK).json({message: "user verification complete.", accessToken:result.accessToken})
+      return res.status(StatusCode.OK).json({message: "user verification complete.", accessToken:result.accessToken, user: result.user})
     } catch (error) {
       next(error)
     }
@@ -119,6 +120,31 @@ export class AuthController {
       } catch (error) {
         next(error)
       }
+  }
+
+  async verifyEmail(req:Request, res: Response, next: NextFunction) {
+    try {
+      console.log("email link ",req.body)
+      const dto : VerifyEmailRequestDTO = VerifyEmailRequestSchema.parse(req.body)
+      console.log("2",dto)
+      await this.verifyEmailUsecase.execute(dto)
+      return res.status(StatusCode.CREATED).json({message: "password reset link send."})
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  async resetPassword(req:Request, res:Response, next: NextFunction){
+    try {
+      const {password, token} = req.body
+
+      const dto : ResetPasswordDTO = ResetPassRequestSchema.parse({token,password})
+
+      await this.resetPasswordUsecase.execute(dto)
+      return res.status(StatusCode.OK).json({message: "password reset successfull"})
+    } catch (error) {
+      next(error)
+    }
   }
 
 }

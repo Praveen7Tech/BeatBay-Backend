@@ -9,6 +9,7 @@ export interface ResendOtpResponseDTO {
 }
 
 export interface LoginResponseDTO {
+    user:User,
     accessToken:string,
     refreshToken:string
 }

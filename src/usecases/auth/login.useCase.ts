@@ -34,6 +34,7 @@ export class LoginUsecase {
         const refreshToken = await this.tokenService.generateRefressToken(payload)
 
         return {
+            user,
             accessToken,
             refreshToken
         }

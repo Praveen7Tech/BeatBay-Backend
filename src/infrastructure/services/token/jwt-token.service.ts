@@ -5,6 +5,7 @@ import  jwt  from "jsonwebtoken";
 
 const ACCESS_TOKEN_SECRET = process.env.JWT_TOKEN_SECRET!
 const REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_SECRET!
+const RESET_TOKEN_SECRET = process.env.JWT_RESET_TOKEN_SECRET!
 
 export class JwtTokenService implements ITokenService {
     async generateAccessToken(payload: object): Promise<string> {
@@ -18,11 +19,11 @@ export class JwtTokenService implements ITokenService {
     async verifyAccessToken(token?: string) {
         if (!token) return null;
         try {
-        return jwt.verify(token, ACCESS_TOKEN_SECRET);
+            return jwt.verify(token, ACCESS_TOKEN_SECRET);
         } catch (err) {
-        return null;
-            }
+            return null;
         }
+    }
 
     async verifyRefreshToken(token?: string) {
         if (!token) return null;
@@ -32,4 +33,19 @@ export class JwtTokenService implements ITokenService {
            return null;
         }
     }
+
+    async generateResetToken(email: string): Promise<string>{
+        return  jwt.sign({email}, RESET_TOKEN_SECRET, {expiresIn: "15m"})
+    }
+
+    async verifyResetToken(token: string): Promise<string | null> {
+        try {
+            const decoded = jwt.verify(token, RESET_TOKEN_SECRET) as {email: string}
+            return decoded.email
+        } catch (err) {
+            return null
+        }
+    }
+
+    
 }

@@ -14,5 +14,7 @@ export default (container: AwilixContainer): Router => {
   router.get('/check-auth-status',authMiddleware, (req,res, next)=> authController.authStatus(req,res, next))
   router.post('/refresh-token',(req,res, next) => authController.refreshToken(req,res, next))
   router.post('/logout' , (req,res, next) => authController.logout(req,res, next))
+  router.post('/verify-email', (req,res, next)=> authController.verifyEmail(req,res, next))
+  router.put('/reset-password', (req,res,next) => authController.resetPassword(req,res,next))
   return router;
 };

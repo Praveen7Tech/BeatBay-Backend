@@ -26,7 +26,6 @@ export class AuthController {
   async signup(req: Request, res: Response, next: NextFunction) {
     try {
       const dto: SignupRequestDTO= SignupRequestSchema.parse(req.body)
-      //if (!req.body.name || !req.body.email) throw new Error('Email and password required');
 
       const result = await this.signupUsecase.execute(dto);
       return res.status(201).json({ message: 'OTP sent', otp: result.otp });
@@ -128,7 +127,7 @@ export class AuthController {
       const dto : VerifyEmailRequestDTO = VerifyEmailRequestSchema.parse(req.body)
       console.log("2",dto)
       await this.verifyEmailUsecase.execute(dto)
-      return res.status(StatusCode.CREATED).json({message: "password reset link send."})
+      return res.status(StatusCode.CREATED).json({message: "password reset link send to email suucessfully."})
     } catch (error) {
       next(error)
     }
@@ -141,7 +140,7 @@ export class AuthController {
       const dto : ResetPasswordDTO = ResetPassRequestSchema.parse({token,password})
 
       await this.resetPasswordUsecase.execute(dto)
-      return res.status(StatusCode.OK).json({message: "password reset successfull"})
+      return res.status(StatusCode.OK).json({message: "new password updated successfully"})
     } catch (error) {
       next(error)
     }

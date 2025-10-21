@@ -17,7 +17,7 @@ export class ResetPasswordUsecase{
         
         const userEmail = await this.tokenService.verifyResetToken(request.token)
         console.log("email ", userEmail)
-        if(!userEmail) throw new Error("Invalid or expired token.")
+        if(!userEmail) throw new Error("this page is expired.")
 
         const cachedToken = await this.cacheService.getResetToken(userEmail)
         console.log("cache tok ", cachedToken)

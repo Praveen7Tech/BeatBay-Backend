@@ -8,9 +8,15 @@ import { LoginUsecase } from '../../../usecases/auth/login.useCase';
 import { MESSAGES } from '../../../common/constants.message';
 import { AuthStatusUsecase } from '../../../usecases/auth/authStatus.useCase';
 import { COOKIE_OPTIONS } from '../../../common/cookie/cookieOptions';
-import { AuthStatusRequestDTO, AuthStatusRequestSchema, LoginRequestDTO, LoginRequestSchema, ResendOtpRequestDTO, ResendOtpRequestSchema, ResetPassRequestSchema, ResetPasswordDTO, SignupRequestDTO, SignupRequestSchema, VerifyEmailRequestDTO, VerifyEmailRequestSchema, VerifyOtpRequestDTO, VerifyOtpRequestSchema } from '../../../usecases/auth/dto/request.dto';
+import { AuthStatusRequestDTO, AuthStatusRequestSchema, GoogleLoginRequestDTO, GoogleLoginRequestSchema, LoginRequestDTO, LoginRequestSchema, ResendOtpRequestDTO, ResendOtpRequestSchema, ResetPassRequestSchema, ResetPasswordDTO, SignupRequestDTO, SignupRequestSchema, VerifyEmailRequestDTO, VerifyEmailRequestSchema, VerifyOtpRequestDTO, VerifyOtpRequestSchema } from '../../../usecases/auth/dto/request.dto';
 import { VerifyEmailUsecase } from '../../../usecases/auth/verify-email.useCase';
 import { ResetPasswordUsecase } from '../../../usecases/auth/reset-password.useCase';
+import { GoogleLoginUsecase } from '../../../usecases/auth/googleLogin.useCase';
+
+import { OAuth2Client } from 'google-auth-library'
+const client_id = process.env.GOOGLE_CLIENT_ID!;
+const client = new OAuth2Client(client_id);
+
 
 export class AuthController {
   constructor(
@@ -21,6 +27,7 @@ export class AuthController {
     private readonly authStatusUsecase: AuthStatusUsecase,
     private readonly verifyEmailUsecase: VerifyEmailUsecase,
     private readonly resetPasswordUsecase: ResetPasswordUsecase,
+    private readonly googleLoginUsecase: GoogleLoginUsecase
   ) {}
 
   async signup(req: Request, res: Response, next: NextFunction) {
@@ -143,6 +150,19 @@ export class AuthController {
       return res.status(StatusCode.OK).json({message: "new password updated successfully"})
     } catch (error) {
       next(error)
+    }
+  }
+
+  async googleSignup(req:Request, res:Response, next: NextFunction){
+    try {
+       const dto : GoogleLoginRequestDTO = GoogleLoginRequestSchema.parse(req.body)
+       const response = await this.googleLoginUsecase.execute(dto)
+    
+       res.cookie("refreshToken", response.refreshToken, COOKIE_OPTIONS)
+       return res.status(StatusCode.CREATED).json({ message:"google login successfull",accessToken:response.accessToken, user: response.user})
+    } catch (error) {
+      next(error)
+      console.log("err in g",error)
     }
   }
 

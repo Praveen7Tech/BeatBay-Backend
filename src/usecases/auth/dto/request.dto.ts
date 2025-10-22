@@ -50,3 +50,10 @@ export const ResetPassRequestSchema = z.object({
 })
 
 export type ResetPasswordDTO = z.infer<typeof ResetPassRequestSchema>
+
+// google login
+export const GoogleLoginRequestSchema = z.object({
+  token: z.string().min(1, "token is required")
+})
+
+export type GoogleLoginRequestDTO = z.infer<typeof GoogleLoginRequestSchema>

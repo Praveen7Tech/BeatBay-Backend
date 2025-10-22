@@ -19,10 +19,16 @@ import { IEmailService } from '../../domain/services/mail.service';
 import { EmailService } from '../services/email/email-service';
 import { VerifyEmailUsecase } from '../../usecases/auth/verify-email.useCase';
 import { ResetPasswordUsecase } from '../../usecases/auth/reset-password.useCase';
+import { GoogleLoginUsecase } from '../../usecases/auth/googleLogin.useCase';
+import { IGoogleAuthService } from '../../domain/services/google-auth.service';
+import { GoogleAuthService } from '../services/googleAuth/google-auth.service';
 
 const container = createContainer({ injectionMode: InjectionMode.CLASSIC });
 
 container.register({
+  // as value
+  clientId: asValue(process.env.GOOGLE_CLIENT_ID),
+
   // Infrastructure
   userRepository: asClass<IUserRepository>(MongooseUserRepository).scoped(),
   cacheService: asClass<ICacheService>(RedisCacheServive).singleton(),
@@ -30,6 +36,7 @@ container.register({
   otpService: asClass<IOtpService>(OtpService).scoped(),
   tokenService: asClass<ITokenService>(JwtTokenService).scoped(),
   emailService: asClass<IEmailService>(EmailService).scoped(),
+  googleAuthService: asClass<IGoogleAuthService>(GoogleAuthService).scoped(),
 
   // Use cases
   signupUsecase: asClass(SignupUsecase).scoped(),
@@ -40,6 +47,7 @@ container.register({
   authStatusUsecase: asClass(AuthStatusUsecase),
   verifyEmailUsecase: asClass(VerifyEmailUsecase).scoped(),
   resetPasswordUsecase:asClass(ResetPasswordUsecase).scoped(),
+  googleLoginUsecase: asClass(GoogleLoginUsecase).scoped(),
 
   // Controllers
   authController: asClass(AuthController).scoped(),

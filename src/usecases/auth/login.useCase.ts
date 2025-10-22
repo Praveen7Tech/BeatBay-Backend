@@ -23,6 +23,9 @@ export class LoginUsecase {
             throw new UserNotFoundError()
         }
         
+        if(!user.password){
+            throw new Error("Account uses Google login. Please continue with Google.")
+        }
         const password = await this.passwordService.compare(request.password, user.password)
         
         if(!password){

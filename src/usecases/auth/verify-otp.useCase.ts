@@ -2,6 +2,7 @@ import { IUserRepository } from '../../domain/repositories/user.repository';
 import { ICacheService } from '../../domain/services/cache.service';
 import { OtpExpiredError, InvalidOtpError } from "../../common/errors/user.auth.error"
 import { PasswordService } from '../../infrastructure/services/password/password-service';
+import { IPasswordService } from '../../domain/services/password.service';
 
 interface VerifyOtpRequest {
   email: string;
@@ -12,7 +13,7 @@ export class VerifyOtpUsecase {
   constructor(
     private readonly cacheService: ICacheService,
     private readonly userRepository: IUserRepository,
-    private readonly passwordService: PasswordService,
+    private readonly passwordService: IPasswordService,
   ) {}
 
   async execute(request: VerifyOtpRequest): Promise<void> {

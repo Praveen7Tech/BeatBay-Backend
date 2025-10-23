@@ -36,7 +36,7 @@ export class UserNotFoundError extends DomainError {
 }
 
 export class BadRequestError extends DomainError {
-    constructor(message: string = "Invalid request") {
+    constructor(message: string = "Invalid Credentials") {
         super(message, StatusCode.BAD_REQUEST);
         Object.setPrototypeOf(this, BadRequestError.prototype);
     }

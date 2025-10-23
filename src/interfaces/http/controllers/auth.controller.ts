@@ -83,40 +83,23 @@ export class AuthController {
   }
 
   async authStatus(req: Request, res: Response, next: NextFunction) {
-    try {
-      const dto: AuthStatusRequestDTO = AuthStatusRequestSchema.parse({
-        refreshToken: req.cookies?.refreshToken
-      });
+     try {
+          const refreshToken = req.cookies?.refreshToken;
+          if (!refreshToken) {
+              return res.status(StatusCode.OK).json({ user: null, accessToken: null });
+          }
 
-      const result = await this.authStatusUsecase.execute(dto);
-      return res.status(StatusCode.OK).json({ user: result.user, accessToken: result.accessToken });
-    } catch (error) {
-      next(error);
-    }
-  }
+          const result = await this.authStatusUsecase.execute({ refreshToken });
 
-  async refreshToken(req: Request, res: Response, next: NextFunction) {
-    try {
-      const refreshToken = req.cookies?.refreshToken;
-      const dto: AuthStatusRequestDTO={
-        refreshToken:req.cookies?.refreshToken
+          res.cookie("refreshToken", result.refreshToken, COOKIE_OPTIONS);
+          return res.status(StatusCode.OK).json({
+              user: result.user,
+              accessToken: result.accessToken
+          });
+      } catch (error) {
+          res.clearCookie("refreshToken", COOKIE_OPTIONS);
+          next(error)
       }
-      if (!refreshToken) {
-        return res.status(StatusCode.UNAUTHORIZED).json({ message: "Refresh token missing" });
-      }
-
-      const result = await this.authStatusUsecase.execute(dto);
-
-      // cookie Rotation
-      res.cookie("refreshToken", result.refreshToken, COOKIE_OPTIONS);
-
-      return res.status(StatusCode.OK).json({
-        accessToken: result.accessToken
-      });
-    } catch (error) {
-      next(error)
-    }
-    
   }
 
   async logout(req: Request, res: Response, next:NextFunction) {

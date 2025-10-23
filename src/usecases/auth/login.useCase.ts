@@ -17,7 +17,7 @@ export class LoginUsecase {
     ){}
 
     async execute(request: LoginRequestDTO) : Promise<LoginResponseDTO> {
-
+        
         const user = await this.userRepository.findByEmail(request.email)
         if(!user){
             throw new UserNotFoundError()

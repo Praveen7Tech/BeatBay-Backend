@@ -27,13 +27,13 @@ export class SignupUsecase {
     const otp = await this.otpService.generate();
     const cacheKey = `otp:${request.email}`;
     const otpExpirationInSeconds = 300;
-    const cachedData = { ...request, otp, otpExpiredAt: Date.now() + otpExpirationInSeconds * 1000 };
+    const cachedData = { ...request, otp, otpExpiredAt: Date.now() + 2 * 60 * 1000 };
 
     await this.cacheService.set(cacheKey, cachedData, otpExpirationInSeconds);
 
     const otpMail = EmailFormat.otp(otp);
     await this.emailService.sendMail(request.email, otpMail.subject, otpMail.text, otpMail.html);
-
+    
     console.log("otp ",otp)
     return { otp };
   }

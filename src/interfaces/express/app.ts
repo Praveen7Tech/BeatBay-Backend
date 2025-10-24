@@ -1,4 +1,4 @@
-import expres, { ErrorRequestHandler, urlencoded } from "express"
+import expres, {  urlencoded } from "express"
 import cors from "cors"
 import { scopePerRequest } from "awilix-express"
 import container from "../../infrastructure/di/container"
@@ -21,9 +21,6 @@ app.use(
 app.use(scopePerRequest(container))
 
 
-
-
-// Prevent browser from caching sensitive pages
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store'); 
   res.setHeader('Pragma', 'no-cache');        

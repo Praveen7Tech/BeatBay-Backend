@@ -7,6 +7,7 @@ import authRouterFactory from './interfaces/http/routes/auth.routes';
 import { loggerMiddleware } from './interfaces/middleware/loggerMiddleware';
 import { errorHandlerMiddleware } from './interfaces/middleware/errorHandler';
 import adminAuthRouterFactory from './interfaces/http/routes/admin/admin.auth.routes'
+import artistAuthRouterFactory from './interfaces/http/routes/artist/artist.auth.routes';
 
 dotenv.config();
 
@@ -22,9 +23,11 @@ async function startServer() {
     // Attach the auth router configured with DI after all the infrastructure connection is done
     const authRouter = authRouterFactory(container);
     const adminAuthRouter = adminAuthRouterFactory(container)
+    const artistAuthRouter = artistAuthRouterFactory(container)
     
     app.use('/user', authRouter);
     app.use('/admin', adminAuthRouter)
+    app.use('/artist', artistAuthRouter)
     //console.log("Container resolved authController:", container.resolve('authController'))
 
     app.use(errorHandlerMiddleware)

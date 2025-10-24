@@ -1,7 +1,5 @@
 import z from "zod"
 
-
-
 export const SignupRequestSchema  = z.object({
     name: z.string().min(1,"name is required"),
     email: z.string().email("Invalid email"),

@@ -33,15 +33,14 @@ export const authModule = {
       passwordService: asClass<IPasswordService>(PasswordService).scoped(),
       otpService: asClass<IOtpService>(OtpService).scoped(),
       tokenService: asClass<ITokenService>(JwtTokenService).scoped(),
-      emailService: asClass<IEmailService>(EmailService).scoped(),
-      googleAuthService: asClass<IGoogleAuthService>(GoogleAuthService).scoped(),
+      emailService: asClass<IEmailService>(EmailService).singleton(),
+      googleAuthService: asClass<IGoogleAuthService>(GoogleAuthService).singleton(),
     
       // Use cases
       signupUsecase: asClass(SignupUsecase).scoped(),
       verifyOtpUsecase: asClass(VerifyOtpUsecase).scoped(),
       resendOtpUsecase: asClass(ResendOtpUseCase).scoped(),
       loginUsecase: asClass(LoginUsecase).scoped(),
-      jwtTokenUsecase: asClass(JwtTokenService).scoped(),
       authStatusUsecase: asClass(AuthStatusUsecase),
       verifyEmailUsecase: asClass(VerifyEmailUsecase).scoped(),
       resetPasswordUsecase:asClass(ResetPasswordUsecase).scoped(),

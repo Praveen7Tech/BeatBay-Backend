@@ -3,6 +3,7 @@ import cors from "cors"
 import { scopePerRequest } from "awilix-express"
 import container from "../../infrastructure/di/container"
 import cookieParser from "cookie-parser"
+import mongoose from "mongoose"
 
 const app = expres()
 
@@ -16,6 +17,10 @@ app.use(
         methods: ['GET','POST','PUT','DELETE','OPTIONS']
     })
 );
+
+// monggose debuging
+mongoose.set('debug', true);
+
 
 // middlewre for dependency injection
 app.use(scopePerRequest(container))

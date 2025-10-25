@@ -1,23 +1,16 @@
 import { IUserRepository } from '../../../../domain/repositories/user.repository';
 import { User } from '../../../../domain/entities/user.entity';
 import { UserModel } from '../models/user.model';
-import { PasswordService } from '../../../services/password/password-service';
+import { ClientSession } from 'mongoose';
 
 export class MongooseUserRepository implements IUserRepository {
   constructor() {}
 
-  async create(entity: User): Promise<User> {
+  async create(entity: User, session?: ClientSession): Promise<User> {
     
-    const user = new UserModel({
-      name: entity.name,
-      email: entity.email,
-      password: entity.password,
-      profilePicture: entity.profilePicture,
-      role: entity.role ?? 'user',
-      status: entity.status ?? true,
-    });
+    const user = new UserModel(entity);
 
-    const createdUser = await user.save();
+    const createdUser = await user.save({session});
     return createdUser.toObject();
   }
 

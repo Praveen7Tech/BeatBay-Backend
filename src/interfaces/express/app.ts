@@ -4,6 +4,7 @@ import { scopePerRequest } from "awilix-express"
 import container from "../../infrastructure/di/container"
 import cookieParser from "cookie-parser"
 import mongoose from "mongoose"
+import path from "path"
 
 const app = expres()
 
@@ -17,6 +18,8 @@ app.use(
         methods: ['GET','POST','PUT','DELETE','OPTIONS']
     })
 );
+
+app.use("/uploads", expres.static(path.join(__dirname, "public/uploads")))
 
 // monggose debuging
 mongoose.set('debug', true);

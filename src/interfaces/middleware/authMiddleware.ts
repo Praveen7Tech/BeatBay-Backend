@@ -7,7 +7,6 @@ import jwt from "jsonwebtoken";
 export const authMiddleware: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
   
   const authHeader = req.headers["authorization"]; 
-  console.log("middle ware reach",authHeader)
 
   if (!authHeader) {
     return res

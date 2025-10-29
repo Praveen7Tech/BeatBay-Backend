@@ -26,7 +26,6 @@ export class AdminLoginUsecase {
         if(!passwordMatch){
             throw new Error("invalid credentials..")
         }
-        console.log("pass ",passwordMatch,request.password, user.password)
 
         const payload = {id: user._id, email: user.email, role: user.role}
         const accessToken = await this.tokenService.generateAccessToken(payload)

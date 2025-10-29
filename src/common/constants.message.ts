@@ -10,5 +10,6 @@ export const MESSAGES = {
   INVALID_OTP: 'Invalid OTP, plase check your otp.',
   USER_LOGIN: 'User login successfull',
   USER_NOT_FOUND: 'User not found in this email',
-  LOGOUT_SUCCESS: 'User logout succssfully completed..!'
+  LOGOUT_SUCCESS: 'User logout succssfully completed..!',
+  USER_UPDATED: "User profile updated successfully."
 };

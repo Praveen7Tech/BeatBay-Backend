@@ -23,7 +23,7 @@ export class VerifyOtpUsecase {
     if (!cachedData) throw new OtpExpiredError();
 
     const {name, email, password, otp, otpExpiredAt } = cachedData;
-    console.log("key ", Date.now(),otpExpiredAt)
+    
     if (Date.now() > otpExpiredAt) throw new OtpExpiredError();
     if (otp !== request.otp) throw new InvalidOtpError();
 

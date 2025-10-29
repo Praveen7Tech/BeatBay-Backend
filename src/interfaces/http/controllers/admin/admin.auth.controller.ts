@@ -12,13 +12,11 @@ export class AdminAuthController {
 
     async login(req: Request, res:Response, next: NextFunction) {
         try {
-            console.log("body ", req.body)
             const dto : LoginRequestDTO = LoginRequestSchema.parse(req.body)
             const data = await this.adminLoginUsecase.execute(dto)
 
             res.cookie("refreshToken", data.refreshToken, COOKIE_OPTIONS)
 
-            console.log("admin login complete")
             return res.status(StatusCode.OK).json({message: "admin verification complete.", accessToken: data.accessToken, user: data.user})
         } catch (error) {
             next(error)

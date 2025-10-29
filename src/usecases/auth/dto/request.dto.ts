@@ -55,3 +55,14 @@ export const GoogleLoginRequestSchema = z.object({
 })
 
 export type GoogleLoginRequestDTO = z.infer<typeof GoogleLoginRequestSchema>
+
+
+// edit profile
+
+export const EditProfileSchema = z.object({
+  name: z.string().min(2, "name is required").optional(),
+  password: z.string().min(6, "password must be atleast 6 charecters").optional(),
+  profileImage: z.string().min(1, "image must be needed").optional()
+})
+
+export type EditProfileRequest = z.infer<typeof EditProfileSchema>

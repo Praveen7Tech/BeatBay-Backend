@@ -2,17 +2,30 @@ import { NextFunction, Request, Response } from "express"
 import { StatusCode } from "../../../../common/status.enum"
 import { MESSAGES } from "../../../../common/constants.message"
 import { editProfileUsecase } from "../../../../usecases/user/editProfile.useCase"
+import { EditProfileRequest, EditProfileSchema } from "../../../../usecases/auth/dto/request.dto"
+import { AuthRequest } from "../../../middleware/authMiddleware"
 
 export class UserController{
     constructor(
         private readonly editProfileUserUsecase: editProfileUsecase
     ){}
 
-    editProfile = async(req:Request, res:Response, next: NextFunction) =>{
+    editProfile = async(req:AuthRequest, res:Response, next: NextFunction) =>{
         try {
-            console.log("body ", req.body)
-            const result = await this.editProfileUserUsecase.execute(req.body)
-            return res.status(StatusCode.OK).json({message:MESSAGES.OTP_SEND})
+            const userId = req.user?.id
+            if(!userId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            let profileImageUrl : string | undefined;
+            if(req.file){
+                profileImageUrl = `${req.file.filename}`
+            }
+
+            const dto : EditProfileRequest = EditProfileSchema.parse({...req.body, profileImage: profileImageUrl}) 
+            const result = await this.editProfileUserUsecase.execute(userId,dto)
+
+            return res.status(StatusCode.OK).json({user:result.user,accessToken:result.accessToken,message:MESSAGES.USER_UPDATED})
         } catch (error) {
             next(error)
         }

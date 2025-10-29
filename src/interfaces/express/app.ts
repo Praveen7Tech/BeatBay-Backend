@@ -1,4 +1,4 @@
-import expres, {  urlencoded } from "express"
+import express, {  urlencoded } from "express"
 import cors from "cors"
 import { scopePerRequest } from "awilix-express"
 import container from "../../infrastructure/di/container"
@@ -6,9 +6,9 @@ import cookieParser from "cookie-parser"
 import mongoose from "mongoose"
 import path from "path"
 
-const app = expres()
+const app = express()
 
-app.use(expres.json())
+app.use(express.json())
 app.use(urlencoded({extended: true}))
 app.use(cookieParser())
 app.use(
@@ -19,7 +19,7 @@ app.use(
     })
 );
 
-app.use("/uploads", expres.static(path.join(__dirname, "public/uploads")))
+app.use("/uploads", express.static(path.join(__dirname, "../../../public/uploads")));
 
 // monggose debuging
 mongoose.set('debug', true);

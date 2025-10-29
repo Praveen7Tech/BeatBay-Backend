@@ -37,7 +37,6 @@ export class AuthController {
       const result = await this.signupUsecase.execute(dto);
       return res.status(201).json({ message: 'OTP sent', otp: result.otp });
     } catch (error) {
-      console.log("here ...")
       next(error); 
     }
   }
@@ -113,9 +112,7 @@ export class AuthController {
 
   async verifyEmail(req:Request, res: Response, next: NextFunction) {
     try {
-      console.log("email link ",req.body)
       const dto : VerifyEmailRequestDTO = VerifyEmailRequestSchema.parse(req.body)
-      console.log("2",dto)
       await this.verifyEmailUsecase.execute(dto)
       return res.status(StatusCode.CREATED).json({message: "password reset link send to email suucessfully."})
     } catch (error) {
@@ -145,7 +142,6 @@ export class AuthController {
        return res.status(StatusCode.CREATED).json({ message:"google login successfull",accessToken:response.accessToken, user: response.user})
     } catch (error) {
       next(error)
-      console.log("err in g",error)
     }
   }
 

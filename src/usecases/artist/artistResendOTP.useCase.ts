@@ -13,10 +13,9 @@ export class ArtistResendOtpUseCase {
     ){}
 
     async execute(request: ResendOtpRequestDTO) : Promise<ResendOtpResponseDTO>{
-        console.log("mail ", request.email)
         const cacheKey = `artist_otp:${request.email}`
         const otp = await this.otpService.generate()
-        console.log("artist resend otp ", otp)
+        
         const otpExpiredAt = Date.now() + 2 * 60 * 1000
 
         await this.cacheService.update(cacheKey,{otp, otpExpiredAt})

@@ -16,17 +16,17 @@ export class ResetPasswordUsecase{
     async execute(request: ResetPasswordDTO): Promise<void> {
         
         const userEmail = await this.tokenService.verifyResetToken(request.token)
-        console.log("email ", userEmail)
+        
         if(!userEmail) throw new Error("this page is expired.")
 
         const cachedToken = await this.cacheService.getResetToken(userEmail)
-        console.log("cache tok ", cachedToken)
+       
         if(!cachedToken || cachedToken !== request.token) throw new Error("this verification page has been expired..!");
 
         const hashedPassword = await this.passwordService.hash(request.password)
 
         await this.userRepository.update(userEmail, {password:hashedPassword})
-        console.log("update complete")
+        
         await this.cacheService.delete(userEmail)
     }
 }

@@ -8,6 +8,9 @@ import { ITransactionManager } from "../../../domain/services/transaction.servic
 import { MongooseTransactionService } from "../../services/mongoose/mongoose.transaction.service";
 import { ArtistResendOtpUseCase } from "../../../usecases/artist/artistResendOTP.useCase";
 import { ArtistLoginUsecase } from "../../../usecases/artist/artistLogin.useCase";
+import { ArtistController } from "../../../interfaces/http/controllers/artist/artist.controller";
+import { ArtistEditProfileUsecase } from "../../../usecases/artist/artistEditProfile.useCase";
+import { ArtistGoogleLoginUseCase } from "../../../usecases/artist/artistGoogleSignup.useCase";
 
 export const artistModule = {
 
@@ -20,7 +23,10 @@ export const artistModule = {
     artistVerifyOTPusecase: asClass(ArtistVerifyOTPuseCase).scoped(),
     artistResendOtpUsecase: asClass(ArtistResendOtpUseCase).scoped(),
     artistLoginUsecase: asClass(ArtistLoginUsecase).scoped(),
+    artistEditProfileUsecase: asClass(ArtistEditProfileUsecase).scoped(),
+    artistGoogleLoginUsecase: asClass(ArtistGoogleLoginUseCase).scoped(),
 
     // controller
-    artistAuthController: asClass(artistAuthController).scoped()
+    artistAuthController: asClass(artistAuthController).scoped(),
+    artistController: asClass(ArtistController).scoped()
 }

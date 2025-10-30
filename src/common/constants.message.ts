@@ -11,5 +11,6 @@ export const MESSAGES = {
   USER_LOGIN: 'User login successfull',
   USER_NOT_FOUND: 'User not found in this email',
   LOGOUT_SUCCESS: 'User logout succssfully completed..!',
-  USER_UPDATED: "User profile updated successfully."
+  USER_UPDATED: "User profile updated successfully.",
+  ARTIST_UPDATED: "Artist profile updated successfully."
 };

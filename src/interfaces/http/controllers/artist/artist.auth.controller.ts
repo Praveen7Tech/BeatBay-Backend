@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { LoginRequestDTO, LoginRequestSchema, ResendOtpRequestDTO, ResendOtpRequestSchema, SignupRequestDTO,  SignupRequestSchema, VerifyOtpRequestDTO, VerifyOtpRequestSchema } from "../../../../usecases/auth/dto/request.dto";
+import { GoogleLoginRequestDTO, GoogleLoginRequestSchema, LoginRequestDTO, LoginRequestSchema, ResendOtpRequestDTO, ResendOtpRequestSchema, SignupRequestDTO,  SignupRequestSchema, VerifyOtpRequestDTO, VerifyOtpRequestSchema } from "../../../../usecases/auth/dto/request.dto";
 import { ArtistSignupUsecase } from "../../../../usecases/artist/artistSignup.useCase"; 
 import { StatusCode } from "../../../../common/status.enum";
 import { MESSAGES } from "../../../../common/constants.message";
@@ -7,6 +7,7 @@ import { ArtistVerifyOTPuseCase } from "../../../../usecases/artist/artistVerify
 import { ArtistResendOtpUseCase } from "../../../../usecases/artist/artistResendOTP.useCase";
 import { COOKIE_OPTIONS } from "../../../../common/cookie/cookieOptions";
 import { ArtistLoginUsecase } from "../../../../usecases/artist/artistLogin.useCase";
+import { ArtistGoogleLoginUseCase } from "../../../../usecases/artist/artistGoogleSignup.useCase";
 
 
 export class artistAuthController {
@@ -14,7 +15,8 @@ export class artistAuthController {
         private readonly artistSignupUsecase:ArtistSignupUsecase,
         private readonly artistVerifyOTPusecase:ArtistVerifyOTPuseCase,
         private readonly artistResendOtpUsecase: ArtistResendOtpUseCase,
-        private readonly artistLoginUsecase:ArtistLoginUsecase
+        private readonly artistLoginUsecase:ArtistLoginUsecase,
+        private readonly artistGoogleLoginUsecase: ArtistGoogleLoginUseCase
     ){}
 
     signUp = async(req:Request, res:Response, next: NextFunction) =>{
@@ -72,6 +74,19 @@ export class artistAuthController {
       } catch (error) {
         next(error)
       }
-   }    
+   }
+   
+    googleSignup = async(req:Request, res:Response, next: NextFunction)=>{
+        console.log("artist 1 ")
+        try {
+        const dto : GoogleLoginRequestDTO = GoogleLoginRequestSchema.parse(req.body)
+        const response = await this.artistGoogleLoginUsecase.execute(dto)
+        
+        res.cookie("refreshToken", response.refreshToken, COOKIE_OPTIONS)
+        return res.status(StatusCode.CREATED).json({ message:"google login successfull",accessToken:response.accessToken, user: response.user})
+    } catch (error) {
+        next(error)
+    }
+  }   
 
 }

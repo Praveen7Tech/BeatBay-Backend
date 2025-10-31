@@ -28,10 +28,7 @@ export class editProfileUsecase {
         const updatedUser = await this.userReposistory.update(userId,updateData)
         if(!updatedUser) throw new Error("user not found for update")
 
-        const payloadTkn = { id: updatedUser._id, email: updatedUser.email };
-        const newAccessToken = await this.tokenService.generateAccessToken(payloadTkn);
-        const newRefreshToken = await this.tokenService.generateRefressToken(payloadTkn)
 
-        return {user:updatedUser, accessToken:newAccessToken, refreshToken:newRefreshToken}
+        return {user:updatedUser}
     }
 }

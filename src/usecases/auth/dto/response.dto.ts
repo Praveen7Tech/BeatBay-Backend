@@ -16,6 +16,6 @@ export interface LoginResponseDTO {
 
 export interface authStatusResponseDTO{
     user: User
-    accessToken: string,
-    refreshToken: string
+    accessToken?: string,
+    refreshToken?: string
 }

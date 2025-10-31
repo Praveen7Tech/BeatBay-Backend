@@ -25,7 +25,7 @@ export class ArtistController {
             const dto : EditProfileRequest = EditProfileSchema.parse({...req.body, profileImage: profileImageUrl}) 
             const result = await this.artistEditProfileUsecase.execute(userId,dto)
 
-            return res.status(StatusCode.OK).json({user:result.user,accessToken:result.accessToken,message:MESSAGES.ARTIST_UPDATED})            
+            return res.status(StatusCode.OK).json({user:result.user,message:MESSAGES.ARTIST_UPDATED})            
         } catch (error) {
             next(error)
         }

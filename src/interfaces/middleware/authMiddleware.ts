@@ -10,7 +10,8 @@ export interface AuthRequest extends Request{
 
 export const authMiddleware: RequestHandler = (req: AuthRequest, res: Response, next: NextFunction) => {
   
-  const authHeader = req.headers["authorization"]; 
+  const authHeader = req.headers["authorization"];
+  console.log("tok ", authHeader) 
 
   if (!authHeader) {
     return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });

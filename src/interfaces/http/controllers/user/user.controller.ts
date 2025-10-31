@@ -25,7 +25,7 @@ export class UserController{
             const dto : EditProfileRequest = EditProfileSchema.parse({...req.body, profileImage: profileImageUrl}) 
             const result = await this.editProfileUserUsecase.execute(userId,dto)
 
-            return res.status(StatusCode.OK).json({user:result.user,accessToken:result.accessToken,message:MESSAGES.USER_UPDATED})
+            return res.status(StatusCode.OK).json({user:result.user,message:MESSAGES.USER_UPDATED})
         } catch (error) {
             next(error)
         }

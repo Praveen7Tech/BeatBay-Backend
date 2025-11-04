@@ -1,5 +1,4 @@
-// src/usecases/artist/artistVerifyOTP.useCase.ts
-import { InvalidOtpError, OtpExpiredError } from "../../common/errors/user.auth.error";
+
 import { IUserRepository } from "../../domain/repositories/user.repository";
 import { ICacheService } from "../../domain/services/cache.service";
 import { IPasswordService } from "../../domain/services/password.service";
@@ -7,6 +6,7 @@ import { VerifyOtpRequestDTO } from "../dto/auth/request.dto";
 import { IArtistRepository } from "../../domain/repositories/artist.repository";
 import { Artist } from "../../domain/entities/arist.entity"; 
 import { ITransactionManager } from "../../domain/services/transaction.service";
+import { InvalidOtpError, OtpExpiredError } from "../../common/errors/common/common.errors";
 
 export class ArtistVerifyOTPuseCase {
     constructor(

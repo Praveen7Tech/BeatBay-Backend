@@ -1,3 +1,4 @@
+import { BadRequestError } from "../../common/errors/common/common.errors";
 import { IUserRepository } from "../../domain/repositories/user.repository";
 import { IGoogleAuthService } from "../../domain/services/google-auth.service";
 import { ITokenService } from "../../domain/services/token.service";
@@ -16,7 +17,7 @@ export class GoogleLoginUsecase {
     const { name, email, picture, sub } = payload;
 
     if (!email) {
-      throw new Error("Google account did not return an email");
+      throw new BadRequestError("Google account did not return an email");
     }
 
     let user = await this.userRepository.findByEmail(email);

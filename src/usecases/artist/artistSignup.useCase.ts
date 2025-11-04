@@ -1,5 +1,5 @@
 // src/usecases/artist/artistSignup.useCase.ts
-import { UserAlreadyExistsError } from "../../common/errors/user.auth.error";
+import { AlreadyExistError } from "../../common/errors/common/common.errors";
 import { IUserRepository } from "../../domain/repositories/user.repository";
 import { ICacheService } from "../../domain/services/cache.service";
 import { IEmailService } from "../../domain/services/mail.service";
@@ -20,7 +20,7 @@ export class ArtistSignupUsecase {
         // Correct: Check for existing USER by email, not artist.
         const existingUser = await this.userRepository.findByEmail(request.email);
         if (existingUser) {
-            throw new UserAlreadyExistsError();
+            throw new AlreadyExistError("Artist already exist in this email.!");
         }
 
         const otp = await this.otpService.generate();

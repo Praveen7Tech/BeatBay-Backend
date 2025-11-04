@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AuthRequest } from "../../../middleware/authMiddleware";
-import { StatusCode } from "../../../../common/status.enum";
-import { MESSAGES } from "../../../../common/constants.message";
+import { StatusCode } from "../../../../common/constants/status.enum";
+import { MESSAGES } from "../../../../common/constants/constants.message";
 import { ArtistEditProfileUsecase } from "../../../../usecases/artist/artistEditProfile.useCase";
 import { EditProfileRequestDTO } from "../../../../usecases/dto/profile/profile.dto";
 import { EditProfileSchema } from "../../validators/profile/profile.validators";
@@ -26,7 +26,7 @@ export class ArtistController {
             const dto : EditProfileRequestDTO = EditProfileSchema.parse({...req.body, profileImage: profileImageUrl}) 
             const result = await this.artistEditProfileUsecase.execute(userId,dto)
 
-            return res.status(StatusCode.OK).json({user:result.user,message:MESSAGES.ARTIST_UPDATED})            
+            return res.status(StatusCode.OK).json({user:result.user,message:MESSAGES.PROFILE_UPDATED})            
         } catch (error) {
             next(error)
         }

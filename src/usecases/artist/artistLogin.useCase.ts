@@ -1,10 +1,11 @@
-import { BadRequestError, UserNotFoundError } from "../../common/errors/user.auth.error"
+
 import { IUserRepository } from "../../domain/repositories/user.repository"
 import { IPasswordService } from "../../domain/services/password.service"
 import { ITokenService } from "../../domain/services/token.service"
 import { LoginRequestDTO } from "../dto/auth/request.dto"
 import { LoginResponseDTO } from "../dto/auth/response.dto"
 import { ROLES } from "../core/types/roles"
+import { BadRequestError, NotFoundError } from "../../common/errors/common/common.errors"
 
 export class ArtistLoginUsecase {
     constructor(
@@ -17,16 +18,16 @@ export class ArtistLoginUsecase {
         
         const user = await this.userRepository.findByEmail(request.email)
         if(!user || user.role !== ROLES.ARTIST){
-            throw new UserNotFoundError()
+            throw new NotFoundError("Artist not found.!")
         }
         
         if(!user.password){
-            throw new Error("Account uses Google login. Please continue with Google.")
+            throw new NotFoundError("Account uses Google login. Please continue with Google.")
         }
         const password = await this.passwordService.compare(request.password, user.password)
         
         if(!password){
-            throw new BadRequestError()
+            throw new BadRequestError("Invalid credentials")
         }
 
         const payload = {id: user._id, email: user.email}

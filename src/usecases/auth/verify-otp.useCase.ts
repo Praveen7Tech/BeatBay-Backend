@@ -1,8 +1,8 @@
 import { IUserRepository } from '../../domain/repositories/user.repository';
 import { ICacheService } from '../../domain/services/cache.service';
-import { OtpExpiredError, InvalidOtpError } from "../../common/errors/user.auth.error"
 import { PasswordService } from '../../infrastructure/services/password/password-service';
 import { IPasswordService } from '../../domain/services/password.service';
+import { InvalidOtpError, OtpExpiredError } from '../../common/errors/common/common.errors';
 
 interface VerifyOtpRequest {
   email: string;

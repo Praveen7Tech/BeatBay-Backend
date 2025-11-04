@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { SignupUsecase } from '../../../usecases/auth/signup.useCase';
 import { VerifyOtpUsecase } from '../../../usecases/auth/verify-otp.useCase';
-import { StatusCode } from '../../../common/status.enum';
+import { StatusCode } from '../../../common/constants/status.enum';
 import logger from '../../../infrastructure/utils/logger/logger';
 import { ResendOtpUseCase } from '../../../usecases/auth/resend-otp.useCase';
 import { LoginUsecase } from '../../../usecases/auth/login.useCase';
-import { MESSAGES } from '../../../common/constants.message';
+import { MESSAGES } from '../../../common/constants/constants.message';
 import { AuthStatusUsecase } from '../../../usecases/auth/authStatus.useCase';
 import { COOKIE_OPTIONS } from '../../../common/cookie/cookieOptions';
 import { VerifyEmailUsecase } from '../../../usecases/auth/verify-email.useCase';
@@ -21,7 +21,6 @@ import {
   VerifyOtpRequestDTO,
   ResendOtpRequestDTO,
   LoginRequestDTO,
-  AuthStatusRequestDTO,
   VerifyEmailRequestDTO,
   ResetPasswordDTO,
   GoogleLoginRequestDTO
@@ -32,7 +31,6 @@ import {
   VerifyOtpRequestSchema,
   ResendOtpRequestSchema,
   LoginRequestSchema,
-  AuthStatusRequestSchema,
   VerifyEmailRequestSchema,
   ResetPassRequestSchema,
   GoogleLoginRequestSchema
@@ -56,7 +54,7 @@ export class AuthController {
       const dto: SignupRequestDTO= SignupRequestSchema.parse(req.body)
 
       const result = await this.signupUsecase.execute(dto);
-      return res.status(201).json({ message: 'OTP sent', otp: result.otp });
+      return res.status(201).json({message:MESSAGES.OTP_SEND});
     } catch (error) {
       next(error); 
     }
@@ -68,7 +66,7 @@ export class AuthController {
       //if (!req.body.email || !req.body.otp) throw new Error('Email and OTP required');
 
       await this.verifyOtpUsecase.execute(dto);
-      return res.status(200).json({ message: 'OTP verified and user created' });
+      return res.status(200).json({message:MESSAGES.OTP_VERIFIED});
     } catch (error) {
       next(error);
     }
@@ -79,7 +77,7 @@ export class AuthController {
       const dto: ResendOtpRequestDTO= ResendOtpRequestSchema.parse(req.body)
       const result = await this.resendOtpUsecase.execute(dto)
       
-      return res.status(StatusCode.OK).json({message: "Otp Resend suucessfully"})
+      return res.status(StatusCode.OK).json({message:MESSAGES.OTP_RESEND_SUCCESS})
     } catch (error) {
       next(error)
     }
@@ -95,7 +93,7 @@ export class AuthController {
       // send access and refresh token
       res.cookie('refreshToken', result.refreshToken, COOKIE_OPTIONS);
 
-      return res.status(StatusCode.OK).json({message: "user verification complete.", accessToken:result.accessToken, user: result.user})
+      return res.status(StatusCode.OK).json({message: MESSAGES.VERIFICATION_COMPLETE, accessToken:result.accessToken, user: result.user})
     } catch (error) {
       next(error)
     }
@@ -125,7 +123,7 @@ export class AuthController {
   async logout(req: Request, res: Response, next:NextFunction) {
       try {
         res.clearCookie('refreshToken', COOKIE_OPTIONS);
-        return res.status(200).json({ message: 'Logged out successfully' });
+      return res.status(200).json({message:MESSAGES.LOGOUT_SUCCESSFUL});
       } catch (error) {
         next(error)
       }
@@ -135,7 +133,7 @@ export class AuthController {
     try {
       const dto : VerifyEmailRequestDTO = VerifyEmailRequestSchema.parse(req.body)
       await this.verifyEmailUsecase.execute(dto)
-      return res.status(StatusCode.CREATED).json({message: "password reset link send to email suucessfully."})
+      return res.status(StatusCode.CREATED).json({message:MESSAGES.PASSWORD_RESET_LINK})
     } catch (error) {
       next(error)
     }
@@ -148,7 +146,7 @@ export class AuthController {
       const dto : ResetPasswordDTO = ResetPassRequestSchema.parse({token,password})
 
       await this.resetPasswordUsecase.execute(dto)
-      return res.status(StatusCode.OK).json({message: "new password updated successfully"})
+      return res.status(StatusCode.OK).json({message:MESSAGES.REST_PASSWORD_SUCCESS})
     } catch (error) {
       next(error)
     }
@@ -160,7 +158,7 @@ export class AuthController {
        const response = await this.googleLoginUsecase.execute(dto)
     
        res.cookie("refreshToken", response.refreshToken, COOKIE_OPTIONS)
-       return res.status(StatusCode.CREATED).json({ message:"google login successfull",accessToken:response.accessToken, user: response.user})
+       return res.status(StatusCode.CREATED).json({ message:MESSAGES.GOOGLE_LOGIN,accessToken:response.accessToken, user: response.user})
     } catch (error) {
       next(error)
     }

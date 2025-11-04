@@ -1,5 +1,5 @@
-import { MESSAGES } from "../../common/constants.message";
-import { StatusCode } from "../../common/status.enum";
+import { MESSAGES } from "../../common/constants/constants.message";
+import { StatusCode } from "../../common/constants/status.enum";
 import { ICacheService } from "../../domain/services/cache.service";
 import { IEmailService } from "../../domain/services/mail.service";
 import { IOtpService } from "../../domain/services/otp.service";
@@ -30,6 +30,7 @@ export class ResendOtpUseCase {
             otpMail.text,
             otpMail.html
         )
+        console.log("resend otp ", otp)
         await this.cacheService.update(cacheKey,{otp, otpExpiredAt})
 
         return {otp}

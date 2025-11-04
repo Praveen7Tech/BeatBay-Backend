@@ -1,3 +1,4 @@
+import { BadRequestError } from "../../common/errors/common/common.errors";
 import { User } from "../../domain/entities/user.entity"
 import { IUserRepository } from "../../domain/repositories/user.repository"
 import { ITokenService } from "../../domain/services/token.service"
@@ -16,12 +17,12 @@ export class AuthStatusUsecase {
 
     const payload: any = await this.tokenService.verifyRefreshToken(request.refreshToken);
     if (!payload) {
-      throw new Error("Invalid refresh token");
+      throw new BadRequestError("Invalid refresh token");
     }
 
     const user = await this.userRepository.findById(payload.id);
     if (!user) {
-      throw new Error("User not found using refresh token");
+      throw new BadRequestError("User not found using refresh token");
     }
 
     const payloadTkn = { id: user._id, email: user.email };

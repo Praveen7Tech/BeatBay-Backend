@@ -1,6 +1,6 @@
-import { MESSAGES } from "../../common/constants.message"
-import { BadRequestError, UserNotFoundError } from "../../common/errors/user.auth.error"
-import { StatusCode } from "../../common/status.enum"
+import { MESSAGES } from "../../common/constants/constants.message"
+import { BadRequestError, NotFoundError } from "../../common/errors/common/common.errors"
+import { StatusCode } from "../../common/constants/status.enum"
 import { User } from "../../domain/entities/user.entity"
 import { IUserRepository } from "../../domain/repositories/user.repository"
 import { IPasswordService } from "../../domain/services/password.service"
@@ -21,16 +21,16 @@ export class LoginUsecase {
         
         const user = await this.userRepository.findByEmail(request.email)
         if(!user || user.role !== ROLES.USER){
-            throw new UserNotFoundError()
+            throw new NotFoundError("User not found.!")
         }
         
         if(!user.password){
-            throw new Error("Account uses Google login. Please continue with Google.")
+            throw new BadRequestError("Account uses Google login. Please continue with Google.")
         }
         const password = await this.passwordService.compare(request.password, user.password)
         
         if(!password){
-            throw new BadRequestError()
+            throw new BadRequestError("Invalid user credentials.!")
         }
 
         const payload = {id: user._id, email: user.email}

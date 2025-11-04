@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { DomainError } from '../../common/errors/user.auth.error'; 
-import { StatusCode } from '../../common/status.enum'; 
+import { DomainError } from '../../common/errors/base/domain.error'; 
+import { StatusCode } from '../../common/constants/status.enum'; 
 import { ZodError } from 'zod';
 
 export const errorHandlerMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {

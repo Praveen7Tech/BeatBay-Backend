@@ -1,4 +1,5 @@
-import { UserNotFoundError } from "../../common/errors/user.auth.error";
+
+import { NotFoundError } from "../../common/errors/common/common.errors";
 import { IUserRepository } from "../../domain/repositories/user.repository";
 import { ICacheService } from "../../domain/services/cache.service";
 import { IEmailService } from "../../domain/services/mail.service";
@@ -18,7 +19,7 @@ export class VerifyEmailUsecase {
     async execute(request: VerifyEmailRequestDTO): Promise<void> {
         
         const user =  await this.userRepository.findByEmail(request.email)
-        if(!user) throw new UserNotFoundError()
+        if(!user) throw new NotFoundError("User not found")
         
         const token = await this.tokenService.generateResetToken(user.email)
         

@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { GoogleLoginRequestDTO,  LoginRequestDTO, ResendOtpRequestDTO, SignupRequestDTO,   VerifyOtpRequestDTO } from "../../../../usecases/dto/auth/request.dto";
 import { ArtistSignupUsecase } from "../../../../usecases/artist/artistSignup.useCase"; 
-import { StatusCode } from "../../../../common/status.enum";
-import { MESSAGES } from "../../../../common/constants.message";
+import { StatusCode } from "../../../../common/constants/status.enum";
+import { MESSAGES } from "../../../../common/constants/constants.message";
 import { ArtistVerifyOTPuseCase } from "../../../../usecases/artist/artistVerifyOTP.useCase";
 import { ArtistResendOtpUseCase } from "../../../../usecases/artist/artistResendOTP.useCase";
 import { COOKIE_OPTIONS } from "../../../../common/cookie/cookieOptions";
@@ -36,7 +36,7 @@ export class artistAuthController {
             const dto: VerifyOtpRequestDTO = VerifyOtpRequestSchema.parse(req.body)
     
             await this.artistVerifyOTPusecase.execute(dto);
-            return res.status(200).json({ message: 'OTP verified and artist created suucessfully..' });
+            return res.status(200).json(MESSAGES.OTP_VERIFIED);
         } catch (error) {
             next(error);
        }
@@ -47,7 +47,7 @@ export class artistAuthController {
             const dto: ResendOtpRequestDTO= ResendOtpRequestSchema.parse(req.body)
             await this.artistResendOtpUsecase.execute(dto)
           
-            return res.status(StatusCode.OK).json({message: "Otp Resend suucessfully"})
+            return res.status(StatusCode.OK).json(MESSAGES.OTP_RESEND_SUCCESS)
         } catch (error) {
             next(error)
         }
@@ -62,7 +62,7 @@ export class artistAuthController {
             // send access and refresh token
             res.cookie('refreshToken', result.refreshToken, COOKIE_OPTIONS);
 
-            return res.status(StatusCode.OK).json({message: "user verification complete.", accessToken:result.accessToken, user: result.user})            
+            return res.status(StatusCode.OK).json({message: MESSAGES.VERIFICATION_COMPLETE, accessToken:result.accessToken, user: result.user})            
         } catch (error) {
             next(error)
         }
@@ -71,7 +71,7 @@ export class artistAuthController {
     logOut = async(req: Request, res: Response, next:NextFunction) =>{
       try {
         res.clearCookie('refreshToken', COOKIE_OPTIONS);
-        return res.status(200).json({ message: 'Artist Logged out successfully' });
+        return res.status(200).json({message:MESSAGES.LOGIN_SUCCESSFULL});
       } catch (error) {
         next(error)
       }
@@ -84,7 +84,7 @@ export class artistAuthController {
         const response = await this.artistGoogleLoginUsecase.execute(dto)
         
         res.cookie("refreshToken", response.refreshToken, COOKIE_OPTIONS)
-        return res.status(StatusCode.CREATED).json({ message:"google login successfull",accessToken:response.accessToken, user: response.user})
+        return res.status(StatusCode.CREATED).json({ message:MESSAGES.GOOGLE_LOGIN,accessToken:response.accessToken, user: response.user})
     } catch (error) {
         next(error)
     }

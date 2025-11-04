@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
-import { StatusCode } from "../../common/status.enum";
-import { MESSAGES } from "../../common/constants.message";
+import { StatusCode } from "../../common/constants/status.enum";
+import { MESSAGES } from "../../common/constants/constants.message";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 export interface AuthRequest extends Request{

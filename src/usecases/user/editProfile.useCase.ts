@@ -1,15 +1,14 @@
-import { email } from "zod";
+
 import { User } from "../../domain/entities/user.entity";
 import { IPasswordService } from "../../domain/services/password.service";
 import { IUserRepository } from "../../domain/repositories/user.repository";
-import { ITokenService } from "../../domain/services/token.service";
 import { EditProfileRequestDTO, EditProfileResponseDTO } from "../dto/profile/profile.dto";
+import { NotFoundError } from "../../common/errors/common/common.errors";
 
 export class editProfileUsecase {
     constructor(
         private readonly passwordService: IPasswordService,
         private readonly userReposistory: IUserRepository,
-        private readonly tokenService: ITokenService
     ){}
 
     async execute(userId: string,request:EditProfileRequestDTO): Promise<EditProfileResponseDTO>{
@@ -25,7 +24,7 @@ export class editProfileUsecase {
         }
 
         const updatedUser = await this.userReposistory.update(userId,updateData)
-        if(!updatedUser) throw new Error("user not found for update")
+        if(!updatedUser) throw new NotFoundError("user not found for update")
 
 
         return {user:updatedUser}

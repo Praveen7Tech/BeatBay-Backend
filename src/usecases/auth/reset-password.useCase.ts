@@ -1,3 +1,4 @@
+import { ExpiredError } from "../../common/errors/common/common.errors";
 import { IUserRepository } from "../../domain/repositories/user.repository";
 import { ICacheService } from "../../domain/services/cache.service";
 import { IPasswordService } from "../../domain/services/password.service";
@@ -17,11 +18,11 @@ export class ResetPasswordUsecase{
         
         const userEmail = await this.tokenService.verifyResetToken(request.token)
         
-        if(!userEmail) throw new Error("this page is expired.")
+        if(!userEmail) throw new ExpiredError("this page is expired.")
 
         const cachedToken = await this.cacheService.getResetToken(userEmail)
        
-        if(!cachedToken || cachedToken !== request.token) throw new Error("this verification page has been expired..!");
+        if(!cachedToken || cachedToken !== request.token) throw new ExpiredError("this verification page has been expired..!");
 
         const hashedPassword = await this.passwordService.hash(request.password)
 

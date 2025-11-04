@@ -5,8 +5,8 @@ import { IOtpService } from '../../domain/services/otp.service';
 import { IEmailService } from '../../domain/services/mail.service';
 import { EmailFormat } from '../../infrastructure/services/email/email-format';
 import { UserAlreadyExistsError } from '../../common/errors/user.auth.error'; 
-import { SignupRequestDTO } from './dto/request.dto';
-import { SignupResponseDTO } from './dto/response.dto';
+import { SignupRequestDTO } from '../dto/auth/request.dto';
+import { SignupResponseDTO } from '../dto/auth/response.dto';
 
 
 

@@ -4,7 +4,7 @@ import { ICacheService } from "../../domain/services/cache.service";
 import { IEmailService } from "../../domain/services/mail.service";
 import { ITokenService } from "../../domain/services/token.service";
 import { passwordResetFormat } from "../../infrastructure/services/email/email-format";
-import { VerifyEmailRequestDTO } from "./dto/request.dto";
+import { VerifyEmailRequestDTO } from "../dto/auth/request.dto";
 
 
 export class VerifyEmailUsecase {

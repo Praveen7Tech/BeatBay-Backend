@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { AdminLoginUsecase } from "../../../../usecases/admin/adminLogin.useCase";
-import { LoginRequestDTO, LoginRequestSchema } from "../../../../usecases/auth/dto/request.dto";
+import { LoginRequestDTO } from "../../../../usecases/dto/auth/request.dto";
 import { COOKIE_OPTIONS } from "../../../../common/cookie/cookieOptions";
 import { StatusCode } from "../../../../common/status.enum";
+import { LoginRequestSchema } from "../../validators/auth/auth.validator";
 
 
 export class AdminAuthController {

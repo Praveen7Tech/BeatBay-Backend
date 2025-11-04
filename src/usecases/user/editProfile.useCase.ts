@@ -1,10 +1,9 @@
 import { email } from "zod";
 import { User } from "../../domain/entities/user.entity";
-import { EditProfileRequest } from "../auth/dto/request.dto";
 import { IPasswordService } from "../../domain/services/password.service";
 import { IUserRepository } from "../../domain/repositories/user.repository";
 import { ITokenService } from "../../domain/services/token.service";
-import { authStatusResponseDTO } from "../auth/dto/response.dto";
+import { EditProfileRequestDTO, EditProfileResponseDTO } from "../dto/profile/profile.dto";
 
 export class editProfileUsecase {
     constructor(
@@ -13,7 +12,7 @@ export class editProfileUsecase {
         private readonly tokenService: ITokenService
     ){}
 
-    async execute(userId: string,request:EditProfileRequest): Promise<authStatusResponseDTO>{
+    async execute(userId: string,request:EditProfileRequestDTO): Promise<EditProfileResponseDTO>{
         const {name, password, profileImage} = request
 
         const updateData : Partial<User> = {}

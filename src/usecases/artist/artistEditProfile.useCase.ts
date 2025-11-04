@@ -2,8 +2,8 @@ import { User } from "../../domain/entities/user.entity";
 import { IUserRepository } from "../../domain/repositories/user.repository";
 import { IPasswordService } from "../../domain/services/password.service";
 import { ITokenService } from "../../domain/services/token.service";
-import { EditProfileRequest } from "../auth/dto/request.dto";
-import { authStatusResponseDTO } from "../auth/dto/response.dto";
+import { AuthStatusResponseDTO } from "../dto/auth/response.dto";
+import { EditProfileRequestDTO, EditProfileResponseDTO } from "../dto/profile/profile.dto";
 
 export class ArtistEditProfileUsecase{
     constructor(
@@ -12,7 +12,7 @@ export class ArtistEditProfileUsecase{
         private readonly tokenService: ITokenService
     ){}
 
-    async execute(userId: string,request:EditProfileRequest): Promise<authStatusResponseDTO>{
+    async execute(userId: string,request:EditProfileRequestDTO): Promise<EditProfileResponseDTO>{
         const {name, password, profileImage} = request
 
         const updateData : Partial<User> = {}

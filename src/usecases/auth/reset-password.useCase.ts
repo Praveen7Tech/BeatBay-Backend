@@ -2,7 +2,7 @@ import { IUserRepository } from "../../domain/repositories/user.repository";
 import { ICacheService } from "../../domain/services/cache.service";
 import { IPasswordService } from "../../domain/services/password.service";
 import { ITokenService } from "../../domain/services/token.service";
-import { ResetPasswordDTO } from "./dto/request.dto";
+import { ResetPasswordDTO } from "../dto/auth/request.dto";
 
 
 export class ResetPasswordUsecase{

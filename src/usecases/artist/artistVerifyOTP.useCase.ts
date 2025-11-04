@@ -3,7 +3,7 @@ import { InvalidOtpError, OtpExpiredError } from "../../common/errors/user.auth.
 import { IUserRepository } from "../../domain/repositories/user.repository";
 import { ICacheService } from "../../domain/services/cache.service";
 import { IPasswordService } from "../../domain/services/password.service";
-import { VerifyOtpRequestDTO } from "../auth/dto/request.dto";
+import { VerifyOtpRequestDTO } from "../dto/auth/request.dto";
 import { IArtistRepository } from "../../domain/repositories/artist.repository";
 import { Artist } from "../../domain/entities/arist.entity"; 
 import { ITransactionManager } from "../../domain/services/transaction.service";

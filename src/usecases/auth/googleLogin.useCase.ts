@@ -2,7 +2,7 @@ import { IUserRepository } from "../../domain/repositories/user.repository";
 import { IGoogleAuthService } from "../../domain/services/google-auth.service";
 import { ITokenService } from "../../domain/services/token.service";
 import { PasswordService } from "../../infrastructure/services/password/password-service";
-import { GoogleLoginRequestDTO } from "./dto/request.dto";
+import { GoogleLoginRequestDTO } from "../dto/auth/request.dto";
 
 export class GoogleLoginUsecase {
   constructor(

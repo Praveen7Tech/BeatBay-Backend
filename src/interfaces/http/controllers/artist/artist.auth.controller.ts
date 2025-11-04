@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { GoogleLoginRequestDTO, GoogleLoginRequestSchema, LoginRequestDTO, LoginRequestSchema, ResendOtpRequestDTO, ResendOtpRequestSchema, SignupRequestDTO,  SignupRequestSchema, VerifyOtpRequestDTO, VerifyOtpRequestSchema } from "../../../../usecases/auth/dto/request.dto";
+import { GoogleLoginRequestDTO,  LoginRequestDTO, ResendOtpRequestDTO, SignupRequestDTO,   VerifyOtpRequestDTO } from "../../../../usecases/dto/auth/request.dto";
 import { ArtistSignupUsecase } from "../../../../usecases/artist/artistSignup.useCase"; 
 import { StatusCode } from "../../../../common/status.enum";
 import { MESSAGES } from "../../../../common/constants.message";
@@ -8,6 +8,7 @@ import { ArtistResendOtpUseCase } from "../../../../usecases/artist/artistResend
 import { COOKIE_OPTIONS } from "../../../../common/cookie/cookieOptions";
 import { ArtistLoginUsecase } from "../../../../usecases/artist/artistLogin.useCase";
 import { ArtistGoogleLoginUseCase } from "../../../../usecases/artist/artistGoogleSignup.useCase";
+import { GoogleLoginRequestSchema, LoginRequestSchema, ResendOtpRequestSchema, SignupRequestSchema, VerifyOtpRequestSchema } from "../../validators/auth/auth.validator";
 
 
 export class artistAuthController {

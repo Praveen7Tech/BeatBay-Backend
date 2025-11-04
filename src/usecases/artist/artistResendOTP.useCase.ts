@@ -2,8 +2,8 @@ import { ICacheService } from "../../domain/services/cache.service"
 import { IEmailService } from "../../domain/services/mail.service"
 import { IOtpService } from "../../domain/services/otp.service"
 import { EmailFormat } from "../../infrastructure/services/email/email-format"
-import { ResendOtpRequestDTO } from "../auth/dto/request.dto"
-import { ResendOtpResponseDTO } from "../auth/dto/response.dto"
+import { ResendOtpRequestDTO } from "../dto/auth/request.dto"
+import { ResendOtpResponseDTO } from "../dto/auth/response.dto"
 
 export class ArtistResendOtpUseCase {
     constructor(

@@ -8,7 +8,6 @@ import { LoginUsecase } from '../../../usecases/auth/login.useCase';
 import { MESSAGES } from '../../../common/constants.message';
 import { AuthStatusUsecase } from '../../../usecases/auth/authStatus.useCase';
 import { COOKIE_OPTIONS } from '../../../common/cookie/cookieOptions';
-import { AuthStatusRequestDTO, AuthStatusRequestSchema, GoogleLoginRequestDTO, GoogleLoginRequestSchema, LoginRequestDTO, LoginRequestSchema, ResendOtpRequestDTO, ResendOtpRequestSchema, ResetPassRequestSchema, ResetPasswordDTO, SignupRequestDTO, SignupRequestSchema, VerifyEmailRequestDTO, VerifyEmailRequestSchema, VerifyOtpRequestDTO, VerifyOtpRequestSchema } from '../../../usecases/auth/dto/request.dto';
 import { VerifyEmailUsecase } from '../../../usecases/auth/verify-email.useCase';
 import { ResetPasswordUsecase } from '../../../usecases/auth/reset-password.useCase';
 import { GoogleLoginUsecase } from '../../../usecases/auth/googleLogin.useCase';
@@ -16,6 +15,28 @@ import { GoogleLoginUsecase } from '../../../usecases/auth/googleLogin.useCase';
 import { OAuth2Client } from 'google-auth-library'
 const client_id = process.env.GOOGLE_CLIENT_ID!;
 const client = new OAuth2Client(client_id);
+
+import {
+  SignupRequestDTO,
+  VerifyOtpRequestDTO,
+  ResendOtpRequestDTO,
+  LoginRequestDTO,
+  AuthStatusRequestDTO,
+  VerifyEmailRequestDTO,
+  ResetPasswordDTO,
+  GoogleLoginRequestDTO
+} from "../../../usecases/dto/auth/request.dto";
+
+import {
+  SignupRequestSchema,
+  VerifyOtpRequestSchema,
+  ResendOtpRequestSchema,
+  LoginRequestSchema,
+  AuthStatusRequestSchema,
+  VerifyEmailRequestSchema,
+  ResetPassRequestSchema,
+  GoogleLoginRequestSchema
+} from "../validators/auth/auth.validator";
 
 
 export class AuthController {

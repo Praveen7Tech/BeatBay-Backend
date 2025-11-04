@@ -5,8 +5,8 @@ import { ICacheService } from "../../domain/services/cache.service";
 import { IEmailService } from "../../domain/services/mail.service";
 import { IOtpService } from "../../domain/services/otp.service";
 import { EmailFormat } from "../../infrastructure/services/email/email-format";
-import { SignupRequestDTO } from "../auth/dto/request.dto";
-import { SignupResponseDTO } from "../auth/dto/response.dto";
+import { SignupRequestDTO } from "../dto/auth/request.dto";
+import { SignupResponseDTO } from "../dto/auth/response.dto";
 
 export class ArtistSignupUsecase {
     constructor(

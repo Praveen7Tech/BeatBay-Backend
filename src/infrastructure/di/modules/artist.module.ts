@@ -11,6 +11,8 @@ import { ArtistLoginUsecase } from "../../../usecases/artist/artistLogin.useCase
 import { ArtistController } from "../../../interfaces/http/controllers/artist/artist.controller";
 import { ArtistEditProfileUsecase } from "../../../usecases/artist/artistEditProfile.useCase";
 import { ArtistGoogleLoginUseCase } from "../../../usecases/artist/artistGoogleSignup.useCase";
+import { ArtistVerifyEmailUsecase } from "../../../usecases/artist/artistVerifyEmail.useCase";
+import { ArtistResetPasswordUsecase } from "../../../usecases/artist/artistResetPassword.useCase";
 
 export const artistModule = {
 
@@ -25,6 +27,8 @@ export const artistModule = {
     artistLoginUsecase: asClass(ArtistLoginUsecase).scoped(),
     artistEditProfileUsecase: asClass(ArtistEditProfileUsecase).scoped(),
     artistGoogleLoginUsecase: asClass(ArtistGoogleLoginUseCase).scoped(),
+    artistVerifyEmailUsecase: asClass(ArtistVerifyEmailUsecase).scoped(),
+    artistResetPasswordUsecase: asClass(ArtistResetPasswordUsecase).scoped(),
 
     // controller
     artistAuthController: asClass(artistAuthController).scoped(),

@@ -18,6 +18,8 @@ export default (container: AwilixContainer): Router=> {
     router.post('/google-signup', artistAuthController.googleSignup)
 
     router.put('/edit-profile',authMiddleware, upload.single("profileImage"), artistController.editProfile)
+    router.post('/verify-email', artistController.verifyEmail)
+    router.put('/reset-password', artistController.resetPassword)
 
     return router
 }

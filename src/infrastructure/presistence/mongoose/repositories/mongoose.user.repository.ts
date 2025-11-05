@@ -22,8 +22,8 @@ export class MongooseUserRepository implements IUserRepository {
     return UserModel.findOne({ email }).lean();
   }
 
-  async update(_id: string, entity: Partial<User>): Promise<User | null> {
-    return UserModel.findOneAndUpdate({ _id }, entity, { new: true }).lean();
+  async update(_id: string, entity: Partial<User>, session?: ClientSession): Promise<User | null> {
+    return UserModel.findOneAndUpdate({ _id }, entity, { new: true , session:session}).lean();
   }
 
   async findAll(): Promise<User[]> {

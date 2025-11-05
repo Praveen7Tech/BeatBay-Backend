@@ -19,7 +19,7 @@ export class AdminLoginUsecase {
         
         const user = await this.userRepository.findByEmail(request.email)
 
-        if(!user || user.role !== ROLES.ADMIN || !user.password){
+        if(!user || user.role.includes('admin') || !user.password){
             throw new NotFoundError("Admin not found.!")
         }
 

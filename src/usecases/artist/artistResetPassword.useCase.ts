@@ -10,7 +10,7 @@ export class ArtistResetPasswordUsecase{
         private readonly tokenService: ITokenService,
         private readonly cacheService: ICacheService,
         private readonly passwordService:IPasswordService,
-        private readonly userRepository: IArtistRepository
+        private readonly artistRepository: IArtistRepository
     ){}
 
     async execute(request: ResetPasswordDTO): Promise<void> {
@@ -26,7 +26,7 @@ export class ArtistResetPasswordUsecase{
 
         const hashedPassword = await this.passwordService.hash(request.password)
 
-        await this.userRepository.updatePass(userEmail, {password:hashedPassword})
+        await this.artistRepository.updatePass(userEmail, {password:hashedPassword})
         
         await this.cacheService.delete(userEmail)
     }

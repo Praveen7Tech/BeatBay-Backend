@@ -5,7 +5,7 @@ export interface User {
   password?: string | null;
   profilePicture?: string | null;
   googleId?: string| null;
-  role : 'user' | 'admin' | 'artist';
+  role : 'user' | 'admin';
   status?: boolean;
   createdAt?: Date;
   updatedAt?: Date;

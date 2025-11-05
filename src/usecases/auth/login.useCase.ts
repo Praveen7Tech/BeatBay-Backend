@@ -33,7 +33,7 @@ export class LoginUsecase {
             throw new BadRequestError("Invalid user credentials.!")
         }
 
-        const payload = {id: user._id, email: user.email}
+        const payload = {id: user._id, email: user.email, role:user.role}
         const accessToken = await this.tokenService.generateAccessToken(payload)
         const refreshToken = await this.tokenService.generateRefressToken(payload)
 

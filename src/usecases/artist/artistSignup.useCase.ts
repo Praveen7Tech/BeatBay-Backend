@@ -1,6 +1,6 @@
-// src/usecases/artist/artistSignup.useCase.ts
+
 import { AlreadyExistError } from "../../common/errors/common/common.errors";
-import { IUserRepository } from "../../domain/repositories/user.repository";
+import { IArtistRepository } from "../../domain/repositories/artist.repository";
 import { ICacheService } from "../../domain/services/cache.service";
 import { IEmailService } from "../../domain/services/mail.service";
 import { IOtpService } from "../../domain/services/otp.service";
@@ -10,15 +10,15 @@ import { SignupResponseDTO } from "../dto/auth/response.dto";
 
 export class ArtistSignupUsecase {
     constructor(
-        private readonly userRepository: IUserRepository,
+        private readonly artistRepository: IArtistRepository,
         private readonly cacheService: ICacheService,
         private readonly otpService: IOtpService,
         private readonly emailService: IEmailService
     ) {}
 
     async execute(request: SignupRequestDTO): Promise<SignupResponseDTO> {
-        // Correct: Check for existing USER by email, not artist.
-        const existingUser = await this.userRepository.findByEmail(request.email);
+
+        const existingUser = await this.artistRepository.findByEmail(request.email);
         if (existingUser) {
             throw new AlreadyExistError("Artist already exist in this email.!");
         }

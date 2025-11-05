@@ -1,5 +1,5 @@
 import { BadRequestError } from "../../common/errors/common/common.errors";
-import { IUserRepository } from "../../domain/repositories/user.repository";
+import { IArtistRepository } from "../../domain/repositories/artist.repository";
 import { IGoogleAuthService } from "../../domain/services/google-auth.service";
 import { ITokenService } from "../../domain/services/token.service";
 import { GoogleLoginRequestDTO } from "../dto/auth/request.dto"; 
@@ -7,24 +7,24 @@ import { GoogleLoginRequestDTO } from "../dto/auth/request.dto";
 export class ArtistGoogleLoginUseCase {
   constructor(
     private readonly googleAuthService: IGoogleAuthService,
-    private readonly userRepository: IUserRepository,
+    private readonly artistRepository: IArtistRepository,
     private readonly tokenService: ITokenService,
   ) {}
 
   async execute(request: GoogleLoginRequestDTO) {
-    console.log("artist 2 ")
+
     const payload = await this.googleAuthService.verifyToken(request.token);
     const { name, email, picture, sub } = payload;
 
-    if (!email) {
+    if (!email || !name) {
       throw new BadRequestError("Google account did not return an email");
     }
 
-    let user = await this.userRepository.findByEmail(email);
+    let artist = await this.artistRepository.findByEmail(email);
 
-    if (!user) {
+    if (!artist) {
         
-      user = await this.userRepository.create({
+      artist = await this.artistRepository.create({
         name ,
         email,
         password:null,
@@ -34,12 +34,12 @@ export class ArtistGoogleLoginUseCase {
       });
     }
 
-    const payloadt = { id: user._id!, email: user.email };
+    const payloadt = { id: artist._id!, email: artist.email, role:artist.role };
     const accessToken = await this.tokenService.generateAccessToken(payloadt);
     const refreshToken = await this.tokenService.generateRefressToken(payloadt);
 
     return {
-      user,
+      user:artist,
       accessToken,
       refreshToken,
     };

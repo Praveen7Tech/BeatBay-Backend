@@ -1,3 +1,4 @@
+import { Artist } from "../../../domain/entities/arist.entity";
 import { User } from "../../../domain/entities/user.entity";
 
 export interface EditProfileRequestDTO {
@@ -7,5 +8,5 @@ export interface EditProfileRequestDTO {
 }
 
 export interface EditProfileResponseDTO {
-  user: User;
+  user: User | Artist;
 }

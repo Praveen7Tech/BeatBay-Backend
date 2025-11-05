@@ -6,15 +6,26 @@ export type ArtistDocument = HydratedDocument<Artist>
 
 const artistSchema = new Schema<ArtistDocument>(
     {
-        userId:{
+        name:{
             type: String,
-            ref: "User",
             required: true,
-            unique: true
+        },
+        email:{
+            type:String, required: true, unique:true
+        },
+        password:{
+            type:String
+        },
+        googleId:{
+            type:String
+        },
+        profilePicture:{
+            typr:String
         },
         bio:{
             type: String
         },
+        role: { type: String, enum: ['user','artist'], default: 'artist' },
         albums:[{
             type: Schema.Types.ObjectId,
             ref: 'Album'
@@ -22,7 +33,10 @@ const artistSchema = new Schema<ArtistDocument>(
         songs: [{
             type: Schema.Types.ObjectId,
             ref: 'Song'
-        }]
+        }],
+        status:{
+            type:Boolean, default:true
+        }
     },
     {timestamps: true}
 );

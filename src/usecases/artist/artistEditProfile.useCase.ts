@@ -1,19 +1,19 @@
 import { NotFoundError } from "../../common/errors/common/common.errors";
-import { User } from "../../domain/entities/user.entity";
-import { IUserRepository } from "../../domain/repositories/user.repository";
+import { Artist } from "../../domain/entities/arist.entity";
+import { IArtistRepository } from "../../domain/repositories/artist.repository";
 import { IPasswordService } from "../../domain/services/password.service";
 import { EditProfileRequestDTO, EditProfileResponseDTO } from "../dto/profile/profile.dto";
 
 export class ArtistEditProfileUsecase{
     constructor(
         private readonly passwordService: IPasswordService,
-        private readonly userReposistory: IUserRepository,
+        private readonly artistRepository: IArtistRepository,
     ){}
 
     async execute(userId: string,request:EditProfileRequestDTO): Promise<EditProfileResponseDTO>{
         const {name, password, profileImage} = request
 
-        const updateData : Partial<User> = {}
+        const updateData : Partial<Artist> = {}
         if(name !== undefined) updateData.name = name;
         if(profileImage !== undefined) updateData.profilePicture = profileImage;
 
@@ -22,7 +22,7 @@ export class ArtistEditProfileUsecase{
             updateData.password = hashedPassword
         }
 
-        const updatedUser = await this.userReposistory.update(userId,updateData)
+        const updatedUser = await this.artistRepository.update(userId,updateData)
         if(!updatedUser) throw new NotFoundError("Artist not found for edit")
 
         return {user:updatedUser}

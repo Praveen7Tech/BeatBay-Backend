@@ -8,10 +8,10 @@ import { UserModel } from "../models/user.model";
 export class MongooseArtistRepository implements IArtistRepository {
     constructor(){}
 
-    async create(entity: Artist, session?: ClientSession): Promise<Artist> {
+    async create(entity: Artist): Promise<Artist> {
         const artist = new ArtistModel(entity);
    
-        const createdArtist = await artist.save({session});
+        const createdArtist = await artist.save();
         return createdArtist.toObject();     
     }
     
@@ -25,8 +25,8 @@ export class MongooseArtistRepository implements IArtistRepository {
       }
     
       
-      async update(email: string, entity: Partial<Artist>, session?: ClientSession): Promise<Artist | null> {
-        return ArtistModel.findOneAndUpdate({ email }, entity, { new: true, session: session }).lean();
+      async update(_id: string, entity: Partial<Artist>): Promise<Artist | null> {
+        return ArtistModel.findOneAndUpdate({ _id }, entity, { new: true }).lean();
       }
     
       async findAll(): Promise<Artist[]> {
@@ -37,8 +37,8 @@ export class MongooseArtistRepository implements IArtistRepository {
         throw new Error('Method not implemented.');
       }
 
-      async findByEmail(email: string): Promise<User | null> {
-        return UserModel.findOne({ email }).lean();
+      async findByEmail(email: string): Promise<Artist | null> {
+        return ArtistModel.findOne({ email }).lean();
       }
 
        async updatePass(email: string, entity: Partial<User>): Promise<User | null> {

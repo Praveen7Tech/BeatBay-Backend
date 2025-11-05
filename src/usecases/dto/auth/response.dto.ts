@@ -1,3 +1,4 @@
+import { Artist } from "../../../domain/entities/arist.entity";
 import { User } from "../../../domain/entities/user.entity";
 
 export interface SignupResponseDTO {
@@ -9,13 +10,13 @@ export interface ResendOtpResponseDTO {
 }
 
 export interface LoginResponseDTO {
-  user: User;
+  user: User | Artist;
   accessToken: string;
   refreshToken: string;
 }
 
 export interface AuthStatusResponseDTO {
-  user: User;
+  user: User | Artist;
   accessToken?: string;
   refreshToken?: string;
 }

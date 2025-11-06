@@ -16,12 +16,13 @@ export class ArtistVerifyEmailUsecase {
 
     async execute(request: VerifyEmailRequestDTO): Promise<void> {
             
-        const user =  await this.artistRepository.findByEmail(request.email)
-        if(!user) throw new NotFoundError("Artist not found")
+        const artist =  await this.artistRepository.findByEmail(request.email)
+        if(!artist || !artist._id) throw new NotFoundError("Artist not found")
+        console.log("artist", artist)
+        const artistId :string = artist._id?.toString()    
+        const token = await this.tokenService.generateResetToken(artistId)
             
-        const token = await this.tokenService.generateResetToken(user.email)
-            
-        await this.cacheService.storeResetToken(user.email,token,10*60)
+        await this.cacheService.storeResetToken(artistId,token,10*60)
             
         const restLink = `http://localhost:5173/artist-reset-password?token=${token}`
         const restMail = passwordResetFormat.link(restLink)

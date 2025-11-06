@@ -26,11 +26,5 @@ export class MongooseUserRepository implements IUserRepository {
     return UserModel.findOneAndUpdate({ _id }, entity, { new: true }).lean();
   }
 
-  async findAll(): Promise<User[]> {
-     throw new Error('Method not implemented.');
-  }
 
-  async delete(id: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
-  }
 }

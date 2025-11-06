@@ -15,18 +15,19 @@ export class ArtistResetPasswordUsecase{
 
     async execute(request: ResetPasswordDTO): Promise<void> {
         
-        const userEmail = await this.tokenService.verifyResetToken(request.token)
+        const artistId = await this.tokenService.verifyResetToken(request.token)
         
-        if(!userEmail) throw new ExpiredError("this page is expired.")
+        if(!artistId) throw new ExpiredError("this page is expired.")
 
-        const cachedToken = await this.cacheService.getResetToken(userEmail)
+        const cachedToken = await this.cacheService.getResetToken(artistId)
        
         if(!cachedToken || cachedToken !== request.token) throw new ExpiredError("this verification page has been expired..!");
 
         const hashedPassword = await this.passwordService.hash(request.password)
 
-        await this.artistRepository.updatePass(userEmail, {password:hashedPassword})
+        //await this.artistRepository.update(artistId, {password:hashedPassword})
+        await this.artistRepository.update(artistId, {password:hashedPassword})
         
-        await this.cacheService.delete(userEmail)
+        await this.cacheService.delete(artistId)
     }
 }

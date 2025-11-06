@@ -14,7 +14,6 @@ export class ArtistResetPasswordUsecase{
     ){}
 
     async execute(request: ResetPasswordDTO): Promise<void> {
-        console.log("2")
         
         const userEmail = await this.tokenService.verifyResetToken(request.token)
         

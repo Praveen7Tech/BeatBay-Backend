@@ -23,7 +23,6 @@ export class AdminLoginUsecase {
             throw new NotFoundError("Admin not found.!")
         }
 
-        console.log("admin", admin)
         const passwordMatch = await this.passwordService.compare(request.password, admin.password)
         if(!passwordMatch){
             throw new BadRequestError("invalid admin credentials.!")

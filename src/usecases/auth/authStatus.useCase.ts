@@ -21,7 +21,6 @@ export class AuthStatusUsecase {
     if (!payload) {
       throw new BadRequestError("Invalid refresh token");
     }
-    console.log("payload ",payload)
 
     let user;
     if(payload.role === "user"){

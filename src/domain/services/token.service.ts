@@ -4,6 +4,6 @@ export interface ITokenService {
     generateRefressToken(payload: object): Promise<string>,
     verifyAccessToken(token: string): any,
     verifyRefreshToken(token: string): any,
-    generateResetToken(token:string): Promise<string>
+    generateResetToken(id:string): Promise<string>
     verifyResetToken(token: string): Promise<string | null>
 }

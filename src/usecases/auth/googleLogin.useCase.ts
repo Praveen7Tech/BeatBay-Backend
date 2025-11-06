@@ -16,8 +16,6 @@ export class GoogleLoginUsecase {
     const payload = await this.googleAuthService.verifyToken(request.token);
     const { name, email, picture, sub } = payload;
 
-    console.log("sub ", sub, payload)
-
     if (!email) {
       throw new BadRequestError("Google account did not return an email");
     }

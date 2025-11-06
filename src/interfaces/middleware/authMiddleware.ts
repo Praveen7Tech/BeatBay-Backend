@@ -11,7 +11,6 @@ export interface AuthRequest extends Request{
 export const authMiddleware: RequestHandler = (req: AuthRequest, res: Response, next: NextFunction) => {
   
   const authHeader = req.headers["authorization"];
-  console.log("tok ", authHeader) 
 
   if (!authHeader) {
     return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });
@@ -21,7 +20,7 @@ export const authMiddleware: RequestHandler = (req: AuthRequest, res: Response, 
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_TOKEN_SECRET as string) as JwtPayload
-    console.log("verify complete ✅", decoded);
+    console.log("token verify complete ✅");
 
     req.user = {id : decoded.id, email: decoded.email}
     next();

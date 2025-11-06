@@ -78,7 +78,6 @@ export class artistAuthController {
    }
    
     googleSignup = async(req:Request, res:Response, next: NextFunction)=>{
-        console.log("artist 1 ")
         try {
         const dto : GoogleLoginRequestDTO = GoogleLoginRequestSchema.parse(req.body)
         const response = await this.artistGoogleLoginUsecase.execute(dto)

@@ -34,7 +34,7 @@ export class SignupUsecase {
     const otpMail = EmailFormat.otp(otp);
     await this.emailService.sendMail(request.email, otpMail.subject, otpMail.text, otpMail.html);
     
-    console.log("otp ",otp)
+    console.log("user otp ",otp)
     return { otp };
   }
 }

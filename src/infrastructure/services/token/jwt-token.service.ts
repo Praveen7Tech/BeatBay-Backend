@@ -34,14 +34,14 @@ export class JwtTokenService implements ITokenService {
         }
     }
 
-    async generateResetToken(email: string): Promise<string>{
-        return  jwt.sign({email}, RESET_TOKEN_SECRET, {expiresIn: "15m"})
+    async generateResetToken(id: string): Promise<string>{
+        return  jwt.sign({id}, RESET_TOKEN_SECRET, {expiresIn: "15m"})
     }
 
     async verifyResetToken(token: string): Promise<string | null> {
         try {
-            const decoded = jwt.verify(token, RESET_TOKEN_SECRET) as {email: string}
-            return decoded.email
+            const decoded = jwt.verify(token, RESET_TOKEN_SECRET) as {id: string}
+            return decoded.id
         } catch (err) {
             return null
         }

@@ -55,9 +55,8 @@ export class ArtistController {
 
         const dto : ResetPasswordDTO = ResetPassRequestSchema.parse({token,password})
 
-        console.log("1")
         await this.artistResetPasswordUsecase.execute(dto)
-        console.log("11")
+        
         return res.status(StatusCode.OK).json({message:MESSAGES.REST_PASSWORD_SUCCESS})
         } catch (error) {
         next(error)

@@ -19,11 +19,14 @@ export class VerifyEmailUsecase {
     async execute(request: VerifyEmailRequestDTO): Promise<void> {
         
         const user =  await this.userRepository.findByEmail(request.email)
-        if(!user) throw new NotFoundError("User not found")
         
-        const token = await this.tokenService.generateResetToken(user.email)
+        if(!user || !user._id) throw new NotFoundError("User not found")
         
-        await this.cacheService.storeResetToken(user.email,token,10*60)
+        const userIdString: string = user._id.toString()  
+        
+        const token = await this.tokenService.generateResetToken(userIdString)
+        
+        await this.cacheService.storeResetToken(userIdString,token,10*60)
         
         const restLink = `http://localhost:5173/reset-password?token=${token}`
         const restMail = passwordResetFormat.link(restLink)

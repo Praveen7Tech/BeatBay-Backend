@@ -26,7 +26,9 @@ export class AuthStatusUsecase {
     let user;
     if(payload.role === "user"){
       user = await this.userRepository.findById(payload.id);
-    }else{
+    }else if( payload.role === 'admin'){
+      user = await this.userRepository.findById(payload.id);
+    }else if(payload.role === 'artist'){
       user = await this.artistRepository.findById(payload.id)
     }
     
@@ -34,7 +36,7 @@ export class AuthStatusUsecase {
       throw new BadRequestError("User not found using refresh token");
     }
 
-    const payloadTkn = { id: user._id, email: user.email };
+    const payloadTkn = { id: user._id, email: user.email, role:user.role };
     const newAccessToken = await this.tokenService.generateAccessToken(payloadTkn);
     const newRefreshToken = await this.tokenService.generateRefressToken(payloadTkn)
 

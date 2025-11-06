@@ -17,21 +17,22 @@ export class AdminLoginUsecase {
 
     async execute(request: LoginRequestDTO): Promise<LoginResponseDTO> {
         
-        const user = await this.userRepository.findByEmail(request.email)
+        const admin = await this.userRepository.findByEmail(request.email)
 
-        if(!user || !user.password){
+        if(!admin || !admin.password || admin.role !== 'admin'){
             throw new NotFoundError("Admin not found.!")
         }
 
-        const passwordMatch = await this.passwordService.compare(request.password, user.password)
+        console.log("admin", admin)
+        const passwordMatch = await this.passwordService.compare(request.password, admin.password)
         if(!passwordMatch){
             throw new BadRequestError("invalid admin credentials.!")
         }
 
-        const payload = {id: user._id, email: user.email, role: user.role}
+        const payload = {id: admin._id, email: admin.email, role: admin.role}
         const accessToken = await this.tokenService.generateAccessToken(payload)
         const refreshToken = await this.tokenService.generateRefressToken(payload)
 
-        return {user, accessToken, refreshToken}
+        return {user:admin, accessToken, refreshToken}
     }
 }

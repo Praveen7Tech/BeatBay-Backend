@@ -18,7 +18,7 @@ export class ArtistVerifyEmailUsecase {
             
         const artist =  await this.artistRepository.findByEmail(request.email)
         if(!artist || !artist._id) throw new NotFoundError("Artist not found")
-        console.log("artist", artist)
+            
         const artistId :string = artist._id?.toString()    
         const token = await this.tokenService.generateResetToken(artistId)
             

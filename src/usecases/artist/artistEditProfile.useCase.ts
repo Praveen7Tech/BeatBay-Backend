@@ -23,7 +23,6 @@ export class ArtistEditProfileUsecase{
             updateData.password = hashedPassword
         }
 
-        console.log("dat ", updateData)
         const updatedUser = await this.artistRepository.update(userId,updateData)
         if(!updatedUser) throw new NotFoundError("Artist not found for edit")
 

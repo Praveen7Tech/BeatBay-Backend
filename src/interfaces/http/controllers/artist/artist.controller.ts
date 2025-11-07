@@ -29,7 +29,6 @@ export class ArtistController {
                 profileImageUrl = `${req.file.filename}`
             }
 
-            console.log("conteroller", req.body)
             const dto : EditProfileRequestDTO = EditProfileSchema.parse({...req.body, profileImage: profileImageUrl}) 
             const result = await this.artistEditProfileUsecase.execute(userId,dto)
 

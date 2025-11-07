@@ -26,7 +26,7 @@ export class ArtistVerifyOTPuseCase {
         const passwordHash = await this.passwordService.hash(password);
 
         await this.artistRepository.create({
-            name:name,email:email,password:passwordHash,googleId:null,role:"artist"
+            name:name,email:email,password:passwordHash,googleId:null,role:"artist",bio:null
         })
     
         await this.cacheService.delete(cacheKey);

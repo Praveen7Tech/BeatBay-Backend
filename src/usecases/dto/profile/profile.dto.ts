@@ -3,6 +3,7 @@ import { User } from "../../../domain/entities/user.entity";
 
 export interface EditProfileRequestDTO {
   name?: string;
+  bio?:string
   password?: string;
   profileImage?: string;
 }

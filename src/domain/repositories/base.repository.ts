@@ -1,5 +1,3 @@
-import { ClientSession } from "mongoose";
-import { User } from "../entities/user.entity";
 
 export interface IBaseRepository<T> {
     create(entity: T ): Promise<T>;

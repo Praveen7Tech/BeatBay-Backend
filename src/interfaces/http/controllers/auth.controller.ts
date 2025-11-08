@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { SignupUsecase } from '../../../usecases/auth/signup.useCase';
 import { VerifyOtpUsecase } from '../../../usecases/auth/verify-otp.useCase';
 import { StatusCode } from '../../../common/constants/status.enum';
-import logger from '../../../infrastructure/utils/logger/logger';
+import logger from '../../../infrastructure/utils/logger/DevLogger';
 import { ResendOtpUseCase } from '../../../usecases/auth/resend-otp.useCase';
 import { LoginUsecase } from '../../../usecases/auth/login.useCase';
 import { MESSAGES } from '../../../common/constants/constants.message';
@@ -14,7 +14,7 @@ import { GoogleLoginUsecase } from '../../../usecases/auth/googleLogin.useCase';
 
 import { OAuth2Client } from 'google-auth-library'
 const client_id = process.env.GOOGLE_CLIENT_ID!;
-const client = new OAuth2Client(client_id);
+//const client = new OAuth2Client(client_id);
 
 import {
   SignupRequestDTO,

@@ -1,4 +1,3 @@
-import { link } from "fs"
 
 export const EmailFormat = {
     otp: (otp: string) => ({

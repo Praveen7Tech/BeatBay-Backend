@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 import { ITokenService } from "../../../domain/services/token.service";
 import  jwt  from "jsonwebtoken";
+import logger from '../../utils/logger/logger';
 
 const ACCESS_TOKEN_SECRET = process.env.JWT_TOKEN_SECRET!
 const REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_SECRET!
@@ -21,6 +22,7 @@ export class JwtTokenService implements ITokenService {
         try {
             return jwt.verify(token, ACCESS_TOKEN_SECRET);
         } catch (err) {
+            logger.error(err)
             return null;
         }
     }
@@ -30,6 +32,7 @@ export class JwtTokenService implements ITokenService {
         try {
            return jwt.verify(token, REFRESH_TOKEN_SECRET);
         } catch (err) {
+           logger.error(err)
            return null;
         }
     }
@@ -43,6 +46,7 @@ export class JwtTokenService implements ITokenService {
             const decoded = jwt.verify(token, RESET_TOKEN_SECRET) as {id: string}
             return decoded.id
         } catch (err) {
+            logger.error(err)
             return null
         }
     }

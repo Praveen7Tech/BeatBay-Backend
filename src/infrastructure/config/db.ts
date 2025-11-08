@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv"
+import logger from "../utils/logger/logger";
 dotenv.config()
 
 const connectDB = async() => {
@@ -7,9 +8,9 @@ const connectDB = async() => {
         const mongoURL = process.env.MONGO_URL
         if(!mongoURL) throw new Error("DB URL not defined")
         await mongoose.connect(mongoURL)
-        console.log("mongo db connected successfully")
+        logger.info("mongo db connected successfully")
     } catch (error) {
-        console.error("Error in DB connection")
+        console.error("Error in DB connection", error)
         process.exit(1)
     }
 }

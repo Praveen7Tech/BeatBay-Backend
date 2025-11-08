@@ -7,6 +7,7 @@ import { EmailFormat } from '../../infrastructure/services/email/email-format';
 import { SignupRequestDTO } from '../dto/auth/request.dto';
 import { SignupResponseDTO } from '../dto/auth/response.dto';
 import { AlreadyExistError } from '../../common/errors/common/common.errors';
+import logger from '../../infrastructure/utils/logger/logger';
 
 
 
@@ -34,7 +35,7 @@ export class SignupUsecase {
     const otpMail = EmailFormat.otp(otp);
     await this.emailService.sendMail(request.email, otpMail.subject, otpMail.text, otpMail.html);
     
-    console.log("user otp ",otp)
+    logger.info(`user OTP: ${otp}`)
     return { otp };
   }
 }

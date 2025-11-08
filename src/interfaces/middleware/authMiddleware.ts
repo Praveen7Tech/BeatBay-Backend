@@ -2,6 +2,7 @@ import { Request, Response, NextFunction, RequestHandler } from "express";
 import { StatusCode } from "../../common/constants/status.enum";
 import { MESSAGES } from "../../common/constants/constants.message";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import logger from "../../infrastructure/utils/logger/logger";
 
 export interface AuthRequest extends Request{
   user?: {id: string, email: string}
@@ -20,7 +21,7 @@ export const authMiddleware: RequestHandler = (req: AuthRequest, res: Response, 
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_TOKEN_SECRET as string) as JwtPayload
-    console.log("token verify complete ✅");
+    logger.info("token verify complete ✅");
 
     req.user = {id : decoded.id, email: decoded.email}
     next();

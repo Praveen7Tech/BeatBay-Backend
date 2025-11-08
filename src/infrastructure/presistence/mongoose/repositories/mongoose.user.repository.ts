@@ -1,7 +1,6 @@
 import { IUserRepository } from '../../../../domain/repositories/user.repository';
 import { User } from '../../../../domain/entities/user.entity';
 import { UserModel } from '../models/user.model';
-import { ClientSession } from 'mongoose';
 
 export class MongooseUserRepository implements IUserRepository {
   constructor() {}

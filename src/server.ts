@@ -9,6 +9,7 @@ import { errorHandlerMiddleware } from './interfaces/middleware/errorHandler';
 import adminAuthRouterFactory from './interfaces/http/routes/admin/admin.auth.routes'
 import artistAuthRouterFactory from './interfaces/http/routes/artist/artist.auth.routes';
 import userRouterFactory from './interfaces/http/routes/user/user.routes'
+import logger from './infrastructure/utils/logger/logger';
 
 dotenv.config();
 
@@ -31,15 +32,15 @@ async function startServer() {
     app.use('/admin', adminAuthRouter)
     app.use('/artist', artistAuthRouter)
     app.use('/user', userRouter)
-    //console.log("Container resolved authController:", container.resolve('authController'))
+    //logger.log("Container resolved authController:", container.resolve('authController'))
 
     app.use(errorHandlerMiddleware)
 
     app.listen(PORT, () => {
-      console.log(`✅ Server running on http://localhost:${PORT}`);
+      logger.info(`✅ Server running on http://localhost:${PORT}`)
     });
   } catch (error) {
-    console.error('❌ Server startup failed:', error);
+    logger.error('❌ Server startup failed:', error);
     process.exit(1);
   }
 }

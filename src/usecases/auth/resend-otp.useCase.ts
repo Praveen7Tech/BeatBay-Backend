@@ -4,6 +4,7 @@ import { ICacheService } from "../../domain/services/cache.service";
 import { IEmailService } from "../../domain/services/mail.service";
 import { IOtpService } from "../../domain/services/otp.service";
 import { EmailFormat } from "../../infrastructure/services/email/email-format";
+import logger from "../../infrastructure/utils/logger/logger";
 import { ResendOtpRequestDTO } from "../dto/auth/request.dto";
 import { ResendOtpResponseDTO } from "../dto/auth/response.dto";
 
@@ -30,7 +31,7 @@ export class ResendOtpUseCase {
             otpMail.text,
             otpMail.html
         )
-        console.log("resend otp ", otp)
+        logger.info(`resend OTP: ${otp}`)
         await this.cacheService.update(cacheKey,{otp, otpExpiredAt})
 
         return {otp}

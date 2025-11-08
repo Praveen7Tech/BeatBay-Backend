@@ -5,6 +5,8 @@ export const nameValidator = z.string().min(2, "Name must be at least 2 characte
 
 export const emailValidator = z.string().email("Invalid email")
 
+export const LoginPassValidator = z.string().min(6, "Password must be at least 6 characters.")
+
 export const passwordValidator = z.string()
 .min(6, "Password must be at least 6 characters.")
 .regex(/(?=.*\d)/, "Must include at least one number")

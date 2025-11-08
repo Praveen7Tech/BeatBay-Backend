@@ -8,7 +8,7 @@ export const errorHandlerMiddleware = (err: any, req: Request, res: Response, ne
 
     if (err instanceof ZodError) {
         return res.status(StatusCode.BAD_REQUEST).json({
-            message: "Validation failed",
+            message: "Un authorized request..!",
             errors: err.issues.map((issue) => ({
                 path: issue.path.join("."),
                 message: issue.message,

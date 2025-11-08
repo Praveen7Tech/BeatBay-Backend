@@ -63,7 +63,6 @@ export class AuthController {
   async verifyOtp(req: Request, res: Response, next: NextFunction) {
     try {
       const dto: VerifyOtpRequestDTO = VerifyOtpRequestSchema.parse(req.body)
-      //if (!req.body.email || !req.body.otp) throw new Error('Email and OTP required');
 
       await this.verifyOtpUsecase.execute(dto);
       return res.status(200).json({message:MESSAGES.OTP_VERIFIED});

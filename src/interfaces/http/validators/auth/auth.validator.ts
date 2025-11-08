@@ -1,5 +1,5 @@
 import z from "zod";
-import { emailValidator, nameValidator, otpValidator, passwordValidator, tokenValidator } from "../../../../common/validator/validation.schema";
+import { emailValidator, LoginPassValidator, nameValidator, otpValidator, passwordValidator, tokenValidator } from "../../../../common/validator/validation.schema";
 
 export const SignupRequestSchema = z.object({
   name: nameValidator,
@@ -18,7 +18,7 @@ export const ResendOtpRequestSchema = z.object({
 
 export const LoginRequestSchema = z.object({
   email: emailValidator,
-  password:passwordValidator
+  password:LoginPassValidator
 });
 
 export const AuthStatusRequestSchema = z.object({

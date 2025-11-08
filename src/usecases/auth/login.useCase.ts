@@ -24,7 +24,7 @@ export class LoginUsecase {
             throw new NotFoundError("User not found.!")
         }
         
-        if(!user.password){
+        if(!user.password || !user._id){
             throw new BadRequestError("Account uses Google login. Please continue with Google.")
         }
         const password = await this.passwordService.compare(request.password, user.password)
@@ -33,7 +33,7 @@ export class LoginUsecase {
             throw new BadRequestError("Invalid user credentials.!")
         }
 
-        const payload = {id: user._id, email: user.email, role:user.role}
+        const payload = {id: user._id?.toString(), email: user.email, role:user.role}
         const accessToken = await this.tokenService.generateAccessToken(payload)
         const refreshToken = await this.tokenService.generateRefressToken(payload)
 

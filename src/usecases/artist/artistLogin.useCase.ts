@@ -20,7 +20,7 @@ export class ArtistLoginUsecase {
             throw new NotFoundError("Artist not found.!")
         }
         
-        if(!artist.password){
+        if(!artist.password || !artist._id){
             throw new NotFoundError("Account uses Google login. Please continue with Google.")
         }
         const password = await this.passwordService.compare(request.password, artist.password)
@@ -29,7 +29,7 @@ export class ArtistLoginUsecase {
             throw new BadRequestError("Invalid credentials")
         }
 
-        const payload = {id: artist._id, email: artist.email, role: artist.role}
+        const payload = {id: artist._id?.toString(), email: artist.email, role: artist.role}
         const accessToken = await this.tokenService.generateAccessToken(payload)
         const refreshToken = await this.tokenService.generateRefressToken(payload)
 

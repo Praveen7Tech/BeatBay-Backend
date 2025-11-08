@@ -1,5 +1,6 @@
 import { BadRequestError } from "../../common/errors/common/common.errors";
 import { User } from "../../domain/entities/user.entity"
+import { AuthPayload } from "../../domain/interfaces/jwt-payload.interface";
 import { IArtistRepository } from "../../domain/repositories/artist.repository";
 import { IUserRepository } from "../../domain/repositories/user.repository"
 import { ITokenService } from "../../domain/services/token.service"
@@ -17,7 +18,7 @@ export class AuthStatusUsecase {
 
   async execute(request: AuthStatusRequestDTO) : Promise<AuthStatusResponseDTO> {
 
-    const payload: any = await this.tokenService.verifyRefreshToken(request.refreshToken);
+    const payload = await this.tokenService.verifyRefreshToken(request.refreshToken);
     if (!payload) {
       throw new BadRequestError("Invalid refresh token");
     }
@@ -31,11 +32,11 @@ export class AuthStatusUsecase {
       user = await this.artistRepository.findById(payload.id)
     }
     
-    if (!user) {
+    if (!user || !user._id) {
       throw new BadRequestError("User not found using refresh token");
     }
 
-    const payloadTkn = { id: user._id, email: user.email, role:user.role };
+    const payloadTkn = { id: user._id.toString(), email: user.email, role:user.role };
     const newAccessToken = await this.tokenService.generateAccessToken(payloadTkn);
     const newRefreshToken = await this.tokenService.generateRefressToken(payloadTkn)
 

@@ -19,7 +19,7 @@ export class AdminLoginUsecase {
         
         const admin = await this.userRepository.findByEmail(request.email)
 
-        if(!admin || !admin.password || admin.role !== 'admin'){
+        if(!admin || !admin.password || admin.role !== 'admin' || !admin._id){
             throw new NotFoundError("Admin not found.!")
         }
 
@@ -28,7 +28,7 @@ export class AdminLoginUsecase {
             throw new BadRequestError("invalid admin credentials.!")
         }
 
-        const payload = {id: admin._id, email: admin.email, role: admin.role}
+        const payload = {id: admin._id?.toString(), email: admin.email, role: admin.role}
         const accessToken = await this.tokenService.generateAccessToken(payload)
         const refreshToken = await this.tokenService.generateRefressToken(payload)
 

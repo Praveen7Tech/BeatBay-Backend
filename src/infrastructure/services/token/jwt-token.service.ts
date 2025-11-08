@@ -3,13 +3,15 @@ dotenv.config()
 import { ITokenService } from "../../../domain/services/token.service";
 import  jwt  from "jsonwebtoken";
 import logger from '../../utils/logger/logger';
+import { AuthPayload  } from '../../../domain/interfaces/jwt-payload.interface';
 
 const ACCESS_TOKEN_SECRET = process.env.JWT_TOKEN_SECRET!
 const REFRESH_TOKEN_SECRET = process.env.JWT_REFRESH_SECRET!
 const RESET_TOKEN_SECRET = process.env.JWT_RESET_TOKEN_SECRET!
 
 export class JwtTokenService implements ITokenService {
-    async generateAccessToken(payload: object): Promise<string> {
+
+    async generateAccessToken(payload: AuthPayload ): Promise<string> {
         return jwt.sign(payload, ACCESS_TOKEN_SECRET, {expiresIn: "15m"})
     }
 
@@ -17,20 +19,18 @@ export class JwtTokenService implements ITokenService {
         return jwt.sign(payload, REFRESH_TOKEN_SECRET, {expiresIn: "7d"})
     }
 
-    async verifyAccessToken(token?: string) {
-        if (!token) return null;
+    async verifyAccessToken(token: string): Promise<AuthPayload  | null> {
         try {
-            return jwt.verify(token, ACCESS_TOKEN_SECRET);
+            return jwt.verify(token, ACCESS_TOKEN_SECRET) as AuthPayload ;
         } catch (err) {
             logger.error(err)
             return null;
         }
     }
 
-    async verifyRefreshToken(token?: string) {
-        if (!token) return null;
+    async verifyRefreshToken(token: string):Promise<AuthPayload | null> {
         try {
-           return jwt.verify(token, REFRESH_TOKEN_SECRET);
+           return jwt.verify(token, REFRESH_TOKEN_SECRET) as AuthPayload;
         } catch (err) {
            logger.error(err)
            return null;

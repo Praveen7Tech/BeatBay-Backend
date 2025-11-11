@@ -41,7 +41,7 @@ export const authModule = {
       verifyOtpUsecase: asClass(VerifyOtpUsecase).scoped(),
       resendOtpUsecase: asClass(ResendOtpUseCase).scoped(),
       loginUsecase: asClass(LoginUsecase).scoped(),
-      authStatusUsecase: asClass(AuthStatusUsecase),
+      authStatusUsecase: asClass(AuthStatusUsecase).scoped(),
       verifyEmailUsecase: asClass(VerifyEmailUsecase).scoped(),
       resetPasswordUsecase:asClass(ResetPasswordUsecase).scoped(),
       googleLoginUsecase: asClass(GoogleLoginUsecase).scoped(),

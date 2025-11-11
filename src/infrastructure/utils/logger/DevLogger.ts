@@ -2,7 +2,7 @@ import path from "path";
 import winston  from "winston"
 const {combine, timestamp, json, colorize, simple } = winston.format
 
-const loggFilePath = path.join(__dirname, "devlogs.log")
+const loggFilePath = path.join(__dirname, "logs/devlogs.log")
 
 const Devlogger = winston.createLogger({
   level: 'debug',

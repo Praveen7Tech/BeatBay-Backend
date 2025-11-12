@@ -9,6 +9,7 @@ export default (container: AwilixContainer): Router=> {
     const userController = container.resolve<UserController>('userController')
 
     router.put('/edit-profile',authMiddleware, upload.single("profileImage"), userController.editProfile)
+    router.put('/change-password', authMiddleware, userController.changePassword)
 
     return router
 }

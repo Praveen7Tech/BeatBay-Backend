@@ -13,5 +13,6 @@ export const MESSAGES = {
   GOOGLE_LOGIN: "google login successfull",
   PROFILE_UPDATED: "profile updated successfully.",
   LOGOUT_SUCCESSFUL: "logout succssfully completed..!",
-  VERIFICATION_COMPLETE: "Verification complete successfully"
+  VERIFICATION_COMPLETE: "Verification complete successfully",
+  PASSWORD_UPDATED: "password updated successfully!"
 };

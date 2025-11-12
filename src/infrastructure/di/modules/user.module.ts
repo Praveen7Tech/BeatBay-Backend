@@ -3,6 +3,7 @@ import { UserController } from "../../../interfaces/http/controllers/user/user.c
 import { editProfileUsecase } from "../../../usecases/user/editProfile.useCase";
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { MongooseUserRepository } from "../../presistence/mongoose/repositories/mongoose.user.repository";
+import { ChangePasswordUsecase } from "../../../usecases/user/changePassword.useCase";
 
 export const userModule = {
     // services
@@ -10,6 +11,7 @@ export const userModule = {
 
     //useCases
     editProfileUserUsecase: asClass(editProfileUsecase).scoped(),
+    changePasswordUsecase: asClass(ChangePasswordUsecase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

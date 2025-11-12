@@ -36,3 +36,9 @@ export class ExpiredError extends DomainError {
         super(message, StatusCode.EXPIRED)
     }
 }
+
+export class IncorrectPasswordError extends DomainError{
+    constructor(message = "incorrect"){
+        super(message, StatusCode.BAD_REQUEST)
+    }
+}

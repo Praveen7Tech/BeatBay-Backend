@@ -11,3 +11,8 @@ export interface EditProfileRequestDTO {
 export interface EditProfileResponseDTO {
   user: User | Artist;
 }
+
+export interface ChangePasswordRequestDTO{
+  currentPassword : string
+  newPassword: string
+}

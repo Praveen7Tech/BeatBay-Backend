@@ -13,6 +13,7 @@ import { ArtistEditProfileUsecase } from "../../../usecases/artist/artistEditPro
 import { ArtistGoogleLoginUseCase } from "../../../usecases/artist/artistGoogleSignup.useCase";
 import { ArtistVerifyEmailUsecase } from "../../../usecases/artist/artistVerifyEmail.useCase";
 import { ArtistResetPasswordUsecase } from "../../../usecases/artist/artistResetPassword.useCase";
+import { ArtistChangePasswordUsecase } from "../../../usecases/artist/artistChangePassword.useCase";
 
 export const artistModule = {
 
@@ -29,6 +30,7 @@ export const artistModule = {
     artistGoogleLoginUsecase: asClass(ArtistGoogleLoginUseCase).scoped(),
     artistVerifyEmailUsecase: asClass(ArtistVerifyEmailUsecase).scoped(),
     artistResetPasswordUsecase: asClass(ArtistResetPasswordUsecase).scoped(),
+    artistChangePasswordUsecase: asClass(ArtistChangePasswordUsecase).scoped(),
 
     // controller
     artistAuthController: asClass(artistAuthController).scoped(),

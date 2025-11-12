@@ -3,18 +3,20 @@ import { AuthRequest } from "../../../middleware/authMiddleware";
 import { StatusCode } from "../../../../common/constants/status.enum";
 import { MESSAGES } from "../../../../common/constants/constants.message";
 import { ArtistEditProfileUsecase } from "../../../../usecases/artist/artistEditProfile.useCase";
-import { EditProfileRequestDTO } from "../../../../usecases/dto/profile/profile.dto";
-import { EditProfileSchema } from "../../validators/profile/profile.validators";
+import { ChangePasswordRequestDTO, EditProfileRequestDTO } from "../../../../usecases/dto/profile/profile.dto";
+import { ChangePasswordSchema, EditProfileSchema } from "../../validators/profile/profile.validators";
 import { ResetPasswordDTO, VerifyEmailRequestDTO } from "../../../../usecases/dto/auth/request.dto";
 import { ResetPassRequestSchema, VerifyEmailRequestSchema } from "../../validators/auth/auth.validator";
 import { ArtistVerifyEmailUsecase } from "../../../../usecases/artist/artistVerifyEmail.useCase";
 import { ArtistResetPasswordUsecase } from "../../../../usecases/artist/artistResetPassword.useCase";
+import { ArtistChangePasswordUsecase } from "../../../../usecases/artist/artistChangePassword.useCase";
 
 export class ArtistController {
     constructor(
         private readonly artistEditProfileUsecase:ArtistEditProfileUsecase,
         private readonly artistVerifyEmailUsecase: ArtistVerifyEmailUsecase,
-        private readonly artistResetPasswordUsecase: ArtistResetPasswordUsecase
+        private readonly artistResetPasswordUsecase: ArtistResetPasswordUsecase,
+        private readonly artistChangePasswordUsecase: ArtistChangePasswordUsecase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
@@ -60,6 +62,23 @@ export class ArtistController {
         return res.status(StatusCode.OK).json({message:MESSAGES.REST_PASSWORD_SUCCESS})
         } catch (error) {
         next(error)
+        }
+    }
+    
+    changePassword = async(req:AuthRequest, res:Response, next: NextFunction) =>{
+        try {
+            const artistId = req.user?.id
+            if(!artistId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const dto : ChangePasswordRequestDTO = ChangePasswordSchema.parse(req.body) 
+            
+            await this.artistChangePasswordUsecase.execute(artistId, dto)
+
+            return res.status(StatusCode.OK).json({message: MESSAGES.PASSWORD_UPDATED})
+        } catch (error) {
+            next(error)
         }
     }    
 }

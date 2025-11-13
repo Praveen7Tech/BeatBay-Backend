@@ -1,0 +1,5 @@
+[00:00.00] Demo Song
+[00:05.10] This is the first line of the song
+[00:10.20] This is the second line
+[00:15.00] And here comes the chorus
+[00:20.00] La la la la...

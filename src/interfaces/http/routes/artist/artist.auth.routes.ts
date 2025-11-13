@@ -4,6 +4,7 @@ import { artistAuthController } from "../../controllers/artist/artist.auth.contr
 import { ArtistController } from "../../controllers/artist/artist.controller";
 import { authMiddleware } from "../../../middleware/authMiddleware";
 import { upload } from "../../../middleware/multer";
+import { uploadSongMiddleware } from "../../../middleware/uploadSondMiddleware";
 
 export default (container: AwilixContainer): Router=> {
     const router = Router()
@@ -22,6 +23,8 @@ export default (container: AwilixContainer): Router=> {
 
     router.post('/verify-email', artistController.verifyEmail)
     router.put('/reset-password', artistController.resetPassword)
+
+    router.post('/upload-song', authMiddleware, uploadSongMiddleware, artistController.upLoadSong)
 
     return router
 }

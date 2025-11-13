@@ -14,12 +14,16 @@ import { ArtistGoogleLoginUseCase } from "../../../usecases/artist/artistGoogleS
 import { ArtistVerifyEmailUsecase } from "../../../usecases/artist/artistVerifyEmail.useCase";
 import { ArtistResetPasswordUsecase } from "../../../usecases/artist/artistResetPassword.useCase";
 import { ArtistChangePasswordUsecase } from "../../../usecases/artist/artistChangePassword.useCase";
+import { UploadSongUseCase } from "../../../usecases/artist/song/UploadSong.useCase";
+import { ISongRepository } from "../../../domain/repositories/song.repository";
+import { MongooseSongRepository } from "../../presistence/mongoose/repositories/mongoose.song.repository";
 
 export const artistModule = {
 
     // repositories
     artistRepository: asClass<IArtistRepository>(MongooseArtistRepository).scoped(),
     transactionManager: asClass<ITransactionManager>(MongooseTransactionService).scoped(),
+    songRepository: asClass<ISongRepository>(MongooseSongRepository).scoped(),
 
     // usecases
     artistSignupUsecase: asClass(ArtistSignupUsecase).scoped(),
@@ -31,6 +35,9 @@ export const artistModule = {
     artistVerifyEmailUsecase: asClass(ArtistVerifyEmailUsecase).scoped(),
     artistResetPasswordUsecase: asClass(ArtistResetPasswordUsecase).scoped(),
     artistChangePasswordUsecase: asClass(ArtistChangePasswordUsecase).scoped(),
+
+    // song usecases
+    artistUploadSongUsecase: asClass(UploadSongUseCase).scoped(),
 
     // controller
     artistAuthController: asClass(artistAuthController).scoped(),

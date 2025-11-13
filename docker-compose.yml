@@ -1,27 +1,19 @@
-# docker-compose.yml
 
 services:
   # The Node.js application service
   app:
     build: .
     ports:
-      - '3000:3000'
+      - '4000:4000'
     volumes:
       - .:/usr/src/app
     command: npm run dev
-    # Add dependency on the MongoDB service
+
     depends_on:
       - redis
-      - mongo
     environment:
       # This is how the app connects to the Redis service
       REDIS_URL: redis://redis:6379
-      # Add the MongoDB connection string
-      MONGO_URL: mongodb://mongo:27017
-      # The app service is named 'app', so we need to reference the mongo service
-      # via its service name 'mongo'
-      # The mongo service automatically creates a network alias for itself
-      # so it can be reached via 'mongo' as a hostname.
 
   # The Redis service
   redis:
@@ -31,14 +23,5 @@ services:
     volumes:
       - redis-data:/data
 
-  # Add a MongoDB service
-  mongo:
-    image: 'mongo:7.0' # Use an official MongoDB image
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongo-data:/data/db
-
 volumes:
   redis-data:
-  mongo-data: # A volume to persist the MongoDB data

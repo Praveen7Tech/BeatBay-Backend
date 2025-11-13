@@ -20,6 +20,7 @@ app.use(
 );
 
 app.use("/uploads", express.static(path.join(__dirname, "../../../public/uploads")));
+app.use("/songs", express.static(path.join(__dirname, "../../../public/songs")));
 
 // monggose debuging
 mongoose.set('debug', true);

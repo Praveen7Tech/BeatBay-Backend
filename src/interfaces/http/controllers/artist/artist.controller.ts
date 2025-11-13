@@ -10,13 +10,17 @@ import { ResetPassRequestSchema, VerifyEmailRequestSchema } from "../../validato
 import { ArtistVerifyEmailUsecase } from "../../../../usecases/artist/artistVerifyEmail.useCase";
 import { ArtistResetPasswordUsecase } from "../../../../usecases/artist/artistResetPassword.useCase";
 import { ArtistChangePasswordUsecase } from "../../../../usecases/artist/artistChangePassword.useCase";
+import { UploadSongDTO } from "../../../../usecases/dto/song/song.dto";
+import { UploadSongRequestSchema } from "../../validators/song/song.validator";
+import { UploadSongUseCase } from "../../../../usecases/artist/song/UploadSong.useCase";
 
 export class ArtistController {
     constructor(
         private readonly artistEditProfileUsecase:ArtistEditProfileUsecase,
         private readonly artistVerifyEmailUsecase: ArtistVerifyEmailUsecase,
         private readonly artistResetPasswordUsecase: ArtistResetPasswordUsecase,
-        private readonly artistChangePasswordUsecase: ArtistChangePasswordUsecase
+        private readonly artistChangePasswordUsecase: ArtistChangePasswordUsecase,
+        private readonly artistUploadSongUsecase: UploadSongUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
@@ -80,5 +84,38 @@ export class ArtistController {
         } catch (error) {
             next(error)
         }
-    }    
+    }
+    
+    upLoadSong = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+             const artistId = req.user?.id
+            if(!artistId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+            
+            const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+            console.log("ll", files)
+
+            if (!files['trackFile'] || !files['coverImage']) {
+                return res.status(400).json({ message: "Missing required files." });
+            }
+
+            const songFilePath = files["trackFile"][0].filename
+            console.log("1 -", songFilePath)
+            const coverImagePath = files["coverImage"][0].filename
+            console.log("2 -", coverImagePath)
+            const lrcFilePath = files["lrcFile"][0].filename
+            console.log("3 -", lrcFilePath)
+
+            
+
+            const dto : UploadSongDTO = UploadSongRequestSchema.parse({...req.body, songFilePath, coverImagePath, lrcFilePath})
+
+            await this.artistUploadSongUsecase.execute(artistId,dto)
+
+            return res.status(StatusCode.CREATED).json({message:"New Song uploaded successfully"})
+        } catch (error) {
+            next(error)
+        }
+    }
 }

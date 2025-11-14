@@ -1,4 +1,5 @@
 
+import { ClientSession } from "mongoose";
 import { Song } from "../entities/song.entity";
 
 export interface CreateSongData {
@@ -16,7 +17,6 @@ export interface CreateSongData {
 }
 
 export interface ISongRepository {
-    create(songData: CreateSongData): Promise<Song>;
-    // findById(id: string): Promise<Song | null>;
-    // findByArtistId(artistId: string): Promise<Song[]>;
+    create(songData: CreateSongData, session?:ClientSession): Promise<Song>;
+    getAll(): Promise<Song[]>
 }

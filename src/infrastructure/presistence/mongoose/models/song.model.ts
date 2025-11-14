@@ -4,6 +4,7 @@ import { Song } from "../../../../domain/entities/song.entity";
 export type SongDocument = HydratedDocument<Song>;
 
 const songSchema = new Schema({
+    artistId: { type: Schema.Types.ObjectId, ref: 'Artist', required: true },
     title: { type: String, required: true },
     genre: { type: String, required: true },
     audioUrl: { type: String, required: true },
@@ -11,10 +12,8 @@ const songSchema = new Schema({
     description: String,
     tags: String,
     album: String,
-    lyrics: String,
     lyricsUrl: String,
     releaseDate: Date,
-    artistId: { type: Schema.Types.ObjectId, ref: 'Artist', required: true },
 }, { timestamps: true });
 
-export const SongModel: Model<SongDocument> = mongoose.model<SongDocument>('Songs', songSchema);
+export const SongModel: Model<SongDocument> = mongoose.model<SongDocument>('Song', songSchema);

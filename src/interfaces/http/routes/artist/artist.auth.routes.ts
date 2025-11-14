@@ -25,6 +25,7 @@ export default (container: AwilixContainer): Router=> {
     router.put('/reset-password', artistController.resetPassword)
 
     router.post('/upload-song', authMiddleware, uploadSongMiddleware, artistController.upLoadSong)
+    router.get('/fetch-songs', authMiddleware, artistController.fetchSongs)
 
     return router
 }

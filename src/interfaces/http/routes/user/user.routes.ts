@@ -10,6 +10,7 @@ export default (container: AwilixContainer): Router=> {
 
     router.put('/edit-profile',authMiddleware, upload.single("profileImage"), userController.editProfile)
     router.put('/change-password', authMiddleware, userController.changePassword)
+    router.get('/fetch-songs', authMiddleware, userController.fetchSongs)
 
     return router
 }

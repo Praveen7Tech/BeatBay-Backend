@@ -17,6 +17,7 @@ import { ArtistChangePasswordUsecase } from "../../../usecases/artist/artistChan
 import { UploadSongUseCase } from "../../../usecases/artist/song/UploadSong.useCase";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { MongooseSongRepository } from "../../presistence/mongoose/repositories/mongoose.song.repository";
+import { GetSongsUseCase } from "../../../usecases/artist/song/getSongs.useCase";
 
 export const artistModule = {
 
@@ -38,6 +39,7 @@ export const artistModule = {
 
     // song usecases
     artistUploadSongUsecase: asClass(UploadSongUseCase).scoped(),
+    artistGetSongsUsecase: asClass(GetSongsUseCase).scoped(),
 
     // controller
     artistAuthController: asClass(artistAuthController).scoped(),

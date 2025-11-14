@@ -13,6 +13,7 @@ import { ArtistChangePasswordUsecase } from "../../../../usecases/artist/artistC
 import { UploadSongDTO } from "../../../../usecases/dto/song/song.dto";
 import { UploadSongRequestSchema } from "../../validators/song/song.validator";
 import { UploadSongUseCase } from "../../../../usecases/artist/song/UploadSong.useCase";
+import { GetSongsUseCase } from "../../../../usecases/artist/song/getSongs.useCase";
 
 export class ArtistController {
     constructor(
@@ -20,7 +21,8 @@ export class ArtistController {
         private readonly artistVerifyEmailUsecase: ArtistVerifyEmailUsecase,
         private readonly artistResetPasswordUsecase: ArtistResetPasswordUsecase,
         private readonly artistChangePasswordUsecase: ArtistChangePasswordUsecase,
-        private readonly artistUploadSongUsecase: UploadSongUseCase
+        private readonly artistUploadSongUsecase: UploadSongUseCase,
+        private readonly artistGetSongsUsecase :GetSongsUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
@@ -94,18 +96,14 @@ export class ArtistController {
             }
             
             const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-            console.log("ll", files)
 
             if (!files['trackFile'] || !files['coverImage']) {
                 return res.status(400).json({ message: "Missing required files." });
             }
 
             const songFilePath = files["trackFile"][0].filename
-            console.log("1 -", songFilePath)
             const coverImagePath = files["coverImage"][0].filename
-            console.log("2 -", coverImagePath)
             const lrcFilePath = files["lrcFile"][0].filename
-            console.log("3 -", lrcFilePath)
 
             
 
@@ -114,6 +112,20 @@ export class ArtistController {
             await this.artistUploadSongUsecase.execute(artistId,dto)
 
             return res.status(StatusCode.CREATED).json({message:"New Song uploaded successfully"})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    fetchSongs = async(req:AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const artistId = req.user?.id
+            if(!artistId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+            const result = await this.artistGetSongsUsecase.execute(artistId)
+
+            return res.status(StatusCode.OK).json(result)
         } catch (error) {
             next(error)
         }

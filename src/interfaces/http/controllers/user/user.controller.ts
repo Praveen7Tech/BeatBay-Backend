@@ -6,11 +6,13 @@ import { AuthRequest } from "../../../middleware/authMiddleware"
 import { ChangePasswordRequestDTO, EditProfileRequestDTO } from "../../../../usecases/dto/profile/profile.dto"
 import { ChangePasswordSchema, EditProfileSchema } from "../../validators/profile/profile.validators"
 import { ChangePasswordUsecase } from "../../../../usecases/user/changePassword.useCase"
+import { FetchSongsUsecase } from "../../../../usecases/user/fetchSongs.useCase"
 
 export class UserController{
     constructor(
         private readonly editProfileUserUsecase: editProfileUsecase,
-        private readonly changePasswordUsecase: ChangePasswordUsecase
+        private readonly changePasswordUsecase: ChangePasswordUsecase,
+        private readonly fetchSongsUsecase: FetchSongsUsecase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction) =>{
@@ -46,6 +48,19 @@ export class UserController{
             await this.changePasswordUsecase.execute(userId, dto)
 
             return res.status(StatusCode.OK).json({message: MESSAGES.PASSWORD_UPDATED})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    fetchSongs = async(req:AuthRequest, res:Response, next: NextFunction) =>{
+        try {
+            if(!req.user?.id){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+            const songs = await this.fetchSongsUsecase.execute()
+
+            return res.status(StatusCode.OK).json(songs)
         } catch (error) {
             next(error)
         }

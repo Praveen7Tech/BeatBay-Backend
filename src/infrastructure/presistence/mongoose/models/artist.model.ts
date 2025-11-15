@@ -24,7 +24,9 @@ const artistSchema = new Schema<ArtistDocument>(
         bio:{
             type: String
         },
-        role: { type: String, enum: ['user','artist'], default: 'artist' },
+        role: { 
+            type: String,
+             enum: ['user','artist'], default: 'artist' },
         albums:[{
             type: Schema.Types.ObjectId,
             ref: 'Album'
@@ -34,7 +36,8 @@ const artistSchema = new Schema<ArtistDocument>(
             ref: 'Song'
         }],
         status:{
-            type:Boolean, default:true
+            type:Boolean, 
+            default:true
         }
     },
     {timestamps: true}

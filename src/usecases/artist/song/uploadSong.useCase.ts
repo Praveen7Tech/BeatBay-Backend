@@ -19,10 +19,9 @@ export class UploadSongUseCase {
                 description:request.description,
                 genre:request.genre,
                 tags:request.tags,
-                album:request.album,
-                lyrics:request.lyrics,
-                releaseDate:request.releaseDate,
+                releaseDate:new Date(request.releaseDate),
                 audioUrl:request.songFilePath,
+                lyricsUrl: request.lrcFilePath,
                 artistId:artistId,
                 coverImageUrl:request.coverImagePath,
             }

@@ -4,8 +4,6 @@ export interface UploadSongDTO {
     genre: string, 
     description: string, 
     tags: string, 
-    album:string, 
-    lyrics?:string, 
     releaseDate:string, 
     songFilePath:string,
     coverImagePath:string,

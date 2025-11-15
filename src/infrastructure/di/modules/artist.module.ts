@@ -18,6 +18,10 @@ import { UploadSongUseCase } from "../../../usecases/artist/song/UploadSong.useC
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { MongooseSongRepository } from "../../presistence/mongoose/repositories/mongoose.song.repository";
 import { GetSongsUseCase } from "../../../usecases/artist/song/getSongs.useCase";
+import { ArtistCreateAlbumUseCase } from "../../../usecases/artist/album/createAlbums.useCase";
+import { MongooseAlbumRepository } from "../../presistence/mongoose/repositories/mongoose.album.repository";
+import { IAlbumRepository } from "../../../domain/repositories/album.repository";
+import { artistGetAlbumsUseCase } from "../../../usecases/artist/album/artistGetAlbums.useCase";
 
 export const artistModule = {
 
@@ -25,6 +29,7 @@ export const artistModule = {
     artistRepository: asClass<IArtistRepository>(MongooseArtistRepository).scoped(),
     transactionManager: asClass<ITransactionManager>(MongooseTransactionService).scoped(),
     songRepository: asClass<ISongRepository>(MongooseSongRepository).scoped(),
+    albumRepository: asClass<IAlbumRepository>(MongooseAlbumRepository).scoped(),
 
     // usecases
     artistSignupUsecase: asClass(ArtistSignupUsecase).scoped(),
@@ -40,6 +45,11 @@ export const artistModule = {
     // song usecases
     artistUploadSongUsecase: asClass(UploadSongUseCase).scoped(),
     artistGetSongsUsecase: asClass(GetSongsUseCase).scoped(),
+
+    // albums usecase
+    artistCreateAlbumUsecase: asClass(ArtistCreateAlbumUseCase).scoped(),
+    artistGetAlbumsUsecase: asClass(artistGetAlbumsUseCase).scoped(),
+    
 
     // controller
     artistAuthController: asClass(artistAuthController).scoped(),

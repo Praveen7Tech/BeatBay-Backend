@@ -3,6 +3,7 @@ import { Artist } from "../../../../domain/entities/arist.entity";
 import { IArtistRepository } from "../../../../domain/repositories/artist.repository";
 import { ArtistModel } from "../models/artist.model"; 
 import { Song } from "../../../../domain/entities/song.entity";
+import { Album } from "../../../../domain/entities/album.entity";
 
 export class MongooseArtistRepository implements IArtistRepository {
     constructor(){}
@@ -39,5 +40,18 @@ export class MongooseArtistRepository implements IArtistRepository {
       async fetchSongs(artistId: string): Promise<Song[]> {
           const Songs = await ArtistModel.findById(artistId).populate('songs').lean()
           return Songs ? Songs.songs as unknown as Song[] : []
+      }
+
+      async addAlbumIdToArtist(artistId: string, albumId: string, session: ClientSession): Promise<void> {
+          await ArtistModel.findByIdAndUpdate(
+            artistId,
+            {$push:{albums: albumId}},
+            {new: true, session}
+          )
+      }
+
+      async fetchAlbums(artistId: string): Promise<Album> {
+          const albums = await ArtistModel.findById(artistId).populate('albums').lean().exec()
+          return albums?.albums as unknown as Album 
       }
 }

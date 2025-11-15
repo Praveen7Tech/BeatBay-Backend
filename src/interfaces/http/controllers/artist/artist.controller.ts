@@ -14,6 +14,10 @@ import { UploadSongDTO } from "../../../../usecases/dto/song/song.dto";
 import { UploadSongRequestSchema } from "../../validators/song/song.validator";
 import { UploadSongUseCase } from "../../../../usecases/artist/song/UploadSong.useCase";
 import { GetSongsUseCase } from "../../../../usecases/artist/song/getSongs.useCase";
+import { ArtistCreateAlbumUseCase } from "../../../../usecases/artist/album/createAlbums.useCase";
+import { CreateAlbumDTO } from "../../../../usecases/dto/album/album.dto";
+import { CreateAlbumRequestSchema } from "../../validators/album/album.validator";
+import { artistGetAlbumsUseCase } from "../../../../usecases/artist/album/artistGetAlbums.useCase";
 
 export class ArtistController {
     constructor(
@@ -22,7 +26,9 @@ export class ArtistController {
         private readonly artistResetPasswordUsecase: ArtistResetPasswordUsecase,
         private readonly artistChangePasswordUsecase: ArtistChangePasswordUsecase,
         private readonly artistUploadSongUsecase: UploadSongUseCase,
-        private readonly artistGetSongsUsecase :GetSongsUseCase
+        private readonly artistGetSongsUsecase :GetSongsUseCase,
+        private readonly artistCreateAlbumUsecase: ArtistCreateAlbumUseCase,
+        private readonly artistGetAlbumsUsecase: artistGetAlbumsUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
@@ -90,6 +96,7 @@ export class ArtistController {
     
     upLoadSong = async(req:AuthRequest, res:Response, next:NextFunction)=>{
         try {
+            console.log("data ", req.body)
              const artistId = req.user?.id
             if(!artistId){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
@@ -104,7 +111,8 @@ export class ArtistController {
             const songFilePath = files["trackFile"][0].filename
             const coverImagePath = files["coverImage"][0].filename
             const lrcFilePath = files["lrcFile"][0].filename
-
+            
+            console.log("lrc file ", lrcFilePath)
             
 
             const dto : UploadSongDTO = UploadSongRequestSchema.parse({...req.body, songFilePath, coverImagePath, lrcFilePath})
@@ -126,6 +134,43 @@ export class ArtistController {
             const result = await this.artistGetSongsUsecase.execute(artistId)
 
             return res.status(StatusCode.OK).json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    createAlbum = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const artistId = req.user?.id
+            if(!artistId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            let coverImageUrl : string | undefined
+            if(req.file){
+                coverImageUrl = req.file.filename
+            }
+
+            const dto: CreateAlbumDTO = CreateAlbumRequestSchema.parse({...req.body, coverImageUrl: coverImageUrl})
+
+            await this.artistCreateAlbumUsecase.execute(artistId, dto)
+
+            return res.status(StatusCode.CREATED).json({message: "New album created successfully."})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    fetchAlbums = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+           const artistId = req.user?.id 
+           if(!artistId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+           }
+
+           const response = await this.artistGetAlbumsUsecase.execute(artistId)
+           return res.status(StatusCode.OK).json(response)
+
         } catch (error) {
             next(error)
         }

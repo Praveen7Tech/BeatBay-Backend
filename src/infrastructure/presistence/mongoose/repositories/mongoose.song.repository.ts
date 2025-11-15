@@ -8,7 +8,7 @@ export class MongooseSongRepository implements ISongRepository{
         const Song = new SongModel(songData)
 
         const cretedSong = await Song.save({session})
-        return cretedSong.toObject()
+        return cretedSong.toObject() 
     }
 
     async getAll(): Promise<Song[]> {

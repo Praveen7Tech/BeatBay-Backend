@@ -7,9 +7,8 @@ export interface Song {
     audioUrl: string;       
     coverImageUrl: string;  
     lyricsUrl?: string;     
-    artistId: string;       
-    albumId?: string;       
-    tags?: string[];        
+    artistId: string;          
+    tags: string;        
     releaseDate?: Date;     
     playCount: number;
     likesCount: number;

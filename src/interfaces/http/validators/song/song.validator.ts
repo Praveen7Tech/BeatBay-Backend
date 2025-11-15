@@ -7,8 +7,6 @@ export const UploadSongRequestSchema = z.object({
 
     description: z.string().min(5, "brief about your track"),
     tags: z.string().min(1, "atleast 1 tag required"),
-    album: z.string(),
-    lyrics: z.string(),
 
     songFilePath: z.string().min(1, "song file must be needed"),
     coverImagePath:z.string().min(1, "cover image must be needed"),

@@ -5,6 +5,7 @@ import { ArtistController } from "../../controllers/artist/artist.controller";
 import { authMiddleware } from "../../../middleware/authMiddleware";
 import { upload } from "../../../middleware/multer";
 import { uploadSongMiddleware } from "../../../middleware/uploadSondMiddleware";
+import { CreateAlbumMiddleware } from "../../../middleware/createAlbum.Middleware";
 
 export default (container: AwilixContainer): Router=> {
     const router = Router()
@@ -26,6 +27,8 @@ export default (container: AwilixContainer): Router=> {
 
     router.post('/upload-song', authMiddleware, uploadSongMiddleware, artistController.upLoadSong)
     router.get('/fetch-songs', authMiddleware, artistController.fetchSongs)
+    router.post('/create-album', authMiddleware, CreateAlbumMiddleware.single("coverImageUrl"), artistController.createAlbum)
+    router.get('/fetch-albums', authMiddleware, artistController.fetchAlbums)
 
     return router
 }

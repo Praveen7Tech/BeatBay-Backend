@@ -96,8 +96,7 @@ export class ArtistController {
     
     upLoadSong = async(req:AuthRequest, res:Response, next:NextFunction)=>{
         try {
-            console.log("data ", req.body)
-             const artistId = req.user?.id
+            const artistId = req.user?.id
             if(!artistId){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
@@ -112,9 +111,6 @@ export class ArtistController {
             const coverImagePath = files["coverImage"][0].filename
             const lrcFilePath = files["lrcFile"][0].filename
             
-            console.log("lrc file ", lrcFilePath)
-            
-
             const dto : UploadSongDTO = UploadSongRequestSchema.parse({...req.body, songFilePath, coverImagePath, lrcFilePath})
 
             await this.artistUploadSongUsecase.execute(artistId,dto)

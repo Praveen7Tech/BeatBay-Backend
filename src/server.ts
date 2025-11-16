@@ -36,8 +36,6 @@ async function startServer() {
 
     app.use(errorHandlerMiddleware)
 
-    console.log("hello world testing>...!")
-
     app.listen(PORT, () => {
       logger.info(`✅ Server running on http://localhost:${PORT}`)
     });

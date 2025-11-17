@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express"
+import { NextFunction, Request, response, Response } from "express"
 import { StatusCode } from "../../../../common/constants/status.enum"
 import { MESSAGES } from "../../../../common/constants/constants.message"
 import { editProfileUsecase } from "../../../../usecases/user/editProfile.useCase"
@@ -8,13 +8,15 @@ import { ChangePasswordSchema, EditProfileSchema } from "../../validators/profil
 import { ChangePasswordUsecase } from "../../../../usecases/user/changePassword.useCase"
 import { FetchSongsUsecase } from "../../../../usecases/user/fetchSongs.useCase"
 import { FetchAlbumsUsecase } from "../../../../usecases/user/fetchAlbums.useCase"
+import { SongDetailsUseCase } from "../../../../usecases/user/song/songDetails.useCase"
 
 export class UserController{
     constructor(
         private readonly editProfileUserUsecase: editProfileUsecase,
         private readonly changePasswordUsecase: ChangePasswordUsecase,
         private readonly fetchSongsUsecase: FetchSongsUsecase,
-        private readonly fetchAlbumsUsecase: FetchAlbumsUsecase
+        private readonly fetchAlbumsUsecase: FetchAlbumsUsecase,
+        private readonly songDetailsUsecase: SongDetailsUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction) =>{
@@ -76,6 +78,23 @@ export class UserController{
             const songs = await this.fetchAlbumsUsecase.execute()
 
             return res.status(StatusCode.OK).json(songs)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    songDetails = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            const songId = req.params.id
+            console.log("song id ", songId)
+            if(!userId || !songId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const result =  await this.songDetailsUsecase.execute(songId)
+
+            return res.status(StatusCode.OK).json(result)
         } catch (error) {
             next(error)
         }

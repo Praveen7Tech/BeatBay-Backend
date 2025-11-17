@@ -4,7 +4,8 @@ import { Song } from "../entities/song.entity";
 
 export type CreateSongData = Omit<Song, '_id' | 'createdAt' | 'updatedAt' | 'playCount' | 'likesCount'>;
 
-export interface ISongRepository {
+export interface ISongRepository{
     create(songData: CreateSongData, session?:ClientSession): Promise<Song>;
     getAll(): Promise<Song[]>
+    findById(id: string): Promise<Song | null>
 }

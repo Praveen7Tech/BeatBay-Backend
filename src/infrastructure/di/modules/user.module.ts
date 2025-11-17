@@ -10,6 +10,7 @@ import { MongooseSongRepository } from "../../presistence/mongoose/repositories/
 import { FetchAlbumsUsecase } from "../../../usecases/user/fetchAlbums.useCase";
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
 import { MongooseAlbumRepository } from "../../presistence/mongoose/repositories/mongoose.album.repository";
+import { SongDetailsUseCase } from "../../../usecases/user/song/songDetails.useCase";
 
 export const userModule = {
     // services
@@ -22,6 +23,9 @@ export const userModule = {
     changePasswordUsecase: asClass(ChangePasswordUsecase).scoped(),
     fetchSongsUsecase: asClass(FetchSongsUsecase).scoped(),
     fetchAlbumsUsecase: asClass(FetchAlbumsUsecase).scoped(),
+
+    // song usecases
+    songDetailsUsecase: asClass(SongDetailsUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

@@ -15,4 +15,13 @@ export class MongooseSongRepository implements ISongRepository{
         const songs = await SongModel.find()
         return songs
     }
+
+    async findById(id: string): Promise<Song | null> {
+        return SongModel.findById(id).populate({
+            path:'artistId',
+            select: 'name profilePicture',
+            model: 'Artist'
+        })
+        .lean().exec()
+    }
 }

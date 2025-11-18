@@ -14,4 +14,15 @@ export class MongooseAlbumRepository implements IAlbumRepository {
            const songs = await AlbumModel.find()
            return songs
     }
+
+    findById(id: string): Promise<Album | null> {
+        return AlbumModel.findById(id)
+        .populate({
+            path:'artistId',
+            select: 'name profilePicture',
+            model: 'Artist'
+        })
+        .populate("songs")
+        .lean().exec()
+    }
 }

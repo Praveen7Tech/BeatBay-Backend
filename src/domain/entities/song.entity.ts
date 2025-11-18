@@ -1,4 +1,10 @@
 
+export interface ArtistDetails {
+    _id: string
+    name: string
+    profilePicture: string
+}
+
 export interface Song {
      _id: string; 
     title: string;
@@ -7,7 +13,7 @@ export interface Song {
     audioUrl: string;       
     coverImageUrl: string;  
     lyricsUrl?: string;     
-    artistId: string;          
+    artistId: string | ArtistDetails          
     tags: string;        
     releaseDate?: Date;  
     duration: string   

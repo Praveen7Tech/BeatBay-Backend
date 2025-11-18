@@ -19,6 +19,9 @@ import { CreateAlbumDTO } from "../../../../usecases/dto/album/album.dto";
 import { CreateAlbumRequestSchema } from "../../validators/album/album.validator";
 import { artistGetAlbumsUseCase } from "../../../../usecases/artist/album/artistGetAlbums.useCase";
 
+import ffprobe from 'ffprobe';
+import ffprobeStatic from 'ffprobe-static';
+
 export class ArtistController {
     constructor(
         private readonly artistEditProfileUsecase:ArtistEditProfileUsecase,
@@ -110,8 +113,19 @@ export class ArtistController {
             const songFilePath = files["trackFile"][0].filename
             const coverImagePath = files["coverImage"][0].filename
             const lrcFilePath = files["lrcFile"][0].filename
-            
-            const dto : UploadSongDTO = UploadSongRequestSchema.parse({...req.body, songFilePath, coverImagePath, lrcFilePath})
+
+            const filePath = files['trackFile'][0].path
+            let songDuration : string | undefined
+
+            try {
+                const info = await ffprobe(filePath, {path:ffprobeStatic.path})
+                songDuration = info.streams[0].duration
+                
+            } catch (error) {
+                console.error("Error determining song duration with ffprobe:", error);
+            }
+
+            const dto : UploadSongDTO = UploadSongRequestSchema.parse({...req.body, songFilePath, coverImagePath, lrcFilePath, duration:songDuration})
 
             await this.artistUploadSongUsecase.execute(artistId,dto)
 

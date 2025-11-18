@@ -9,7 +9,8 @@ export interface Song {
     lyricsUrl?: string;     
     artistId: string;          
     tags: string;        
-    releaseDate?: Date;     
+    releaseDate?: Date;  
+    duration: string   
     playCount: number;
     likesCount: number;
     createdAt: Date;

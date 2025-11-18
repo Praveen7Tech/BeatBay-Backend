@@ -9,6 +9,7 @@ import { ChangePasswordUsecase } from "../../../../usecases/user/changePassword.
 import { FetchSongsUsecase } from "../../../../usecases/user/fetchSongs.useCase"
 import { FetchAlbumsUsecase } from "../../../../usecases/user/fetchAlbums.useCase"
 import { SongDetailsUseCase } from "../../../../usecases/user/song/songDetails.useCase"
+import { AlbumDetailsUseCase } from "../../../../usecases/user/album/albumDetails.useCase"
 
 export class UserController{
     constructor(
@@ -16,7 +17,8 @@ export class UserController{
         private readonly changePasswordUsecase: ChangePasswordUsecase,
         private readonly fetchSongsUsecase: FetchSongsUsecase,
         private readonly fetchAlbumsUsecase: FetchAlbumsUsecase,
-        private readonly songDetailsUsecase: SongDetailsUseCase
+        private readonly songDetailsUsecase: SongDetailsUseCase,
+        private readonly albumDetailsUsecase: AlbumDetailsUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction) =>{
@@ -93,6 +95,22 @@ export class UserController{
             }
 
             const result =  await this.songDetailsUsecase.execute(songId)
+
+            return res.status(StatusCode.OK).json({songs:result.songs, recomentations:result.recomentations})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    albumDetails = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            const albumId = req.params.id
+            if(!userId || !albumId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const result = await this.albumDetailsUsecase.execute(albumId)
 
             return res.status(StatusCode.OK).json(result)
         } catch (error) {

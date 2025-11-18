@@ -11,12 +11,18 @@ import { FetchAlbumsUsecase } from "../../../usecases/user/fetchAlbums.useCase";
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
 import { MongooseAlbumRepository } from "../../presistence/mongoose/repositories/mongoose.album.repository";
 import { SongDetailsUseCase } from "../../../usecases/user/song/songDetails.useCase";
+import { IRecomentationService } from "../../../domain/services/recomentation.service";
+import { SongRecommentationService } from "../../services/recomentation/song.recomentation.service";
+import { AlbumDetailsUseCase } from "../../../usecases/user/album/albumDetails.useCase";
 
 export const userModule = {
-    // services
+    // Repository
     userReposistory: asClass<IUserRepository>(MongooseUserRepository).scoped(),
     mongooseSongRepository: asClass<ISongRepository>(MongooseSongRepository).scoped(),
     mongooseAlbumRepository: asClass<IAlbumRepository>(MongooseAlbumRepository).scoped(),
+
+    // services
+    recomentationService: asClass<IRecomentationService>(SongRecommentationService).scoped(),
 
     //useCases
     editProfileUserUsecase: asClass(editProfileUsecase).scoped(),
@@ -26,6 +32,7 @@ export const userModule = {
 
     // song usecases
     songDetailsUsecase: asClass(SongDetailsUseCase).scoped(),
+    albumDetailsUsecase: asClass(AlbumDetailsUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

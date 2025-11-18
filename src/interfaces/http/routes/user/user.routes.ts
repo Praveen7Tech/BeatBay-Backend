@@ -14,6 +14,7 @@ export default (container: AwilixContainer): Router=> {
     router.get('/fetch-albums', authMiddleware, userController.fetchAlbums)
 
     router.get('/song-details/:id', authMiddleware, userController.songDetails)
+    router.get('/album-details/:id', authMiddleware, userController.albumDetails)
 
     return router
 }

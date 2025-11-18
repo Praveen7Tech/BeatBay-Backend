@@ -1,3 +1,4 @@
+import { duration } from "zod/v4/classic/iso.cjs";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { ITransactionManager } from "../../../domain/services/transaction.service";
@@ -24,6 +25,7 @@ export class UploadSongUseCase {
                 lyricsUrl: request.lrcFilePath,
                 artistId:artistId,
                 coverImageUrl:request.coverImagePath,
+                duration: request.duration
             }
         const newSong = await this.songRepository.create(songData, session)
 

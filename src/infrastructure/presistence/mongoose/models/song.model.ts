@@ -30,6 +30,9 @@ const songSchema = new Schema({
     description: {
         type: String
     },
+    duration:{
+        type: String
+    },
     tags: {
         type: [String]
     },

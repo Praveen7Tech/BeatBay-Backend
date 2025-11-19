@@ -16,5 +16,10 @@ export default (container: AwilixContainer): Router=> {
     router.get('/song-details/:id', authMiddleware, userController.songDetails)
     router.get('/album-details/:id', authMiddleware, userController.albumDetails)
 
+    router.get('/artist-details/:id', authMiddleware, userController.artistDetails)
+    router.get('/is-following/:artistId', authMiddleware, userController.checkFollowStatus)
+    router.post('/follow/:artistId', authMiddleware, userController.followArtist)
+    router.delete('/follow/:artistId', authMiddleware, userController.unFollowArtist)
+
     return router
 }

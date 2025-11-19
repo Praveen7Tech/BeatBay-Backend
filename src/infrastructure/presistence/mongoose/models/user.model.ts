@@ -11,6 +11,14 @@ const userSchema = new Schema<UserDocument>(
     profilePicture: { type: String },
     role: { type: String, enum: ['user', 'admin', 'artist'], default: 'user' },
     status: { type: Boolean, default: true }, 
+    followingArtists: [{
+      type: Schema.Types.ObjectId,
+      ref: "Artist"
+    }],
+    followingCount: {
+      type: Number,
+      default: 0
+    }
   },
   { timestamps: true }
 );

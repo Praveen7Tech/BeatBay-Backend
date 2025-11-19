@@ -10,6 +10,10 @@ import { FetchSongsUsecase } from "../../../../usecases/user/fetchSongs.useCase"
 import { FetchAlbumsUsecase } from "../../../../usecases/user/fetchAlbums.useCase"
 import { SongDetailsUseCase } from "../../../../usecases/user/song/songDetails.useCase"
 import { AlbumDetailsUseCase } from "../../../../usecases/user/album/albumDetails.useCase"
+import { ArtistDetailsUseCase } from "../../../../usecases/user/artist/artistDeatils.useCase"
+import { CheckFollowStatusUseCase } from "../../../../usecases/user/artist/checkFollowStatus.useCase"
+import { FollowArtistUseCase } from "../../../../usecases/user/artist/followArtist.useCase"
+import { UnfollowArtistUseCase } from "../../../../usecases/user/artist/unFollowArtist.useCase"
 
 export class UserController{
     constructor(
@@ -18,7 +22,12 @@ export class UserController{
         private readonly fetchSongsUsecase: FetchSongsUsecase,
         private readonly fetchAlbumsUsecase: FetchAlbumsUsecase,
         private readonly songDetailsUsecase: SongDetailsUseCase,
-        private readonly albumDetailsUsecase: AlbumDetailsUseCase
+        private readonly albumDetailsUsecase: AlbumDetailsUseCase,
+        private readonly artistDetailsUsecase: ArtistDetailsUseCase,
+        private readonly checkFollowStatusUsecase:CheckFollowStatusUseCase,
+        private readonly followArtistUsecase:FollowArtistUseCase,
+        private readonly unfollowArtistUsecase: UnfollowArtistUseCase
+        
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction) =>{
@@ -89,7 +98,6 @@ export class UserController{
         try {
             const userId = req.user?.id
             const songId = req.params.id
-            console.log("song id ", songId)
             if(!userId || !songId){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
@@ -113,6 +121,74 @@ export class UserController{
             const result = await this.albumDetailsUsecase.execute(albumId)
 
             return res.status(StatusCode.OK).json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    artistDetails = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            const artistId = req.params.id
+            if(!userId || !artistId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const result = await this.artistDetailsUsecase.execute(artistId)
+
+            return res.status(StatusCode.OK).json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    checkFollowStatus = async(req: AuthRequest, res:Response, next: NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            const artistId = req.params.artistId
+
+             if(!userId || !artistId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const isFollowing = await this.checkFollowStatusUsecase.execute(userId, artistId)
+
+            return res.status(StatusCode.OK).json(isFollowing)
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    followArtist = async(req: AuthRequest, res:Response, next: NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            const artistId = req.params.artistId
+
+             if(!userId || !artistId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const follow = await this.followArtistUsecase.execute(userId, artistId)
+            return res.status(StatusCode.OK).json({message: "Artist followed successfully"})
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    unFollowArtist = async(req: AuthRequest, res:Response, next: NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            const artistId = req.params.artistId
+
+             if(!userId || !artistId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const unfollow = await this.unfollowArtistUsecase.execute(userId, artistId)
+            return res.status(StatusCode.OK).json({message: "Unfollow Artist successfull."})
+
         } catch (error) {
             next(error)
         }

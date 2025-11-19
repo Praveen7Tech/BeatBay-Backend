@@ -1,6 +1,7 @@
 import { IUserRepository } from '../../../../domain/repositories/user.repository';
 import { User } from '../../../../domain/entities/user.entity';
 import { UserModel } from '../models/user.model';
+import { userModule } from '../../../di/modules/user.module';
 
 export class MongooseUserRepository implements IUserRepository {
   constructor() {}
@@ -25,5 +26,24 @@ export class MongooseUserRepository implements IUserRepository {
     return UserModel.findOneAndUpdate({ _id }, entity, { new: true }).lean();
   }
 
+  async isFollowing(userId: string, artistId: string): Promise<boolean> {
+      const user = await UserModel.findById(userId).select("followingArtists")
+
+      return user?.followingArtists?.includes(artistId) || false
+  }
+
+  async addFollow(userId: string, artistId: string): Promise<void> {
+      await UserModel.findByIdAndUpdate(userId,{
+        $addToSet:{followingArtists: artistId},
+        $inc:{followingCount: 1}
+      }).exec()
+  }
+
+  async removeFollow(userId: string, artistId: string): Promise<void> {
+      await UserModel.findByIdAndUpdate(userId,{
+        $pull:{followingArtists: artistId},
+        $inc:{followingCount:-1}
+      }).exec()
+  }
 
 }

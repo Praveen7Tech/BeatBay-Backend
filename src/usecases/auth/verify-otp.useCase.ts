@@ -36,6 +36,7 @@ export class VerifyOtpUsecase {
       googleId:null, 
       profilePicture:null,
       role:"user",
+      followingArtists:[]
     });
     await this.cacheService.delete(cacheKey);
   }

@@ -14,12 +14,19 @@ import { SongDetailsUseCase } from "../../../usecases/user/song/songDetails.useC
 import { IRecomentationService } from "../../../domain/services/recomentation.service";
 import { SongRecommentationService } from "../../services/recomentation/song.recomentation.service";
 import { AlbumDetailsUseCase } from "../../../usecases/user/album/albumDetails.useCase";
+import { ArtistDetailsUseCase } from "../../../usecases/user/artist/artistDeatils.useCase";
+import { IArtistRepository } from "../../../domain/repositories/artist.repository";
+import { MongooseArtistRepository } from "../../presistence/mongoose/repositories/mongoose.artist.repository";
+import { CheckFollowStatusUseCase } from "../../../usecases/user/artist/checkFollowStatus.useCase";
+import { FollowArtistUseCase } from "../../../usecases/user/artist/followArtist.useCase";
+import { UnfollowArtistUseCase } from "../../../usecases/user/artist/unFollowArtist.useCase";
 
 export const userModule = {
     // Repository
     userReposistory: asClass<IUserRepository>(MongooseUserRepository).scoped(),
     mongooseSongRepository: asClass<ISongRepository>(MongooseSongRepository).scoped(),
     mongooseAlbumRepository: asClass<IAlbumRepository>(MongooseAlbumRepository).scoped(),
+    mongooseArtistRepository: asClass<IArtistRepository>(MongooseArtistRepository).scoped(),
 
     // services
     recomentationService: asClass<IRecomentationService>(SongRecommentationService).scoped(),
@@ -33,6 +40,12 @@ export const userModule = {
     // song usecases
     songDetailsUsecase: asClass(SongDetailsUseCase).scoped(),
     albumDetailsUsecase: asClass(AlbumDetailsUseCase).scoped(),
+    artistDetailsUsecase: asClass(ArtistDetailsUseCase).scoped(),
+
+    // follow/unfollow
+    checkFollowStatusUsecase: asClass(CheckFollowStatusUseCase).scoped(),
+    followArtistUsecase: asClass(FollowArtistUseCase).scoped(),
+    unfollowArtistUsecase: asClass(UnfollowArtistUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

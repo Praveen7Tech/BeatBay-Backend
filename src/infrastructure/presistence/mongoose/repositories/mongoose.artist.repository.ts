@@ -16,7 +16,10 @@ export class MongooseArtistRepository implements IArtistRepository {
     }
 
      async findById(id: string): Promise<Artist | null> {
-        return ArtistModel.findById(id).lean();
+        return ArtistModel.findById(id)
+        .populate("songs")
+        .populate("albums")
+        .lean();
       }
     
       

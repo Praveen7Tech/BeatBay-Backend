@@ -20,7 +20,6 @@ export class SongDetailsUseCase {
         
        const artistId = songDetails?.artistId
        const genre = songDetails?.genre
-       console.log("genre--", genre)
 
         let artistIdString: string | undefined
 
@@ -39,7 +38,6 @@ export class SongDetailsUseCase {
             songId,artistIdString,genre
         )
 
-        console.log("reco--", recomentations)
 
         return {songs: songDetails, recomentations: recomentations}
     }

@@ -7,6 +7,8 @@ export interface User {
   googleId?: string| null;
   role : 'user' | 'admin';
   status?: boolean;
+  followingArtists?: string[]
+  followingCount?: number
   createdAt?: Date;
   updatedAt?: Date;
 }

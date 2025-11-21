@@ -20,6 +20,7 @@ import { MongooseArtistRepository } from "../../presistence/mongoose/repositorie
 import { CheckFollowStatusUseCase } from "../../../usecases/user/artist/checkFollowStatus.useCase";
 import { FollowArtistUseCase } from "../../../usecases/user/artist/followArtist.useCase";
 import { UnfollowArtistUseCase } from "../../../usecases/user/artist/unFollowArtist.useCase";
+import { GetFollowingListUseCase } from "../../../usecases/user/follow/following.useCase";
 
 export const userModule = {
     // Repository
@@ -46,6 +47,7 @@ export const userModule = {
     checkFollowStatusUsecase: asClass(CheckFollowStatusUseCase).scoped(),
     followArtistUsecase: asClass(FollowArtistUseCase).scoped(),
     unfollowArtistUsecase: asClass(UnfollowArtistUseCase).scoped(),
+    followingUsecase: asClass(GetFollowingListUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

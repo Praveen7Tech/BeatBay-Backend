@@ -2,6 +2,7 @@ import { IUserRepository } from '../../../../domain/repositories/user.repository
 import { User } from '../../../../domain/entities/user.entity';
 import { UserModel } from '../models/user.model';
 import { userModule } from '../../../di/modules/user.module';
+import { Artist } from '../../../../domain/entities/arist.entity';
 
 export class MongooseUserRepository implements IUserRepository {
   constructor() {}
@@ -44,6 +45,18 @@ export class MongooseUserRepository implements IUserRepository {
         $pull:{followingArtists: artistId},
         $inc:{followingCount:-1}
       }).exec()
+  }
+
+  async following(userId: string): Promise<Artist[] | []> {
+      const following = await UserModel.findById(userId)
+      .select("followingArtists")
+      .populate({
+        path: "followingArtists",
+        select: "name role profilePicture"
+      })
+      .exec()
+
+      return following?.followingArtists as unknown as Artist[] || []
   }
 
 }

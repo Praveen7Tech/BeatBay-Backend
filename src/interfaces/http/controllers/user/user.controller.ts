@@ -14,6 +14,7 @@ import { ArtistDetailsUseCase } from "../../../../usecases/user/artist/artistDea
 import { CheckFollowStatusUseCase } from "../../../../usecases/user/artist/checkFollowStatus.useCase"
 import { FollowArtistUseCase } from "../../../../usecases/user/artist/followArtist.useCase"
 import { UnfollowArtistUseCase } from "../../../../usecases/user/artist/unFollowArtist.useCase"
+import { GetFollowingListUseCase } from "../../../../usecases/user/follow/following.useCase"
 
 export class UserController{
     constructor(
@@ -26,7 +27,8 @@ export class UserController{
         private readonly artistDetailsUsecase: ArtistDetailsUseCase,
         private readonly checkFollowStatusUsecase:CheckFollowStatusUseCase,
         private readonly followArtistUsecase:FollowArtistUseCase,
-        private readonly unfollowArtistUsecase: UnfollowArtistUseCase
+        private readonly unfollowArtistUsecase: UnfollowArtistUseCase,
+        private readonly followingUsecase: GetFollowingListUseCase
         
     ){}
 
@@ -189,6 +191,21 @@ export class UserController{
             const unfollow = await this.unfollowArtistUsecase.execute(userId, artistId)
             return res.status(StatusCode.OK).json({message: "Unfollow Artist successfull."})
 
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    following = async(req: AuthRequest, res: Response, next:NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            if(!userId ){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const following = await this.followingUsecase.execute(userId)
+
+            return res.status(StatusCode.OK).json(following)
         } catch (error) {
             next(error)
         }

@@ -21,6 +21,10 @@ import { CheckFollowStatusUseCase } from "../../../usecases/user/artist/checkFol
 import { FollowArtistUseCase } from "../../../usecases/user/artist/followArtist.useCase";
 import { UnfollowArtistUseCase } from "../../../usecases/user/artist/unFollowArtist.useCase";
 import { GetFollowingListUseCase } from "../../../usecases/user/follow/following.useCase";
+import { CreatePlayListUseCase } from "../../../usecases/user/playList/createPlayList.useCase";
+import { IPlayListRepository } from "../../../domain/repositories/playList.repository";
+import { MongoosePlayListRepository } from "../../presistence/mongoose/repositories/mongoose.playList.repository";
+import { GetPlayListUseCase } from "../../../usecases/user/playList/getPlayList.useCase";
 
 export const userModule = {
     // Repository
@@ -28,6 +32,7 @@ export const userModule = {
     mongooseSongRepository: asClass<ISongRepository>(MongooseSongRepository).scoped(),
     mongooseAlbumRepository: asClass<IAlbumRepository>(MongooseAlbumRepository).scoped(),
     mongooseArtistRepository: asClass<IArtistRepository>(MongooseArtistRepository).scoped(),
+    mongoosePlayListRepository: asClass<IPlayListRepository>(MongoosePlayListRepository).scoped(),
 
     // services
     recomentationService: asClass<IRecomentationService>(SongRecommentationService).scoped(),
@@ -48,6 +53,10 @@ export const userModule = {
     followArtistUsecase: asClass(FollowArtistUseCase).scoped(),
     unfollowArtistUsecase: asClass(UnfollowArtistUseCase).scoped(),
     followingUsecase: asClass(GetFollowingListUseCase).scoped(),
+
+    //playList
+    createPlayListUsecase: asClass(CreatePlayListUseCase).scoped(),
+    getPlayListUsecase: asClass(GetPlayListUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

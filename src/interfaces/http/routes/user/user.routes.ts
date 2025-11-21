@@ -3,7 +3,6 @@ import { Router } from "express"
 import { UserController } from "../../controllers/user/user.controller"
 import { authMiddleware } from "../../../middleware/authMiddleware"
 import { upload } from "../../../middleware/multer"
-import authRoutes from "../auth.routes"
 
 export default (container: AwilixContainer): Router=> {
     const router = Router()
@@ -22,6 +21,9 @@ export default (container: AwilixContainer): Router=> {
     router.post('/follow/:artistId', authMiddleware, userController.followArtist)
     router.delete('/follow/:artistId', authMiddleware, userController.unFollowArtist)
     router.get('/following', authMiddleware, userController.following)
+
+    router.post('/create-playlist', authMiddleware, userController.createPlayList)
+    router.get('/playList-details/:playListId', authMiddleware, userController.getPlayList)
 
     return router
 }

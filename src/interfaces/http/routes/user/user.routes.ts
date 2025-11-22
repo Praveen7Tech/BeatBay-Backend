@@ -24,6 +24,8 @@ export default (container: AwilixContainer): Router=> {
 
     router.post('/create-playlist', authMiddleware, userController.createPlayList)
     router.get('/playList-details/:playListId', authMiddleware, userController.getPlayList)
+    router.get('/get-playlist', authMiddleware, userController.getAllPlaylists)
+    router.post('/addTo-playList/:playListId', authMiddleware, userController.addToPlayList)
 
     return router
 }

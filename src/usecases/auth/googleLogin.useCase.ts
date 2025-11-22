@@ -29,6 +29,7 @@ export class GoogleLoginUsecase {
         email,
         password:null,
         googleId:sub,
+        playLists:[],
         profilePicture: picture,
         role: 'user',
       });

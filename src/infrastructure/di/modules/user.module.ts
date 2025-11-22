@@ -25,6 +25,8 @@ import { CreatePlayListUseCase } from "../../../usecases/user/playList/createPla
 import { IPlayListRepository } from "../../../domain/repositories/playList.repository";
 import { MongoosePlayListRepository } from "../../presistence/mongoose/repositories/mongoose.playList.repository";
 import { GetPlayListUseCase } from "../../../usecases/user/playList/getPlayList.useCase";
+import { GetAllPlaylistUseCase } from "../../../usecases/user/playList/getAllPlaylist.useCase";
+import { AddToPlayListUseCase } from "../../../usecases/user/playList/addToPlayList.useCase";
 
 export const userModule = {
     // Repository
@@ -57,6 +59,8 @@ export const userModule = {
     //playList
     createPlayListUsecase: asClass(CreatePlayListUseCase).scoped(),
     getPlayListUsecase: asClass(GetPlayListUseCase).scoped(),
+    getAllPlayListUsecase: asClass(GetAllPlaylistUseCase).scoped(),
+    addToPlayListUsecase: asClass(AddToPlayListUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

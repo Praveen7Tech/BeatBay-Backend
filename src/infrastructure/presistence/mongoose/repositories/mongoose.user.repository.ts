@@ -3,6 +3,8 @@ import { User } from '../../../../domain/entities/user.entity';
 import { UserModel } from '../models/user.model';
 import { userModule } from '../../../di/modules/user.module';
 import { Artist } from '../../../../domain/entities/arist.entity';
+import { ClientSession, model } from 'mongoose';
+import path from 'path';
 
 export class MongooseUserRepository implements IUserRepository {
   constructor() {}
@@ -57,6 +59,30 @@ export class MongooseUserRepository implements IUserRepository {
       .exec()
 
       return following?.followingArtists as unknown as Artist[] || []
+  }
+
+  async addPlayList(userId: string, playListId: string, session?: ClientSession): Promise<void> {
+      await UserModel.findByIdAndUpdate(
+        userId,
+        {$push:{playLists: playListId}},
+        {new: true, session}
+      )
+  }
+
+  async findPlayListByUser(id: string): Promise<User | null> {
+          const userDoc = await UserModel.findById(id)
+              .populate({
+                  path: 'playLists', 
+                  model: 'PlayList', 
+                  populate: {
+                      path: 'songs',     
+                      model: 'Song',   
+                  },
+              })  
+              .lean() 
+              .exec(); 
+          
+          return userDoc 
   }
 
 }

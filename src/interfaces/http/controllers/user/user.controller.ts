@@ -17,6 +17,8 @@ import { UnfollowArtistUseCase } from "../../../../usecases/user/artist/unFollow
 import { GetFollowingListUseCase } from "../../../../usecases/user/follow/following.useCase"
 import { CreatePlayListUseCase } from "../../../../usecases/user/playList/createPlayList.useCase"
 import { GetPlayListUseCase } from "../../../../usecases/user/playList/getPlayList.useCase"
+import { GetAllPlaylistUseCase } from "../../../../usecases/user/playList/getAllPlaylist.useCase"
+import { AddToPlayListUseCase } from "../../../../usecases/user/playList/addToPlayList.useCase"
 
 export class UserController{
     constructor(
@@ -32,7 +34,9 @@ export class UserController{
         private readonly unfollowArtistUsecase: UnfollowArtistUseCase,
         private readonly followingUsecase: GetFollowingListUseCase,
         private readonly createPlayListUsecase: CreatePlayListUseCase,
-        private readonly getPlayListUsecase: GetPlayListUseCase
+        private readonly getPlayListUsecase: GetPlayListUseCase,
+        private readonly getAllPlayListUsecase: GetAllPlaylistUseCase,
+        private readonly addToPlayListUsecase: AddToPlayListUseCase
         
     ){}
 
@@ -222,7 +226,7 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const playlist = await this.createPlayListUsecase.execute()
+            const playlist = await this.createPlayListUsecase.execute(userId)
             return res.status(StatusCode.CREATED).json(playlist)
         } catch (error) {
             next(error)
@@ -240,6 +244,38 @@ export class UserController{
             const playlist = await this.getPlayListUsecase.execute(playListId)
 
             return res.status(StatusCode.OK).json(playlist)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    getAllPlaylists = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            if(!userId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const plalists = await this.getAllPlayListUsecase.execute(userId)
+
+            return res.status(StatusCode.OK).json(plalists)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    addToPlayList = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            const playListId = req.params.playListId
+            const {songId} = req.body
+            if(!userId || !playListId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const result = await this.addToPlayListUsecase.execute(playListId,songId)
+
+            return res.status(StatusCode.CREATED).json({message: "song added to playlist"})
         } catch (error) {
             next(error)
         }

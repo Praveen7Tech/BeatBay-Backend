@@ -8,4 +8,5 @@ export interface ISongRepository{
     create(songData: CreateSongData, session?:ClientSession): Promise<Song>;
     getAll(): Promise<Song[]>
     findById(id: string): Promise<Song | null>
+    searchByQuery(query: string, options?: {limit?: number; offset?: number}): Promise<Song[]>
 }

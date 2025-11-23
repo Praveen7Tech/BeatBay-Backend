@@ -24,4 +24,30 @@ export class MongooseSongRepository implements ISongRepository{
         })
         .lean().exec()
     }
+
+    async searchByQuery(query: string, options?: { limit?: number; offset?: number; }): Promise<Song[]> {
+        const {limit = 20, offset = 0} = options || {}
+        const SearchQury = {
+            $or:[
+                {title: {$regex: query, $options: "i"}},
+                {artsitName: {$regex: query, $options: "i"}},
+                {album : {$regex: query, $options: "i"}}
+            ]
+        }
+
+        const song = await SongModel
+        .find(SearchQury)
+        .skip(offset)
+        .limit(limit)
+
+        return song
+
+        // return song.map((s)=>({
+        //     id:s._id,
+        //     title: s.title,
+        //     artistName: s.artistId,
+        //     duration: s.duration,
+        //     coverImageUrl: s.coverImageUrl
+        // }))
+    }
 }

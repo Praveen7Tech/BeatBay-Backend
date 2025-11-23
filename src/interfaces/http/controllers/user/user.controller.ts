@@ -19,6 +19,7 @@ import { CreatePlayListUseCase } from "../../../../usecases/user/playList/create
 import { GetPlayListUseCase } from "../../../../usecases/user/playList/getPlayList.useCase"
 import { GetAllPlaylistUseCase } from "../../../../usecases/user/playList/getAllPlaylist.useCase"
 import { AddToPlayListUseCase } from "../../../../usecases/user/playList/addToPlayList.useCase"
+import { SearchSongsUseCase } from "../../../../usecases/user/song/searchSong.useCase"
 
 export class UserController{
     constructor(
@@ -36,7 +37,8 @@ export class UserController{
         private readonly createPlayListUsecase: CreatePlayListUseCase,
         private readonly getPlayListUsecase: GetPlayListUseCase,
         private readonly getAllPlayListUsecase: GetAllPlaylistUseCase,
-        private readonly addToPlayListUsecase: AddToPlayListUseCase
+        private readonly addToPlayListUsecase: AddToPlayListUseCase,
+        private readonly searchSongsUseCase: SearchSongsUseCase
         
     ){}
 
@@ -280,4 +282,24 @@ export class UserController{
             next(error)
         }
     }
+
+    searchSongs = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const query = String(req.query.q || "");
+      const limit = req.query.limit ? Number(req.query.limit) : undefined;
+      const offset = req.query.offset ? Number(req.query.offset) : undefined;
+
+      const songs = await this.searchSongsUseCase.execute({
+        query,
+        limit,
+        offset,
+      });
+
+      console.log("songy", songs)
+
+      res.status(StatusCode.OK).json(songs);
+    } catch (error) {
+      next(error)
+    }
+  };
 }

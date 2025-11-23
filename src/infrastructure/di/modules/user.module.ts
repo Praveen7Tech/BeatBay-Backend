@@ -27,6 +27,7 @@ import { MongoosePlayListRepository } from "../../presistence/mongoose/repositor
 import { GetPlayListUseCase } from "../../../usecases/user/playList/getPlayList.useCase";
 import { GetAllPlaylistUseCase } from "../../../usecases/user/playList/getAllPlaylist.useCase";
 import { AddToPlayListUseCase } from "../../../usecases/user/playList/addToPlayList.useCase";
+import { SearchSongsUseCase } from "../../../usecases/user/song/searchSong.useCase";
 
 export const userModule = {
     // Repository
@@ -61,6 +62,7 @@ export const userModule = {
     getPlayListUsecase: asClass(GetPlayListUseCase).scoped(),
     getAllPlayListUsecase: asClass(GetAllPlaylistUseCase).scoped(),
     addToPlayListUsecase: asClass(AddToPlayListUseCase).scoped(),
+    searchSongsUseCase: asClass(SearchSongsUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

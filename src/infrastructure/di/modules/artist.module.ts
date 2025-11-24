@@ -14,7 +14,7 @@ import { ArtistGoogleLoginUseCase } from "../../../usecases/artist/artistGoogleS
 import { ArtistVerifyEmailUsecase } from "../../../usecases/artist/artistVerifyEmail.useCase";
 import { ArtistResetPasswordUsecase } from "../../../usecases/artist/artistResetPassword.useCase";
 import { ArtistChangePasswordUsecase } from "../../../usecases/artist/artistChangePassword.useCase";
-import { UploadSongUseCase } from "../../../usecases/artist/song/UploadSong.useCase";
+import { UploadSongUseCase } from "../../../usecases/artist/song/uploadSong.useCase";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { MongooseSongRepository } from "../../presistence/mongoose/repositories/mongoose.song.repository";
 import { GetSongsUseCase } from "../../../usecases/artist/song/getSongs.useCase";
@@ -22,6 +22,8 @@ import { ArtistCreateAlbumUseCase } from "../../../usecases/artist/album/createA
 import { MongooseAlbumRepository } from "../../presistence/mongoose/repositories/mongoose.album.repository";
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
 import { artistGetAlbumsUseCase } from "../../../usecases/artist/album/artistGetAlbums.useCase";
+import { GetSongDetailsByIdUseCase } from "../../../usecases/artist/song/getSongById.useCase";
+import { EditSongUseCase } from "../../../usecases/artist/song/editSong.useCase";
 
 export const artistModule = {
 
@@ -45,6 +47,8 @@ export const artistModule = {
     // song usecases
     artistUploadSongUsecase: asClass(UploadSongUseCase).scoped(),
     artistGetSongsUsecase: asClass(GetSongsUseCase).scoped(),
+    artistsongDetailsUsecase: asClass(GetSongDetailsByIdUseCase).scoped(),
+    editSongUsecase: asClass(EditSongUseCase).scoped(),
 
     // albums usecase
     artistCreateAlbumUsecase: asClass(ArtistCreateAlbumUseCase).scoped(),

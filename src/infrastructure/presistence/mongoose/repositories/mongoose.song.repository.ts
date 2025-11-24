@@ -42,12 +42,15 @@ export class MongooseSongRepository implements ISongRepository{
 
         return song
 
-        // return song.map((s)=>({
-        //     id:s._id,
-        //     title: s.title,
-        //     artistName: s.artistId,
-        //     duration: s.duration,
-        //     coverImageUrl: s.coverImageUrl
-        // }))
+    }
+
+     async edit(songId: string, data: Partial<Song>): Promise<Song | null> {
+        const updatedSong = await SongModel.findByIdAndUpdate(
+            songId,
+            { $set: data }, // Use $set to update only the fields provided in the 'data' object
+            { new: true }   // Return the updated document
+        ).lean().exec();
+
+        return updatedSong ? (updatedSong as unknown as Song) : null;
     }
 }

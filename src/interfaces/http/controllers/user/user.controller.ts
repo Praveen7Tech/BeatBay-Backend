@@ -20,6 +20,7 @@ import { GetPlayListUseCase } from "../../../../usecases/user/playList/getPlayLi
 import { GetAllPlaylistUseCase } from "../../../../usecases/user/playList/getAllPlaylist.useCase"
 import { AddToPlayListUseCase } from "../../../../usecases/user/playList/addToPlayList.useCase"
 import { SearchSongsUseCase } from "../../../../usecases/user/song/searchSong.useCase"
+import { EditPlayListUseCase } from "../../../../usecases/user/playList/editPlayList.useCase"
 
 export class UserController{
     constructor(
@@ -38,7 +39,8 @@ export class UserController{
         private readonly getPlayListUsecase: GetPlayListUseCase,
         private readonly getAllPlayListUsecase: GetAllPlaylistUseCase,
         private readonly addToPlayListUsecase: AddToPlayListUseCase,
-        private readonly searchSongsUseCase: SearchSongsUseCase
+        private readonly searchSongsUseCase: SearchSongsUseCase,
+        private readonly editPlauListUsecase: EditPlayListUseCase
         
     ){}
 
@@ -301,5 +303,21 @@ export class UserController{
     } catch (error) {
       next(error)
     }
-  };
+    };
+
+    editPlayList = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const playListId = req.params.playListId;
+            const updateData = req.body; 
+
+            if(req.file){
+                updateData.coverImageUrl = req.file.filename; 
+            }
+            const result = await this.editPlauListUsecase.execute(playListId, updateData);
+
+            return res.status(StatusCode.OK).json({message: "Playlist updated successfully", data: result});
+        } catch (error) {
+            next(error);
+        }
+    }
 }

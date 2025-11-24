@@ -36,7 +36,10 @@ const songSchema = new Schema({
     tags: {
         type: [String]
     },
-    releaseDate: Date,
+    releaseDate: {
+        type: Date,
+        default: Date.now()
+    },
 }, { timestamps: true });
 
 export const SongModel: Model<SongDocument> = mongoose.model<SongDocument>('Song', songSchema);

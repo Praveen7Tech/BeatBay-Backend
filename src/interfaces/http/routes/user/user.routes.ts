@@ -3,6 +3,7 @@ import { Router } from "express"
 import { UserController } from "../../controllers/user/user.controller"
 import { authMiddleware } from "../../../middleware/authMiddleware"
 import { upload } from "../../../middleware/multer"
+import { PlayList } from "../../../middleware/editPlayList.Middleware"
 
 export default (container: AwilixContainer): Router=> {
     const router = Router()
@@ -26,6 +27,7 @@ export default (container: AwilixContainer): Router=> {
     router.get('/get-playlist/:playListId', authMiddleware, userController.getPlayList)
     router.get('/get-user-playlist', authMiddleware, userController.getAllPlaylists)
     router.post('/addTo-playList/:playListId', authMiddleware, userController.addToPlayList)
+    router.post('/edit-playList/:playListId', authMiddleware, PlayList.single("coverImage"), userController.editPlayList)
 
     router.get('/searchSong', authMiddleware, userController.searchSongs)
 

@@ -31,4 +31,14 @@ export class  MongoosePlayListRepository implements IPlayListRepository{
         }).lean().exec()
 
     }
+
+    async edit(playListId: string, entity: Partial<PlayList>): Promise<PlayList | null> {
+        const playlist = await PlayListModel.findByIdAndUpdate(
+            playListId,
+            { $set: entity }, 
+            { new: true }     
+        ).lean().exec();
+
+        return playlist ? playlist  : null;
+    }
 }

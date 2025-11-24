@@ -1,5 +1,6 @@
 import mongoose, { HydratedDocument, Model, model, Schema } from "mongoose";
 import { PlayList } from "../../../../domain/entities/playList.entiy";
+import { string } from "zod";
 
 export type PlayListDocument = HydratedDocument<PlayList>
 
@@ -11,6 +12,14 @@ const PlayListSchema = new Schema({
     name:{
         type: String,
         required: true
+    },
+    description:{
+        type: String,
+        default: null
+    },
+    coverImageUrl:{
+        type: String,
+        default: null
     },
     songs: [{
         type: Schema.Types.ObjectId,

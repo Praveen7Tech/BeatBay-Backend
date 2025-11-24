@@ -14,13 +14,12 @@ export class UploadSongUseCase {
     async execute(artistId:string,request: UploadSongDTO): Promise<{success: boolean}>{
 
         await this.transactionManager.withTransaction(async(session)=>{
-
+            const date = Date.now()
             const songData = {
                 title: request.title,
                 description:request.description,
                 genre:request.genre,
                 tags:request.tags,
-                releaseDate:new Date(request.releaseDate),
                 audioUrl:request.songFilePath,
                 lyricsUrl: request.lrcFilePath,
                 artistId:artistId,

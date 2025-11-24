@@ -12,7 +12,7 @@ import { ArtistResetPasswordUsecase } from "../../../../usecases/artist/artistRe
 import { ArtistChangePasswordUsecase } from "../../../../usecases/artist/artistChangePassword.useCase";
 import { UploadSongDTO } from "../../../../usecases/dto/song/song.dto";
 import { UploadSongRequestSchema } from "../../validators/song/song.validator";
-import { UploadSongUseCase } from "../../../../usecases/artist/song/UploadSong.useCase";
+import { UploadSongUseCase } from "../../../../usecases/artist/song/uploadSong.useCase";
 import { GetSongsUseCase } from "../../../../usecases/artist/song/getSongs.useCase";
 import { ArtistCreateAlbumUseCase } from "../../../../usecases/artist/album/createAlbums.useCase";
 import { CreateAlbumDTO } from "../../../../usecases/dto/album/album.dto";
@@ -21,6 +21,8 @@ import { artistGetAlbumsUseCase } from "../../../../usecases/artist/album/artist
 
 import ffprobe from 'ffprobe';
 import ffprobeStatic from 'ffprobe-static';
+import { GetSongDetailsByIdUseCase } from "../../../../usecases/artist/song/getSongById.useCase";
+import { EditSongUseCase } from "../../../../usecases/artist/song/editSong.useCase";
 
 export class ArtistController {
     constructor(
@@ -31,7 +33,9 @@ export class ArtistController {
         private readonly artistUploadSongUsecase: UploadSongUseCase,
         private readonly artistGetSongsUsecase :GetSongsUseCase,
         private readonly artistCreateAlbumUsecase: ArtistCreateAlbumUseCase,
-        private readonly artistGetAlbumsUsecase: artistGetAlbumsUseCase
+        private readonly artistGetAlbumsUsecase: artistGetAlbumsUseCase,
+        private readonly artistsongDetailsUsecase: GetSongDetailsByIdUseCase,
+        private readonly editSongUsecase: EditSongUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
@@ -183,6 +187,60 @@ export class ArtistController {
 
         } catch (error) {
             next(error)
+        }
+    }
+
+    getSongById = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const artistId = req.user?.id
+            const songId = req.params.songId
+            if(!artistId || !songId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const result =  await this.artistsongDetailsUsecase.execute(songId)
+
+            return res.status(StatusCode.OK).json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+     editSong = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const { songId } = req.params;
+            const artistId = req.user?.id; 
+
+            if(!artistId || !songId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: "Unauthorized"})
+            }
+            
+            const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+            
+            const updateData: Partial<UploadSongDTO> = {...req.body};
+
+            if (files['trackFile'] && files['trackFile'].length > 0) {
+                updateData.songFilePath = files['trackFile'][0].filename;
+                const filePath = files['trackFile'][0].path;
+                try {
+                    const info = await ffprobe(filePath, {path:ffprobeStatic.path});
+                    updateData.duration = info.streams[0].duration;
+                } catch (error) {
+                    console.error("Error determining new song duration:", error);
+                }
+            }
+            if (files['coverImage'] && files['coverImage'].length > 0) {
+                updateData.coverImagePath = files['coverImage'][0].filename;
+            }
+            if (files['lrcFile'] && files['lrcFile'].length > 0) {
+                updateData.lrcFilePath = files['lrcFile'][0].filename;
+            }
+
+            await this.editSongUsecase.execute(songId, updateData); 
+
+            return res.status(StatusCode.OK).json({message:"Song updated successfully"});
+        } catch (error) {
+            next(error);
         }
     }
 }

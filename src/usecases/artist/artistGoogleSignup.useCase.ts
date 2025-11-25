@@ -29,7 +29,7 @@ export class ArtistGoogleLoginUseCase {
         email,
         password:null,
         googleId:sub,
-        profilePicture: picture,
+        profilePicture: null,
         role: 'artist',
       });
     }

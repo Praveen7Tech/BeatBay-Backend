@@ -8,7 +8,6 @@ export class ArtistDetailsUseCase{
 
     async execute(artistId:string): Promise<Artist | null>{
         const artistDetails = await this.mongooseArtistRepository.findById(artistId)
-        console.log("artist ",artistDetails)
         return artistDetails
     }
 }

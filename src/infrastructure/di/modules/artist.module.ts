@@ -24,6 +24,8 @@ import { IAlbumRepository } from "../../../domain/repositories/album.repository"
 import { artistGetAlbumsUseCase } from "../../../usecases/artist/album/artistGetAlbums.useCase";
 import { GetSongDetailsByIdUseCase } from "../../../usecases/artist/song/getSongById.useCase";
 import { EditSongUseCase } from "../../../usecases/artist/song/editSong.useCase";
+import { GetAlbumDetailsByIdUseCase } from "../../../usecases/artist/album/getAlbumDetailsById.useCase";
+import { EditAlbumUseCase } from "../../../usecases/artist/album/artistEditAlbum.useCase";
 
 export const artistModule = {
 
@@ -53,6 +55,8 @@ export const artistModule = {
     // albums usecase
     artistCreateAlbumUsecase: asClass(ArtistCreateAlbumUseCase).scoped(),
     artistGetAlbumsUsecase: asClass(artistGetAlbumsUseCase).scoped(),
+    artistAlbumDetailsUsecase: asClass(GetAlbumDetailsByIdUseCase).scoped(),
+    artistEditAlbumUsecase: asClass(EditAlbumUseCase).scoped(),
     
 
     // controller

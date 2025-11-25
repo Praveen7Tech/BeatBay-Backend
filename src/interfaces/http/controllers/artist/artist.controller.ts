@@ -23,6 +23,8 @@ import ffprobe from 'ffprobe';
 import ffprobeStatic from 'ffprobe-static';
 import { GetSongDetailsByIdUseCase } from "../../../../usecases/artist/song/getSongById.useCase";
 import { EditSongUseCase } from "../../../../usecases/artist/song/editSong.useCase";
+import { GetAlbumDetailsByIdUseCase } from "../../../../usecases/artist/album/getAlbumDetailsById.useCase";
+import { EditAlbumUseCase } from "../../../../usecases/artist/album/artistEditAlbum.useCase";
 
 export class ArtistController {
     constructor(
@@ -35,7 +37,9 @@ export class ArtistController {
         private readonly artistCreateAlbumUsecase: ArtistCreateAlbumUseCase,
         private readonly artistGetAlbumsUsecase: artistGetAlbumsUseCase,
         private readonly artistsongDetailsUsecase: GetSongDetailsByIdUseCase,
-        private readonly editSongUsecase: EditSongUseCase
+        private readonly editSongUsecase: EditSongUseCase,
+        private readonly artistAlbumDetailsUsecase: GetAlbumDetailsByIdUseCase,
+        private readonly artistEditAlbumUsecase: EditAlbumUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
@@ -241,6 +245,49 @@ export class ArtistController {
             return res.status(StatusCode.OK).json({message:"Song updated successfully"});
         } catch (error) {
             next(error);
+        }
+    }
+
+    getAlbumById = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const artistId = req.user?.id
+            const albumId = req.params.albumId
+            if(!artistId || !albumId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const result =  await this.artistAlbumDetailsUsecase.execute(albumId)
+
+            return res.status(StatusCode.OK).json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    editAlbum = async(req: AuthRequest, res:Response, next: NextFunction)=>{
+        try {
+            const artistId = req.user?.id
+            const albumId = req.params.albumId
+            if(!artistId || !albumId || !req.file){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            let coverImageUrl: string | undefined = undefined;
+            if (req.file) {
+                coverImageUrl = req.file.filename; 
+            }
+
+            const dto : CreateAlbumDTO={
+                ...req.body,
+                coverImageUrl
+            }
+            console.log("dto", dto, req.body)
+
+            await this.artistEditAlbumUsecase.execute(artistId,albumId, dto)
+
+            return res.status(StatusCode.CREATED).json({message: "album updated successfully."})
+        } catch (error) {
+            next(error)
         }
     }
 }

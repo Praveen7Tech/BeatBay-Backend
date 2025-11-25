@@ -42,3 +42,9 @@ export class IncorrectPasswordError extends DomainError{
         super(message, StatusCode.BAD_REQUEST)
     }
 }
+
+export class ForbiddenError extends DomainError {
+    constructor(){
+        super("Forbidden!", StatusCode.FORBIDDEN)
+    }
+}

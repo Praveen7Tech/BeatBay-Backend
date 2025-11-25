@@ -33,5 +33,8 @@ export default (container: AwilixContainer): Router=> {
 
     router.put('/edit-song/:songId', authMiddleware, uploadSongMiddleware, artistController.editSong )
 
+    router.get('/get-album/:albumId', authMiddleware, artistController.getAlbumById)
+    router.put('/edit-album/:albumId', authMiddleware, CreateAlbumMiddleware.single("coverImageUrl"), artistController.editAlbum)
+
     return router
 }

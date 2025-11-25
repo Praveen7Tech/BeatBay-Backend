@@ -1,3 +1,4 @@
+import { ClientSession } from "mongoose";
 import { Album } from "../../../../domain/entities/album.entity";
 import { IAlbumRepository } from "../../../../domain/repositories/album.repository";
 import { AlbumModel } from "../models/album.model";
@@ -15,8 +16,8 @@ export class MongooseAlbumRepository implements IAlbumRepository {
            return songs
     }
 
-    findById(id: string): Promise<Album | null> {
-        return AlbumModel.findById(id)
+    async findById(id: string): Promise<Album | null> {
+        return await AlbumModel.findById(id)
         .populate({
             path:'artistId',
             select: 'name profilePicture',
@@ -24,5 +25,25 @@ export class MongooseAlbumRepository implements IAlbumRepository {
         })
         .populate("songs")
         .lean().exec()
+    }
+
+    async getAlbumsByIds(albumIds: string[]): Promise<Album[]> {
+        return AlbumModel.find({ _id: { $in: albumIds } })
+            .populate("songs", "_id");
+    }
+
+    async find(albumId: string): Promise<Album | null> {
+        return await AlbumModel.findById(albumId)
+        .populate("songs")  
+        .lean();
+    }
+
+    async updateById(albumId: string, data: Partial<Album>, session?: ClientSession): Promise<Album | null> {
+        const updatedAlbum = await AlbumModel.findByIdAndUpdate(albumId,
+            {$set: data},
+            {new: true, session}
+        ).lean().exec()
+
+        return updatedAlbum
     }
 }

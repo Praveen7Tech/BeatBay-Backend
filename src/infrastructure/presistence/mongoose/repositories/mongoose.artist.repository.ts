@@ -53,8 +53,10 @@ export class MongooseArtistRepository implements IArtistRepository {
           )
       }
 
-      async fetchAlbums(artistId: string): Promise<Album> {
-          const albums = await ArtistModel.findById(artistId).populate('albums').lean().exec()
-          return albums?.albums as unknown as Album 
+      async fetchAlbums(artistId: string): Promise<string[]> {
+          const artist = await ArtistModel.findById(artistId)
+          .select("albums").lean()
+
+          return artist?.albums ?? []
       }
 }

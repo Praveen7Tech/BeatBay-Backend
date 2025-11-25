@@ -297,7 +297,6 @@ export class UserController{
         offset,
       });
 
-      console.log("songy", songs)
 
       res.status(StatusCode.OK).json(songs);
     } catch (error) {

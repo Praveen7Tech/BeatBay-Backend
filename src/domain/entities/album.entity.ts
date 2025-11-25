@@ -4,7 +4,7 @@ export interface Album{
     artistId:string
     title: string
     description: string
-    coverImageURL: string
+    coverImageUrl: string
     songs: string[]
     createdAt: Date;
     updatedAt: Date;

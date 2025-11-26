@@ -10,4 +10,5 @@ export interface IArtistRepository extends IBaseRepository<Artist> {
     addAlbumIdToArtist(artistId:string, albumId: string, session: ClientSession): Promise<void>
     fetchAlbums(artistId: string): Promise<string[]>
     removeSongIdFromArtist(artistId: string, songId:string, session: ClientSession): Promise<void>
+    removeAlbumIdFromArtist(artistId: string, albumId:string, session: ClientSession): Promise<void>
 }

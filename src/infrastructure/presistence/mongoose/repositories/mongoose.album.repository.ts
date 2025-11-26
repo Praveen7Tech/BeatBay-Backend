@@ -54,4 +54,9 @@ export class MongooseAlbumRepository implements IAlbumRepository {
             {session}
         ).exec()
     }
+
+    async delete(albumId: string, session: ClientSession): Promise<boolean> {
+        const album = await AlbumModel.findByIdAndDelete(albumId).session(session)
+        return album !== null
+    }
 }

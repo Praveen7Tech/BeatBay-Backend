@@ -29,6 +29,7 @@ import { EditAlbumUseCase } from "../../../usecases/artist/album/artistEditAlbum
 import { DeleteSongUseCase } from "../../../usecases/artist/song/deleteSong.useCase";
 import { IPlayListRepository } from "../../../domain/repositories/playList.repository";
 import { MongoosePlayListRepository } from "../../presistence/mongoose/repositories/mongoose.playList.repository";
+import { DeleteAlbumUsecase } from "../../../usecases/artist/album/artistDeleteAlbum.useCase";
 
 export const artistModule = {
 
@@ -62,6 +63,7 @@ export const artistModule = {
     artistGetAlbumsUsecase: asClass(artistGetAlbumsUseCase).scoped(),
     artistAlbumDetailsUsecase: asClass(GetAlbumDetailsByIdUseCase).scoped(),
     artistEditAlbumUsecase: asClass(EditAlbumUseCase).scoped(),
+    artistDeleteAlbumUsecase: asClass(DeleteAlbumUsecase).scoped(),
     
 
     // controller

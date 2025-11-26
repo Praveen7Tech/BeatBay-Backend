@@ -26,6 +26,9 @@ import { GetSongDetailsByIdUseCase } from "../../../usecases/artist/song/getSong
 import { EditSongUseCase } from "../../../usecases/artist/song/editSong.useCase";
 import { GetAlbumDetailsByIdUseCase } from "../../../usecases/artist/album/getAlbumDetailsById.useCase";
 import { EditAlbumUseCase } from "../../../usecases/artist/album/artistEditAlbum.useCase";
+import { DeleteSongUseCase } from "../../../usecases/artist/song/deleteSong.useCase";
+import { IPlayListRepository } from "../../../domain/repositories/playList.repository";
+import { MongoosePlayListRepository } from "../../presistence/mongoose/repositories/mongoose.playList.repository";
 
 export const artistModule = {
 
@@ -34,6 +37,7 @@ export const artistModule = {
     transactionManager: asClass<ITransactionManager>(MongooseTransactionService).scoped(),
     songRepository: asClass<ISongRepository>(MongooseSongRepository).scoped(),
     albumRepository: asClass<IAlbumRepository>(MongooseAlbumRepository).scoped(),
+    playListRepository: asClass<IPlayListRepository>(MongoosePlayListRepository).scoped(),
 
     // usecases
     artistSignupUsecase: asClass(ArtistSignupUsecase).scoped(),
@@ -51,6 +55,7 @@ export const artistModule = {
     artistGetSongsUsecase: asClass(GetSongsUseCase).scoped(),
     artistsongDetailsUsecase: asClass(GetSongDetailsByIdUseCase).scoped(),
     editSongUsecase: asClass(EditSongUseCase).scoped(),
+    artistDeleteSongUsecase: asClass(DeleteSongUseCase).scoped(),
 
     // albums usecase
     artistCreateAlbumUsecase: asClass(ArtistCreateAlbumUseCase).scoped(),

@@ -59,4 +59,12 @@ export class MongooseArtistRepository implements IArtistRepository {
 
           return artist?.albums ?? []
       }
+
+      async removeSongIdFromArtist(artistId: string, songId: string, session: ClientSession): Promise<void> {
+          await ArtistModel.findByIdAndUpdate(
+            artistId,
+            {$pull: {songs: songId}},
+            {session}
+          ).exec()
+      }
 }

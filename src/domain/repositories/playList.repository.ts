@@ -7,4 +7,5 @@ export interface IPlayListRepository {
     findByUserId(userId: string): Promise<PlayList | null>
     update(playListId: string, songId: string): Promise<void>
     edit(playListId: string, entity: Partial<PlayList>): Promise<PlayList | null>;
+    removeSongFromAllPlaylists(songId: string, session: ClientSession): Promise<void>
 }

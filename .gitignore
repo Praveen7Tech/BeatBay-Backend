@@ -1,12 +1,6 @@
-# Dependency directories
 node_modules/
-
-# Logs
-logs/
-*.log
-
-# Build output
-dist/
-
-# Environment variables
+package-lock.json
 .env
+dist/
+build/
+Dockerfile

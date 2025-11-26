@@ -53,4 +53,9 @@ export class MongooseSongRepository implements ISongRepository{
 
         return updatedSong ? (updatedSong as unknown as Song) : null;
     }
+
+    async delete(songId: string, session: ClientSession): Promise<boolean> {
+        const song = await SongModel.findByIdAndDelete(songId).session(session)
+        return song !== null
+    }
 }

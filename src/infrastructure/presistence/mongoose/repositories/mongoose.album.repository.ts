@@ -46,4 +46,12 @@ export class MongooseAlbumRepository implements IAlbumRepository {
 
         return updatedAlbum
     }
+
+    async removeSongFromAllAlbums(songId: string, session: ClientSession): Promise<void> {
+        await AlbumModel.updateMany(
+            {songs: songId},
+            {$pull: {songs: songId}},
+            {session}
+        ).exec()
+    }
 }

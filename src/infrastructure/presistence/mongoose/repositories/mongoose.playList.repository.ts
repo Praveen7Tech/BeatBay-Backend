@@ -41,4 +41,12 @@ export class  MongoosePlayListRepository implements IPlayListRepository{
 
         return playlist ? playlist  : null;
     }
+
+    async removeSongFromAllPlaylists(songId: string, session: ClientSession): Promise<void> {
+        await PlayListModel.updateMany(
+            {songs: songId},
+            {$pull: {songs: songId}},
+            {session}
+        ).exec()
+    }
 }

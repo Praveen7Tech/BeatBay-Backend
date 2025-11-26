@@ -25,6 +25,7 @@ import { GetSongDetailsByIdUseCase } from "../../../../usecases/artist/song/getS
 import { EditSongUseCase } from "../../../../usecases/artist/song/editSong.useCase";
 import { GetAlbumDetailsByIdUseCase } from "../../../../usecases/artist/album/getAlbumDetailsById.useCase";
 import { EditAlbumUseCase } from "../../../../usecases/artist/album/artistEditAlbum.useCase";
+import { DeleteSongUseCase } from "../../../../usecases/artist/song/deleteSong.useCase";
 
 export class ArtistController {
     constructor(
@@ -39,7 +40,8 @@ export class ArtistController {
         private readonly artistsongDetailsUsecase: GetSongDetailsByIdUseCase,
         private readonly editSongUsecase: EditSongUseCase,
         private readonly artistAlbumDetailsUsecase: GetAlbumDetailsByIdUseCase,
-        private readonly artistEditAlbumUsecase: EditAlbumUseCase
+        private readonly artistEditAlbumUsecase: EditAlbumUseCase,
+        private readonly artistDeleteSongUsecase: DeleteSongUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
@@ -286,6 +288,22 @@ export class ArtistController {
             await this.artistEditAlbumUsecase.execute(artistId,albumId, dto)
 
             return res.status(StatusCode.CREATED).json({message: "album updated successfully."})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    deleteSong = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const artistId = req.user?.id
+            const songId = req.params.songId
+            console.log("is song", songId)
+            if(!artistId || !songId ){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const result = await this.artistDeleteSongUsecase.execute(songId, artistId)
+            return res.status(StatusCode.OK).json(result)
         } catch (error) {
             next(error)
         }

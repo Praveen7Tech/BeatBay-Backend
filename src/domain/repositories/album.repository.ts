@@ -9,4 +9,5 @@ export interface IAlbumRepository{
     updateById(albumId: string, data: Partial<Album>, session?: ClientSession): Promise<Album | null>
     find(albumId: string): Promise<Album | null>
     removeSongFromAllAlbums(songId: string, session: ClientSession): Promise<void>
+    delete(albumId: string, session: ClientSession): Promise<boolean>
 }

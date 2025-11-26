@@ -16,7 +16,7 @@ import { UploadSongUseCase } from "../../../../usecases/artist/song/uploadSong.u
 import { GetSongsUseCase } from "../../../../usecases/artist/song/getSongs.useCase";
 import { ArtistCreateAlbumUseCase } from "../../../../usecases/artist/album/createAlbums.useCase";
 import { CreateAlbumDTO } from "../../../../usecases/dto/album/album.dto";
-import { CreateAlbumRequestSchema } from "../../validators/album/album.validator";
+import { CreateAlbumRequestSchema, EditAlbumRequestSchema } from "../../validators/album/album.validator";
 import { artistGetAlbumsUseCase } from "../../../../usecases/artist/album/artistGetAlbums.useCase";
 
 import ffprobe from 'ffprobe';
@@ -26,6 +26,7 @@ import { EditSongUseCase } from "../../../../usecases/artist/song/editSong.useCa
 import { GetAlbumDetailsByIdUseCase } from "../../../../usecases/artist/album/getAlbumDetailsById.useCase";
 import { EditAlbumUseCase } from "../../../../usecases/artist/album/artistEditAlbum.useCase";
 import { DeleteSongUseCase } from "../../../../usecases/artist/song/deleteSong.useCase";
+import { DeleteAlbumUsecase } from "../../../../usecases/artist/album/artistDeleteAlbum.useCase";
 
 export class ArtistController {
     constructor(
@@ -41,7 +42,8 @@ export class ArtistController {
         private readonly editSongUsecase: EditSongUseCase,
         private readonly artistAlbumDetailsUsecase: GetAlbumDetailsByIdUseCase,
         private readonly artistEditAlbumUsecase: EditAlbumUseCase,
-        private readonly artistDeleteSongUsecase: DeleteSongUseCase
+        private readonly artistDeleteSongUsecase: DeleteSongUseCase,
+        private readonly artistDeleteAlbumUsecase: DeleteAlbumUsecase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
@@ -270,18 +272,15 @@ export class ArtistController {
         try {
             const artistId = req.user?.id
             const albumId = req.params.albumId
-            if(!artistId || !albumId || !req.file){
+            if(!artistId || !albumId ){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
+            const dto : Partial<CreateAlbumDTO>= EditAlbumRequestSchema.parse({...req.body})
+            
             let coverImageUrl: string | undefined = undefined;
-            if (req.file) {
-                coverImageUrl = req.file.filename; 
-            }
-
-            const dto : CreateAlbumDTO={
-                ...req.body,
-                coverImageUrl
+            if (req.file?.filename) {
+                dto.coverImageUrl = req.file.filename; 
             }
             console.log("dto", dto, req.body)
 
@@ -297,12 +296,28 @@ export class ArtistController {
         try {
             const artistId = req.user?.id
             const songId = req.params.songId
-            console.log("is song", songId)
+            
             if(!artistId || !songId ){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
             const result = await this.artistDeleteSongUsecase.execute(songId, artistId)
+            return res.status(StatusCode.OK).json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    deleteAlbum = async(req: AuthRequest, res:Response, next: NextFunction)=>{
+        try {
+            const artistId = req.user?.id
+            const albumId = req.params.albumId
+            
+            if(!artistId || !albumId ){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const result = await this.artistDeleteAlbumUsecase.execute(albumId, artistId)
             return res.status(StatusCode.OK).json(result)
         } catch (error) {
             next(error)

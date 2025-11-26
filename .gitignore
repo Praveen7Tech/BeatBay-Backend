@@ -4,3 +4,5 @@ package-lock.json
 dist/
 build/
 Dockerfile
+logs/
+docker-compose.yml

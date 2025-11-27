@@ -5,6 +5,8 @@ import { userModule } from '../../../di/modules/user.module';
 import { Artist } from '../../../../domain/entities/arist.entity';
 import { ClientSession, model } from 'mongoose';
 import path from 'path';
+import { PaginatedResult } from '../../../../domain/interfaces/paginatedResult.interface';
+import { title } from 'process';
 
 export class MongooseUserRepository implements IUserRepository {
   constructor() {}
@@ -83,6 +85,36 @@ export class MongooseUserRepository implements IUserRepository {
               .exec(); 
           
           return userDoc 
+  }
+
+  async findAll(page: number, limit: number, search: string): Promise<PaginatedResult<User>> {
+      
+    const skip = (page-1) * limit
+    const filterOption = search ? 
+    {
+      role: "user",
+      $or:[
+        {title: {$regex: search, $options:"i"}},
+        {email: {$regex: search, $options:"i"}}
+      ]
+    }
+    :
+    {role:"user"}
+
+    const [data, totalCount] = await Promise.all([
+      UserModel.find(filterOption).sort({createdAt: -1}).skip(skip).limit(limit).lean().exec(),
+      UserModel.countDocuments()
+    ])
+
+    return {data, totalCount }
+  }
+
+  async blockById(id: string): Promise<boolean> {
+      const user = await UserModel.findByIdAndUpdate(id,
+        {status: false}
+      ).lean()
+
+      return user !== null
   }
 
 }

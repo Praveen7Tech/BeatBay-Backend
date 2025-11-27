@@ -1,5 +1,5 @@
 import { MESSAGES } from "../../common/constants/constants.message"
-import { BadRequestError, NotFoundError } from "../../common/errors/common/common.errors"
+import { BadRequestError, BlockedAccountError, NotFoundError } from "../../common/errors/common/common.errors"
 import { StatusCode } from "../../common/constants/status.enum"
 import { User } from "../../domain/entities/user.entity"
 import { IUserRepository } from "../../domain/repositories/user.repository"
@@ -22,6 +22,10 @@ export class LoginUsecase {
         const user = await this.userRepository.findByEmail(request.email)
         if(!user || user.role !== ROLES.USER){
             throw new NotFoundError("User not found.!")
+        }
+
+        if(user && !user.status){
+            throw new BlockedAccountError()
         }
         
         if(!user.password || !user._id){

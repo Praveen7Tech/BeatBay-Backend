@@ -282,7 +282,6 @@ export class ArtistController {
             if (req.file?.filename) {
                 dto.coverImageUrl = req.file.filename; 
             }
-            console.log("dto", dto, req.body)
 
             await this.artistEditAlbumUsecase.execute(artistId,albumId, dto)
 

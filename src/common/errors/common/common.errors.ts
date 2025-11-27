@@ -48,3 +48,9 @@ export class ForbiddenError extends DomainError {
         super("Forbidden!", StatusCode.FORBIDDEN)
     }
 }
+
+export class BlockedAccountError extends DomainError{
+    constructor(){
+        super("Your account account has been blocked by an administrator, plase contact the helpline!", StatusCode.FORBIDDEN)
+    }
+}

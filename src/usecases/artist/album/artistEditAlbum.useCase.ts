@@ -33,7 +33,6 @@ export class EditAlbumUseCase{
             }
 
             if (data.songs) {
-                console.log("jong--",data.songs)
                 updatedData.songs = [...data.songs];
             }
 

@@ -10,6 +10,7 @@ import adminAuthRouterFactory from './interfaces/http/routes/admin/admin.auth.ro
 import artistAuthRouterFactory from './interfaces/http/routes/artist/artist.auth.routes';
 import userRouterFactory from './interfaces/http/routes/user/user.routes'
 import logger from './infrastructure/utils/logger/logger';
+import adminFeaturesRouterFactory from './interfaces/http/routes/admin/admin.features.routes'
 
 dotenv.config();
 
@@ -27,11 +28,13 @@ async function startServer() {
     const adminAuthRouter = adminAuthRouterFactory(container)
     const artistAuthRouter = artistAuthRouterFactory(container)
     const userRouter = userRouterFactory(container)
+    const adminFeaturesRouter = adminFeaturesRouterFactory(container)
     
     app.use('/user', authRouter);
     app.use('/admin', adminAuthRouter)
     app.use('/artist', artistAuthRouter)
     app.use('/user', userRouter)
+    app.use('/admin', adminFeaturesRouter)
     //logger.log("Container resolved authController:", container.resolve('authController'))
 
     app.use(errorHandlerMiddleware)

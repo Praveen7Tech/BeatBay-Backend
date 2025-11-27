@@ -4,6 +4,7 @@ import { IArtistRepository } from "../../../../domain/repositories/artist.reposi
 import { ArtistModel } from "../models/artist.model"; 
 import { Song } from "../../../../domain/entities/song.entity";
 import { Album } from "../../../../domain/entities/album.entity";
+import { PaginatedResult } from "../../../../domain/interfaces/paginatedResult.interface";
 
 export class MongooseArtistRepository implements IArtistRepository {
     constructor(){}
@@ -74,5 +75,23 @@ export class MongooseArtistRepository implements IArtistRepository {
             {$pull: {albums: albumId}},
             {session}
           ).exec()
+      }
+
+      async findAll(page: number, limit: number): Promise<PaginatedResult<Artist>> {
+           const skip = (page-1) * limit
+              const [data, totalCount] = await Promise.all([
+                ArtistModel.find().sort({createdAt: -1}).skip(skip).limit(limit).lean(),
+                ArtistModel.countDocuments()
+              ])
+          
+              return {data, totalCount }
+      }
+
+      async blockById(id: string): Promise<boolean> {
+          const user = await ArtistModel.findByIdAndUpdate(id,
+                {status: false}
+          ).lean()
+          
+        return user !== null
       }
 }

@@ -7,4 +7,5 @@ export interface IBaseRepository<T> {
     findByEmail(email: string): Promise<T | null>
     findAll(page: number, limit: number, search: string ): Promise<PaginatedResult<T>>
     blockById(id: string): Promise<boolean>
+    unBlockById(id: string): Promise<boolean>
 }

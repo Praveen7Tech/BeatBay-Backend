@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { GoogleLoginRequestDTO,  LoginRequestDTO, ResendOtpRequestDTO, SignupRequestDTO,   VerifyOtpRequestDTO } from "../../../../usecases/dto/auth/request.dto";
+import { GoogleLoginRequestDTO,  LoginRequestDTO, ResendOtpRequestDTO, ResetPasswordDTO, SignupRequestDTO,   VerifyEmailRequestDTO,   VerifyOtpRequestDTO } from "../../../../usecases/dto/auth/request.dto";
 import { ArtistSignupUsecase } from "../../../../usecases/artist/artistSignup.useCase"; 
 import { StatusCode } from "../../../../common/constants/status.enum";
 import { MESSAGES } from "../../../../common/constants/constants.message";
@@ -8,7 +8,9 @@ import { ArtistResendOtpUseCase } from "../../../../usecases/artist/artistResend
 import { COOKIE_OPTIONS } from "../../../../common/cookie/cookieOptions";
 import { ArtistLoginUsecase } from "../../../../usecases/artist/artistLogin.useCase";
 import { ArtistGoogleLoginUseCase } from "../../../../usecases/artist/artistGoogleSignup.useCase";
-import { GoogleLoginRequestSchema, LoginRequestSchema, ResendOtpRequestSchema, SignupRequestSchema, VerifyOtpRequestSchema } from "../../validators/auth/auth.validator";
+import { GoogleLoginRequestSchema, LoginRequestSchema, ResendOtpRequestSchema, ResetPassRequestSchema, SignupRequestSchema, VerifyEmailRequestSchema, VerifyOtpRequestSchema } from "../../validators/auth/auth.validator";
+import { ArtistVerifyEmailUsecase } from "../../../../usecases/artist/artistVerifyEmail.useCase";
+import { ArtistResetPasswordUsecase } from "../../../../usecases/artist/artistResetPassword.useCase";
 
 
 export class artistAuthController {
@@ -17,7 +19,9 @@ export class artistAuthController {
         private readonly artistVerifyOTPusecase:ArtistVerifyOTPuseCase,
         private readonly artistResendOtpUsecase: ArtistResendOtpUseCase,
         private readonly artistLoginUsecase:ArtistLoginUsecase,
-        private readonly artistGoogleLoginUsecase: ArtistGoogleLoginUseCase
+        private readonly artistGoogleLoginUsecase: ArtistGoogleLoginUseCase,
+        private readonly artistVerifyEmailUsecase: ArtistVerifyEmailUsecase,
+        private readonly artistResetPasswordUsecase: ArtistResetPasswordUsecase,
     ){}
 
     signUp = async(req:Request, res:Response, next: NextFunction) =>{
@@ -87,6 +91,31 @@ export class artistAuthController {
     } catch (error) {
         next(error)
     }
-  }   
+  }  
+  
+    verifyEmail = async(req: Request, res:Response, next: NextFunction)=>{
+        try {
+             const dto : VerifyEmailRequestDTO = VerifyEmailRequestSchema.parse(req.body)
+            await this.artistVerifyEmailUsecase.execute(dto)
+            return res.status(StatusCode.CREATED).json({message:MESSAGES.PASSWORD_RESET_LINK})            
+        } catch (error) {
+            next(error)
+        }
+    }
+  
+    resetPassword= async(req:Request, res:Response, next: NextFunction)=>{
+          
+        try {
+            const {password, token} = req.body
+    
+            const dto : ResetPasswordDTO = ResetPassRequestSchema.parse({token,password})
+    
+            await this.artistResetPasswordUsecase.execute(dto)
+            
+            return res.status(StatusCode.OK).json({message:MESSAGES.REST_PASSWORD_SUCCESS})
+        } catch (error) {
+          next(error)
+        }
+    }
 
 }

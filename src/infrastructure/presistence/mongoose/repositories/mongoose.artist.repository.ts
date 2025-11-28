@@ -77,14 +77,25 @@ export class MongooseArtistRepository implements IArtistRepository {
           ).exec()
       }
 
-      async findAll(page: number, limit: number): Promise<PaginatedResult<Artist>> {
-           const skip = (page-1) * limit
-              const [data, totalCount] = await Promise.all([
-                ArtistModel.find().sort({createdAt: -1}).skip(skip).limit(limit).lean(),
-                ArtistModel.countDocuments()
-              ])
+      async findAll(page: number, limit: number, search: string): Promise<PaginatedResult<Artist>> {
+          const skip = (page-1) * limit
+          const filterOption = search ? 
+            {
+              role: "artist",
+              $or:[
+                {name: {$regex: search, $options:"i"}},
+                {email: {$regex: search, $options:"i"}}
+              ]
+            }
+            :
+           {role:"artist"}
+
+          const [data, totalCount] = await Promise.all([
+              ArtistModel.find(filterOption).sort({createdAt: -1}).skip(skip).limit(limit).lean(),
+              ArtistModel.countDocuments(filterOption)
+          ])
           
-              return {data, totalCount }
+          return {data, totalCount }
       }
 
       async blockById(id: string): Promise<boolean> {
@@ -93,5 +104,13 @@ export class MongooseArtistRepository implements IArtistRepository {
           ).lean()
           
         return user !== null
+      }
+
+      async unBlockById(id: string): Promise<boolean> {
+          const artist = await ArtistModel.findByIdAndUpdate(id,
+            {status: true}
+          ).lean()
+
+          return artist !== null
       }
 }

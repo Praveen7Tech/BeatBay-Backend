@@ -1,4 +1,4 @@
-import { BadRequestError } from "../../common/errors/common/common.errors";
+import { BadRequestError, BlockedAccountError } from "../../common/errors/common/common.errors";
 import { IUserRepository } from "../../domain/repositories/user.repository";
 import { IGoogleAuthService } from "../../domain/services/google-auth.service";
 import { ITokenService } from "../../domain/services/token.service";
@@ -33,6 +33,10 @@ export class GoogleLoginUsecase {
         profilePicture: picture,
         role: 'user',
       });
+    }
+
+    if(user && !user.status){
+        throw new BlockedAccountError()
     }
 
     const payloadt = { id: user._id!, email: user.email, role: user.role };

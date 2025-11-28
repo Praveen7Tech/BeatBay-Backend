@@ -3,7 +3,7 @@ import { IPasswordService } from "../../domain/services/password.service"
 import { ITokenService } from "../../domain/services/token.service"
 import { LoginRequestDTO } from "../dto/auth/request.dto"
 import { LoginResponseDTO } from "../dto/auth/response.dto"
-import { BadRequestError, NotFoundError } from "../../common/errors/common/common.errors"
+import { BadRequestError, BlockedAccountError, NotFoundError } from "../../common/errors/common/common.errors"
 import { IArtistRepository } from "../../domain/repositories/artist.repository"
 
 export class ArtistLoginUsecase {
@@ -18,6 +18,10 @@ export class ArtistLoginUsecase {
         const artist = await this.artistRepository.findByEmail(request.email)
         if(!artist){
             throw new NotFoundError("Artist not found.!")
+        }
+
+        if(artist && !artist.status){
+            throw new BlockedAccountError()
         }
         
         if(!artist.password || !artist._id){

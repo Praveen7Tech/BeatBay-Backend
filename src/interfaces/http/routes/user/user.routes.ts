@@ -4,32 +4,35 @@ import { UserController } from "../../controllers/user/user.controller"
 import { authMiddleware } from "../../../middleware/authMiddleware"
 import { upload } from "../../../middleware/multer"
 import { PlayList } from "../../../middleware/editPlayList.Middleware"
+import { statusCheckMiddleware } from "../../../middleware/statusCheckMiddleware"
 
 export default (container: AwilixContainer): Router=> {
     const router = Router()
     const userController = container.resolve<UserController>('userController')
 
-    router.put('/edit-profile',authMiddleware, upload.single("profileImage"), userController.editProfile)
-    router.put('/change-password', authMiddleware, userController.changePassword)
-    router.get('/fetch-songs', authMiddleware, userController.fetchSongs)
-    router.get('/fetch-albums', authMiddleware, userController.fetchAlbums)
+    router.use(authMiddleware, statusCheckMiddleware)
 
-    router.get('/song-details/:id', authMiddleware, userController.songDetails)
-    router.get('/album-details/:id', authMiddleware, userController.albumDetails)
+    router.put('/edit-profile', upload.single("profileImage"), userController.editProfile)
+    router.put('/change-password', userController.changePassword)
+    router.get('/fetch-songs', userController.fetchSongs)
+    router.get('/fetch-albums', userController.fetchAlbums)
 
-    router.get('/artist-details/:id', authMiddleware, userController.artistDetails)
-    router.get('/is-following/:artistId', authMiddleware, userController.checkFollowStatus)
-    router.post('/follow/:artistId', authMiddleware, userController.followArtist)
-    router.delete('/follow/:artistId', authMiddleware, userController.unFollowArtist)
-    router.get('/following', authMiddleware, userController.following)
+    router.get('/song-details/:id', userController.songDetails)
+    router.get('/album-details/:id', userController.albumDetails)
 
-    router.post('/create-playlist', authMiddleware, userController.createPlayList)
-    router.get('/get-playlist/:playListId', authMiddleware, userController.getPlayList)
-    router.get('/get-user-playlist', authMiddleware, userController.getAllPlaylists)
-    router.post('/addTo-playList/:playListId', authMiddleware, userController.addToPlayList)
-    router.post('/edit-playList/:playListId', authMiddleware, PlayList.single("coverImage"), userController.editPlayList)
+    router.get('/artist-details/:id', userController.artistDetails)
+    router.get('/is-following/:artistId', userController.checkFollowStatus)
+    router.post('/follow/:artistId', userController.followArtist)
+    router.delete('/follow/:artistId', userController.unFollowArtist)
+    router.get('/following', userController.following)
 
-    router.get('/searchSong', authMiddleware, userController.searchSongs)
+    router.post('/create-playlist', userController.createPlayList)
+    router.get('/get-playlist/:playListId', userController.getPlayList)
+    router.get('/get-user-playlist', userController.getAllPlaylists)
+    router.post('/addTo-playList/:playListId', userController.addToPlayList)
+    router.post('/edit-playList/:playListId', PlayList.single("coverImage"), userController.editPlayList)
+
+    router.get('/searchSong', userController.searchSongs)
 
     return router
 }

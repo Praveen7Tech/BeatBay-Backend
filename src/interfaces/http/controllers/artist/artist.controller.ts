@@ -31,8 +31,6 @@ import { DeleteAlbumUsecase } from "../../../../usecases/artist/album/artistDele
 export class ArtistController {
     constructor(
         private readonly artistEditProfileUsecase:ArtistEditProfileUsecase,
-        private readonly artistVerifyEmailUsecase: ArtistVerifyEmailUsecase,
-        private readonly artistResetPasswordUsecase: ArtistResetPasswordUsecase,
         private readonly artistChangePasswordUsecase: ArtistChangePasswordUsecase,
         private readonly artistUploadSongUsecase: UploadSongUseCase,
         private readonly artistGetSongsUsecase :GetSongsUseCase,
@@ -64,31 +62,6 @@ export class ArtistController {
             return res.status(StatusCode.OK).json({user:result.user,message:MESSAGES.PROFILE_UPDATED})            
         } catch (error) {
             next(error)
-        }
-    }
-
-    verifyEmail = async(req: Request, res:Response, next: NextFunction)=>{
-        try {
-            const dto : VerifyEmailRequestDTO = VerifyEmailRequestSchema.parse(req.body)
-            await this.artistVerifyEmailUsecase.execute(dto)
-            return res.status(StatusCode.CREATED).json({message:MESSAGES.PASSWORD_RESET_LINK})            
-        } catch (error) {
-            next(error)
-        }
-    }
-
-    resetPassword= async(req:Request, res:Response, next: NextFunction)=>{
-        
-        try {
-        const {password, token} = req.body
-
-        const dto : ResetPasswordDTO = ResetPassRequestSchema.parse({token,password})
-
-        await this.artistResetPasswordUsecase.execute(dto)
-        
-        return res.status(StatusCode.OK).json({message:MESSAGES.REST_PASSWORD_SUCCESS})
-        } catch (error) {
-        next(error)
         }
     }
     

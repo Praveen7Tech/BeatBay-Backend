@@ -13,6 +13,12 @@ export default (container: AwilixContainer): Router=>{
     router.get('/fetch-allusers', authMiddleware, adminFeaturesController.getAllUser)
     router.get('/get-userById/:userId', authMiddleware, adminFeaturesController.getUserById)
     router.put('/block-user/:userId', authMiddleware, adminFeaturesController.blockUser)
+    router.put('/unBlock-user/:userId', authMiddleware, adminFeaturesController.unBlockUser)
+
+    router.get('/fetch-allArtist', authMiddleware, adminFeaturesController.getAllArtists)
+    router.get('/get-artistById/:artistId', authMiddleware, adminFeaturesController.getArtistById)
+    router.put('/block-artist/:artistId', authMiddleware, adminFeaturesController.blockArtist)
+    router.put('/unBlock-artist/:artistId', authMiddleware, adminFeaturesController.unBlockArtist)
 
     return router
 }

@@ -38,6 +38,10 @@ const artistSchema = new Schema<ArtistDocument>(
         status:{
             type:Boolean, 
             default:true
+        },
+        followersCount:{
+            type: Number,
+            default: 0
         }
     },
     {timestamps: true}

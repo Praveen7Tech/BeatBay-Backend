@@ -94,7 +94,7 @@ export class MongooseUserRepository implements IUserRepository {
     {
       role: "user",
       $or:[
-        {title: {$regex: search, $options:"i"}},
+        {name: {$regex: search, $options:"i"}},
         {email: {$regex: search, $options:"i"}}
       ]
     }
@@ -103,7 +103,7 @@ export class MongooseUserRepository implements IUserRepository {
 
     const [data, totalCount] = await Promise.all([
       UserModel.find(filterOption).sort({createdAt: -1}).skip(skip).limit(limit).lean().exec(),
-      UserModel.countDocuments()
+      UserModel.countDocuments(filterOption)
     ])
 
     return {data, totalCount }
@@ -112,6 +112,14 @@ export class MongooseUserRepository implements IUserRepository {
   async blockById(id: string): Promise<boolean> {
       const user = await UserModel.findByIdAndUpdate(id,
         {status: false}
+      ).lean()
+
+      return user !== null
+  }
+
+  async unBlockById(id: string): Promise<boolean> {
+      const user = await UserModel.findByIdAndUpdate(id,
+        {status: true}
       ).lean()
 
       return user !== null

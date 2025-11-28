@@ -11,6 +11,7 @@ export interface Artist {
   albums?: string[]; 
   songs?: string[]; 
   status?:boolean
+  followersCount?: number
   createdAt?: Date;
   updatedAt?: Date;
 }

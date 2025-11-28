@@ -1,4 +1,4 @@
-import { BadRequestError } from "../../common/errors/common/common.errors";
+import { BadRequestError, BlockedAccountError } from "../../common/errors/common/common.errors";
 import { IArtistRepository } from "../../domain/repositories/artist.repository";
 import { IGoogleAuthService } from "../../domain/services/google-auth.service";
 import { ITokenService } from "../../domain/services/token.service";
@@ -34,6 +34,10 @@ export class ArtistGoogleLoginUseCase {
       });
     }
 
+    if(artist && !artist.status){
+        throw new BlockedAccountError()
+    }
+    
     const payloadt = { id: artist._id!, email: artist.email, role:artist.role };
     const accessToken = await this.tokenService.generateAccessToken(payloadt);
     const refreshToken = await this.tokenService.generateRefressToken(payloadt);

@@ -1,7 +1,7 @@
 import { AwilixContainer } from "awilix";
 import { Router } from "express";
 import { AdminFeaturesController } from "../../controllers/admin/adminFeatures.controller";
-import { authMiddleware } from "../../../middleware/authMiddleware";
+import { authMiddleware } from "../../../middleware/auth/authMiddleware";
 import { route } from "awilix-express";
 
 

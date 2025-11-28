@@ -1,16 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import { GoogleLoginRequestDTO,  LoginRequestDTO, ResendOtpRequestDTO, ResetPasswordDTO, SignupRequestDTO,   VerifyEmailRequestDTO,   VerifyOtpRequestDTO } from "../../../../usecases/dto/auth/request.dto";
-import { ArtistSignupUsecase } from "../../../../usecases/artist/artistSignup.useCase"; 
+import { ArtistSignupUsecase } from "../../../../usecases/artist/auth/artistSignup.useCase"; 
 import { StatusCode } from "../../../../common/constants/status.enum";
 import { MESSAGES } from "../../../../common/constants/constants.message";
-import { ArtistVerifyOTPuseCase } from "../../../../usecases/artist/artistVerifyOTP.useCase";
-import { ArtistResendOtpUseCase } from "../../../../usecases/artist/artistResendOTP.useCase";
+import { ArtistVerifyOTPuseCase } from "../../../../usecases/artist/auth/artistVerifyOTP.useCase";
+import { ArtistResendOtpUseCase } from "../../../../usecases/artist/auth/artistResendOTP.useCase";
 import { COOKIE_OPTIONS } from "../../../../common/cookie/cookieOptions";
-import { ArtistLoginUsecase } from "../../../../usecases/artist/artistLogin.useCase";
-import { ArtistGoogleLoginUseCase } from "../../../../usecases/artist/artistGoogleSignup.useCase";
+import { ArtistLoginUsecase } from "../../../../usecases/artist/auth/artistLogin.useCase";
+import { ArtistGoogleLoginUseCase } from "../../../../usecases/artist/auth/artistGoogleSignup.useCase";
 import { GoogleLoginRequestSchema, LoginRequestSchema, ResendOtpRequestSchema, ResetPassRequestSchema, SignupRequestSchema, VerifyEmailRequestSchema, VerifyOtpRequestSchema } from "../../validators/auth/auth.validator";
-import { ArtistVerifyEmailUsecase } from "../../../../usecases/artist/artistVerifyEmail.useCase";
-import { ArtistResetPasswordUsecase } from "../../../../usecases/artist/artistResetPassword.useCase";
+import { ArtistVerifyEmailUsecase } from "../../../../usecases/artist/auth/artistVerifyEmail.useCase";
+import { ArtistResetPasswordUsecase } from "../../../../usecases/artist/auth/artistResetPassword.useCase"; 
 
 
 export class artistAuthController {

@@ -1,6 +1,6 @@
 import { asClass } from "awilix";
 import { AdminAuthController } from "../../../interfaces/http/controllers/admin/admin.auth.controller";
-import { AdminLoginUsecase } from "../../../usecases/admin/adminLogin.useCase";
+import { AdminLoginUsecase } from "../../../usecases/admin/auth/adminLogin.useCase";
 import { AdminFeaturesController } from "../../../interfaces/http/controllers/admin/adminFeatures.controller";
 import { FetchAllUsersUseCase } from "../../../usecases/admin/users/adminFetchAllUsers.useCase";
 import { GetUserByIdUseCase } from "../../../usecases/admin/users/adminGetUserById.useCase";

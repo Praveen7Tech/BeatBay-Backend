@@ -2,11 +2,11 @@ import { AwilixContainer } from "awilix";
 import { Router } from "express";
 import { artistAuthController } from "../../controllers/artist/artist.auth.controller";
 import { ArtistController } from "../../controllers/artist/artist.controller";
-import { authMiddleware } from "../../../middleware/authMiddleware";
-import { upload } from "../../../middleware/multer";
-import { uploadSongMiddleware } from "../../../middleware/uploadSondMiddleware";
-import { CreateAlbumMiddleware } from "../../../middleware/createAlbum.Middleware";
-import { ArtistStatusCheckMiddleware } from "../../../middleware/artsitStatusCheckMiddleware";
+import { authMiddleware } from "../../../middleware/auth/authMiddleware";
+import { upload } from "../../../middleware/uploads/multer";
+import { uploadSongMiddleware } from "../../../middleware/song/uploadSondMiddleware";
+import { CreateAlbumMiddleware } from "../../../middleware/album/createAlbum.Middleware";
+import { ArtistStatusCheckMiddleware } from "../../../middleware/status/artsitStatusCheckMiddleware"; 
 
 export default (container: AwilixContainer): Router=> {
     const router = Router()

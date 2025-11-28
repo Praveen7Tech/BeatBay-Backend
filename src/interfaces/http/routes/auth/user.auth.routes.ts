@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { AuthController } from '../../controllers/auth.controller'; 
+import { AuthController } from '../../controllers/user/auth.controller'; 
 import { AwilixContainer } from 'awilix';
 
 export default (container: AwilixContainer): Router => {

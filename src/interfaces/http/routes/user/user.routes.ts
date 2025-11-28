@@ -1,10 +1,10 @@
 import { AwilixContainer } from "awilix"
 import { Router } from "express"
 import { UserController } from "../../controllers/user/user.controller"
-import { authMiddleware } from "../../../middleware/authMiddleware"
-import { upload } from "../../../middleware/multer"
-import { PlayList } from "../../../middleware/editPlayList.Middleware"
-import { statusCheckMiddleware } from "../../../middleware/statusCheckMiddleware"
+import { authMiddleware } from "../../../middleware/auth/authMiddleware"
+import { upload } from "../../../middleware/uploads/multer"
+import { PlayList } from "../../../middleware/playlist/editPlayList.Middleware"
+import { statusCheckMiddleware } from "../../../middleware/status/statusCheckMiddleware"
 
 export default (container: AwilixContainer): Router=> {
     const router = Router()

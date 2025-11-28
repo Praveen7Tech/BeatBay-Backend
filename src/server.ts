@@ -4,8 +4,8 @@ import { connectRedis } from './infrastructure/config/redis';
 import app from './interfaces/express/app';
 import container from './infrastructure/di/container';
 import userAuthRouterFactory from './interfaces/http/routes/auth/user.auth.routes';
-import { loggerMiddleware } from './interfaces/middleware/loggerMiddleware';
-import { errorHandlerMiddleware } from './interfaces/middleware/errorHandler';
+import { loggerMiddleware } from './interfaces/middleware/logger/loggerMiddleware'; 
+import { errorHandlerMiddleware } from './interfaces/middleware/error/errorHandler';
 import adminAuthRouterFactory from './interfaces/http/routes/auth/admin.auth.routes'
 import artistAuthRouterFactory from './interfaces/http/routes/auth/artist.auth.routes'
 import userRouterFactory from './interfaces/http/routes/user/user.routes'

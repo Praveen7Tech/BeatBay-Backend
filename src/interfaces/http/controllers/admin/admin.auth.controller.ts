@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { AdminLoginUsecase } from "../../../../usecases/admin/adminLogin.useCase";
+import { AdminLoginUsecase } from "../../../../usecases/admin/auth/adminLogin.useCase";
 import { LoginRequestDTO } from "../../../../usecases/dto/auth/request.dto";
 import { COOKIE_OPTIONS } from "../../../../common/cookie/cookieOptions";
 import { StatusCode } from "../../../../common/constants/status.enum";

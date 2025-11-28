@@ -1,15 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { AuthRequest } from "../../../middleware/authMiddleware";
+import { AuthRequest } from "../../../middleware/auth/authMiddleware";
 import { StatusCode } from "../../../../common/constants/status.enum";
 import { MESSAGES } from "../../../../common/constants/constants.message";
-import { ArtistEditProfileUsecase } from "../../../../usecases/artist/artistEditProfile.useCase";
+import { ArtistEditProfileUsecase } from "../../../../usecases/artist/profile/artistEditProfile.useCase";
 import { ChangePasswordRequestDTO, EditProfileRequestDTO } from "../../../../usecases/dto/profile/profile.dto";
 import { ChangePasswordSchema, EditProfileSchema } from "../../validators/profile/profile.validators";
-import { ResetPasswordDTO, VerifyEmailRequestDTO } from "../../../../usecases/dto/auth/request.dto";
-import { ResetPassRequestSchema, VerifyEmailRequestSchema } from "../../validators/auth/auth.validator";
-import { ArtistVerifyEmailUsecase } from "../../../../usecases/artist/artistVerifyEmail.useCase";
-import { ArtistResetPasswordUsecase } from "../../../../usecases/artist/artistResetPassword.useCase";
-import { ArtistChangePasswordUsecase } from "../../../../usecases/artist/artistChangePassword.useCase";
+import { ArtistChangePasswordUsecase } from "../../../../usecases/artist/profile/artistChangePassword.useCase";
 import { UploadSongDTO } from "../../../../usecases/dto/song/song.dto";
 import { UploadSongRequestSchema } from "../../validators/song/song.validator";
 import { UploadSongUseCase } from "../../../../usecases/artist/song/uploadSong.useCase";

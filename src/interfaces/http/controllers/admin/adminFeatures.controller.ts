@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { AuthRequest } from "../../../middleware/authMiddleware";
+import { AuthRequest } from "../../../middleware/auth/authMiddleware";
 import { StatusCode } from "../../../../common/constants/status.enum";
 import { FetchAllUsersUseCase } from "../../../../usecases/admin/users/adminFetchAllUsers.useCase";
 import { MESSAGES } from "../../../../common/constants/constants.message";

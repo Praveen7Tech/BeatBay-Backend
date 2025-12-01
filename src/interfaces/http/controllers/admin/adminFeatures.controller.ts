@@ -10,6 +10,7 @@ import { FetchAllArtistsUseCase } from "../../../../usecases/admin/artists/admin
 import { GetArtistByIdUseCase } from "../../../../usecases/admin/artists/adminGetArtistById.useCase";
 import { BlockArtistUseCase } from "../../../../usecases/admin/artists/adminBlockArtist.useCase";
 import { UnBlockUArtistUseCase } from "../../../../usecases/admin/artists/adminUnBlockArtist.useCase";
+import { GetAdminDashBoardData } from "../../../../usecases/admin/dashboard/adminGetDashboardData";
 
 export class AdminFeaturesController{
     constructor(
@@ -21,6 +22,7 @@ export class AdminFeaturesController{
         private readonly adminGetArtistByIdUsecase: GetArtistByIdUseCase,
         private readonly adminBlockArtistUsecase: BlockArtistUseCase,
         private readonly adminUnBlockArtistUsecase: UnBlockUArtistUseCase,
+        private readonly adminGetDashBoardData: GetAdminDashBoardData
     ){}
 
     getAllUser = async(req: AuthRequest, res: Response, next: NextFunction)=>{
@@ -132,6 +134,20 @@ export class AdminFeaturesController{
 
             const result = await this.adminUnBlockArtistUsecase.execute(artistId)
             return res.status(StatusCode.OK).json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    getDadhBoradDara = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const adminId = req.user?.id
+            if(!adminId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const data  =  await this.adminGetDashBoardData.execute()
+            return res.status(StatusCode.OK).json(data)
         } catch (error) {
             next(error)
         }

@@ -34,3 +34,10 @@ export interface ArtistTableResponseDTO{
     limit: number
     totalPages: number
 }
+
+export interface DashBoardResponse{
+  totalUser: number
+  totalArtist: number
+  totalSongs: number
+  totalAlbums: number
+}

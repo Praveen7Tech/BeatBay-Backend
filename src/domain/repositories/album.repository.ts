@@ -10,4 +10,5 @@ export interface IAlbumRepository{
     find(albumId: string): Promise<Album | null>
     removeSongFromAllAlbums(songId: string, session: ClientSession): Promise<void>
     delete(albumId: string, session: ClientSession): Promise<boolean>
+    countDocuments(): Promise<number>
 }

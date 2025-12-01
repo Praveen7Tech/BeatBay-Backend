@@ -125,4 +125,8 @@ export class MongooseUserRepository implements IUserRepository {
       return user !== null
   }
 
+  async countDocuments(): Promise<number> {
+      return await UserModel.countDocuments({role: "user"})
+  }
+
 }

@@ -10,6 +10,7 @@ import { FetchAllArtistsUseCase } from "../../../usecases/admin/artists/adminFet
 import { GetArtistByIdUseCase } from "../../../usecases/admin/artists/adminGetArtistById.useCase";
 import { BlockArtistUseCase } from "../../../usecases/admin/artists/adminBlockArtist.useCase";
 import { UnBlockUArtistUseCase } from "../../../usecases/admin/artists/adminUnBlockArtist.useCase";
+import { GetAdminDashBoardData } from "../../../usecases/admin/dashboard/adminGetDashboardData";
 
 
 export const adminModule ={
@@ -25,6 +26,8 @@ export const adminModule ={
     adminGetArtistByIdUsecase: asClass(GetArtistByIdUseCase).scoped(),
     adminBlockArtistUsecase: asClass(BlockArtistUseCase).scoped(),
     adminUnBlockArtistUsecase: asClass(UnBlockUArtistUseCase).scoped(),
+
+    adminGetDashBoardData: asClass(GetAdminDashBoardData).scoped(),
 
     // controllers
     adminAuthController: asClass(AdminAuthController).scoped(),

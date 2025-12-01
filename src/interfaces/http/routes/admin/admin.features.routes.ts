@@ -20,5 +20,7 @@ export default (container: AwilixContainer): Router=>{
     router.put('/block-artist/:artistId', authMiddleware, adminFeaturesController.blockArtist)
     router.put('/unBlock-artist/:artistId', authMiddleware, adminFeaturesController.unBlockArtist)
 
+    router.get('/get-dashboard-data', authMiddleware, adminFeaturesController.getDadhBoradDara)
+
     return router
 }

@@ -59,4 +59,8 @@ export class MongooseAlbumRepository implements IAlbumRepository {
         const album = await AlbumModel.findByIdAndDelete(albumId).session(session)
         return album !== null
     }
+
+    async countDocuments(): Promise<number> {
+        return await AlbumModel.countDocuments()
+    }
 }

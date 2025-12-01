@@ -113,4 +113,8 @@ export class MongooseArtistRepository implements IArtistRepository {
 
           return artist !== null
       }
+
+      async countDocuments(): Promise<number> {
+          return await ArtistModel.countDocuments({role: "artist"})
+      }
 }

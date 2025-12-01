@@ -58,4 +58,8 @@ export class MongooseSongRepository implements ISongRepository{
         const song = await SongModel.findByIdAndDelete(songId).session(session)
         return song !== null
     }
+
+    async countDocuments(): Promise<number> {
+        return await SongModel.countDocuments()
+    }
 }

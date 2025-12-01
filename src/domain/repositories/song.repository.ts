@@ -11,4 +11,5 @@ export interface ISongRepository{
     searchByQuery(query: string, options?: {limit?: number; offset?: number}): Promise<Song[]>
     edit(songId: string, data: Partial<Song>): Promise<Song | null>;
     delete(songId: string, session: ClientSession): Promise<boolean>
+    countDocuments(): Promise<number>
 }

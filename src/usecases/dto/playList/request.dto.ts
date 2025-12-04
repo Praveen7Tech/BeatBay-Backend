@@ -8,3 +8,9 @@ export interface PlayListEditRequestDTO{
     coverImage?: string
     description?:string
 }
+
+export interface UserPlaylistResponse{
+    id: string
+    name: string
+    coverImageUrl?: string | null
+}

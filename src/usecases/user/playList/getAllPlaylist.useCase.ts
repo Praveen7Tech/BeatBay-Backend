@@ -1,22 +1,24 @@
 import { NotFoundError } from "../../../common/errors/common/common.errors";
 import { PlayList } from "../../../domain/entities/playList.entiy";
 import { IPlayListRepository } from "../../../domain/repositories/playList.repository";
-import { IUserRepository } from "../../../domain/repositories/user.repository";
+import { UserPlaylistResponse } from "../../dto/playList/request.dto";
 
 export class GetAllPlaylistUseCase{
     constructor(
-        private readonly userRepository: IUserRepository
+        private readonly playListRepository: IPlayListRepository
     ){}
 
-    async execute(userId: string): Promise<PlayList[] | []>{
-        const user = await this.userRepository.findPlayListByUser(userId);
- 
-        if(!user){
-            throw new NotFoundError("User not found")
-        }
+    async execute(userId: string): Promise<UserPlaylistResponse[] | []>{
+        const playlists = await this.playListRepository.findByUserId(userId);
 
-        const playLists = user.playLists
+        const response = playlists.map((ply)=>({
+            id:ply._id.toString(),
+            name: ply.name,
+            coverImageUrl: ply.coverImageUrl
+        }))
 
-        return playLists
+
+        return response
+        
     }
 }

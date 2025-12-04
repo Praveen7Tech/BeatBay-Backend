@@ -2,6 +2,7 @@ import { ClientSession, HydratedDocument } from "mongoose";
 import { PlayList } from "../../../../domain/entities/playList.entiy";
 import { IPlayListRepository } from "../../../../domain/repositories/playList.repository";
 import { PlayListModel } from "../models/playList.model";
+import { playListProjection } from "../../../../domain/interfaces/playlist.interface";
 
 export class  MongoosePlayListRepository implements IPlayListRepository{
     async create(plalistData: PlayList, session: ClientSession): Promise<PlayList> {
@@ -19,10 +20,11 @@ export class  MongoosePlayListRepository implements IPlayListRepository{
         return playList
     }
 
-    async findByUserId(userId: string): Promise<PlayList | null> {
-        const playLists = await PlayListModel.findById(userId).lean()
+    async findByUserId(userId: string): Promise<playListProjection[]> {
+        const playlists = await PlayListModel.find({userId: userId})
+        .select("_id name coverImageUrl").lean().exec()
 
-        return playLists
+        return playlists
     }
 
     async update(playListId: string, songId: string): Promise<void> {

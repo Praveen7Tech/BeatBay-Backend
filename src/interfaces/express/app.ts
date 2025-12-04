@@ -25,7 +25,7 @@ app.use("/albums", express.static(path.join(__dirname, "../../../public/albums")
 app.use("/playList", express.static(path.join(__dirname, "../../../public/playList")))
 
 // monggose debuging
-mongoose.set('debug', true);
+//mongoose.set('debug', true);
 
 
 // middlewre for dependency injection

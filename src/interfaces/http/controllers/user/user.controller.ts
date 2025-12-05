@@ -21,6 +21,7 @@ import { GetAllPlaylistUseCase } from "../../../../usecases/user/playList/getAll
 import { AddToPlayListUseCase } from "../../../../usecases/user/playList/addToPlayList.useCase"
 import { SearchSongsUseCase } from "../../../../usecases/user/song/searchSong.useCase"
 import { EditPlayListUseCase } from "../../../../usecases/user/playList/editPlayList.useCase"
+import cloudinary from "../../../../infrastructure/config/cloudinary"
 
 export class UserController{
     constructor(
@@ -53,7 +54,14 @@ export class UserController{
 
             let profileImageUrl : string | undefined;
             if(req.file){
-                profileImageUrl = `${req.file.filename}`
+                const dataURL = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+
+                const uploadImage = await cloudinary.uploader.upload(dataURL,{
+                    folder: `user_profile/${userId}`,
+                    resource_type: "image",
+                })
+
+                profileImageUrl = uploadImage.secure_url;
             }
 
             const dto : EditProfileRequestDTO = EditProfileSchema.parse({...req.body, profileImage: profileImageUrl}) 
@@ -310,7 +318,12 @@ export class UserController{
             const updateData = req.body; 
 
             if(req.file){
-                updateData.coverImageUrl = req.file.filename; 
+                const dataURL = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`
+                const imageUpload = cloudinary.uploader.upload(dataURL,{
+                    folder: `playList/${playListId}`,
+                    resource_type: "image"
+                })
+                updateData.coverImageUrl = (await imageUpload).secure_url; 
             }
             const result = await this.editPlauListUsecase.execute(playListId, updateData);
 

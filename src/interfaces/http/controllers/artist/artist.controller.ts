@@ -23,6 +23,8 @@ import { GetAlbumDetailsByIdUseCase } from "../../../../usecases/artist/album/ge
 import { EditAlbumUseCase } from "../../../../usecases/artist/album/artistEditAlbum.useCase";
 import { DeleteSongUseCase } from "../../../../usecases/artist/song/deleteSong.useCase";
 import { DeleteAlbumUsecase } from "../../../../usecases/artist/album/artistDeleteAlbum.useCase";
+import cloudinary from "../../../../infrastructure/config/cloudinary";
+import logger from "../../../../infrastructure/utils/logger/logger";
 
 export class ArtistController {
     constructor(
@@ -42,18 +44,26 @@ export class ArtistController {
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
         try {
-            const userId = req.user?.id
-            if(!userId){
+            const artistId = req.user?.id
+            if(!artistId){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
             let profileImageUrl : string | undefined;
+            
             if(req.file){
-                profileImageUrl = `${req.file.filename}`
-            }
+                const dataURL = `data:${req.file.mimetype}:base64,${req.file.buffer.toString("base64")}`;
 
+                const uploadImage = await cloudinary.uploader.upload(dataURL,{
+                    folder: `artist_profile/${artistId}`,
+                    resource_type: 'image'
+                })
+
+                profileImageUrl = uploadImage.secure_url;
+            }
+            logger.info("artistId r")
             const dto : EditProfileRequestDTO = EditProfileSchema.parse({...req.body, profileImage: profileImageUrl}) 
-            const result = await this.artistEditProfileUsecase.execute(userId,dto)
+            const result = await this.artistEditProfileUsecase.execute(artistId,dto)
 
             return res.status(StatusCode.OK).json({user:result.user,message:MESSAGES.PROFILE_UPDATED})            
         } catch (error) {

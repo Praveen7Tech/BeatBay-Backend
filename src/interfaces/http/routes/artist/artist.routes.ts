@@ -1,12 +1,11 @@
 import { AwilixContainer } from "awilix";
 import { Router } from "express";
-import { artistAuthController } from "../../controllers/artist/artist.auth.controller";
 import { ArtistController } from "../../controllers/artist/artist.controller";
 import { authMiddleware } from "../../../middleware/auth/authMiddleware";
-import { upload } from "../../../middleware/uploads/multer";
 import { uploadSongMiddleware } from "../../../middleware/song/uploadSondMiddleware";
 import { CreateAlbumMiddleware } from "../../../middleware/album/createAlbum.Middleware";
 import { ArtistStatusCheckMiddleware } from "../../../middleware/status/artsitStatusCheckMiddleware"; 
+import { uploadImage } from "../../../middleware/uploads/uploadImage";
 
 export default (container: AwilixContainer): Router=> {
     const router = Router()
@@ -15,7 +14,7 @@ export default (container: AwilixContainer): Router=> {
 
     router.use(authMiddleware, ArtistStatusCheckMiddleware)
 
-    router.put('/edit-profile', upload.single("profileImage"), artistController.editProfile)
+    router.put('/edit-profile', uploadImage.single("profileImage"), artistController.editProfile)
     router.put('/change-password', artistController.changePassword)
 
     router.post('/upload-song',  uploadSongMiddleware, artistController.upLoadSong)

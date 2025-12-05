@@ -19,10 +19,8 @@ app.use(
     })
 );
 
-app.use("/uploads", express.static(path.join(__dirname, "../../../public/uploads")));
 app.use("/songs", express.static(path.join(__dirname, "../../../public/songs")));
 app.use("/albums", express.static(path.join(__dirname, "../../../public/albums")))
-app.use("/playList", express.static(path.join(__dirname, "../../../public/playList")))
 
 // monggose debuging
 //mongoose.set('debug', true);

@@ -7,5 +7,5 @@ export interface UploadSongDTO {
     songFilePath:string,
     coverImagePath:string,
     lrcFilePath:string
-    duration: string
+    duration: number
 }

@@ -16,7 +16,7 @@ export interface Song {
     artistId: string | ArtistDetails          
     tags: string;        
     releaseDate?: Date;  
-    duration: string   
+    duration: number   
     playCount: number;
     likesCount: number;
     createdAt: Date;

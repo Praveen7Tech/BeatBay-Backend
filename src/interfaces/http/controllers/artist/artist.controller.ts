@@ -25,6 +25,7 @@ import { DeleteSongUseCase } from "../../../../usecases/artist/song/deleteSong.u
 import { DeleteAlbumUsecase } from "../../../../usecases/artist/album/artistDeleteAlbum.useCase";
 import cloudinary from "../../../../infrastructure/config/cloudinary";
 import logger from "../../../../infrastructure/utils/logger/logger";
+import { base64 } from "zod";
 
 export class ArtistController {
     constructor(
@@ -101,20 +102,42 @@ export class ArtistController {
                 return res.status(400).json({ message: "Missing required files." });
             }
 
-            const songFilePath = files["trackFile"][0].filename
-            const coverImagePath = files["coverImage"][0].filename
-            const lrcFilePath = files["lrcFile"][0].filename
+            //coverImage upload
+            const coverImageDataURL = `data:${files['coverImage'][0].mimetype};base64,${files['coverImage'][0].buffer.toString("base64")}`;
+            const coverImageUpload = await cloudinary.uploader.upload(coverImageDataURL,{
+                folder: `song/${artistId}/coverImage`,
+                resource_type: "image"
+            })
 
-            const filePath = files['trackFile'][0].path
-            let songDuration : string | undefined
+            //audio file upload
+            const audioFileDataURL = `data:${files['trackFile'][0].mimetype};base64,${files['trackFile'][0].buffer.toString("base64")}`;
+            const audioFileUpload = await cloudinary.uploader.upload(audioFileDataURL,{
+                folder: `song/${artistId}/trackFile`,
+                resource_type: "video"
+            })
 
-            try {
-                const info = await ffprobe(filePath, {path:ffprobeStatic.path})
-                songDuration = info.streams[0].duration
+            //lrcFile upload
+            const lrcFileDataURL = `data:${files['lrcFile'][0].mimetype};base64,${files['lrcFile'][0].buffer.toString("base64")}`;
+            const lrcFileUpload =  await cloudinary.uploader.upload(lrcFileDataURL,{
+                folder: `song/${artistId}/lrcFile`,
+                resource_type: "raw"
+            })
+
+            const songFilePath = audioFileUpload.secure_url
+            const coverImagePath = coverImageUpload.secure_url
+            const lrcFilePath = lrcFileUpload.secure_url
+
+            //const filePath = files['trackFile'][0].path
+            let songDuration = audioFileUpload.duration;
+            console.log("duration ",songDuration)
+
+            // try {
+            //     const info = await ffprobe(filePath, {path:ffprobeStatic.path})
+            //     songDuration = info.streams[0].duration
                 
-            } catch (error) {
-                console.error("Error determining song duration with ffprobe:", error);
-            }
+            // } catch (error) {
+            //     console.error("Error determining song duration with ffprobe:", error);
+            // }
 
             const dto : UploadSongDTO = UploadSongRequestSchema.parse({...req.body, songFilePath, coverImagePath, lrcFilePath, duration:songDuration})
 
@@ -211,7 +234,7 @@ export class ArtistController {
                 const filePath = files['trackFile'][0].path;
                 try {
                     const info = await ffprobe(filePath, {path:ffprobeStatic.path});
-                    updateData.duration = info.streams[0].duration;
+                    updateData.duration = Number(info.streams[0].duration)
                 } catch (error) {
                     console.error("Error determining new song duration:", error);
                 }

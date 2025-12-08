@@ -37,7 +37,7 @@ export class VerifyOtpUsecase {
       profilePicture:null,
       role:"user",
       playLists:[],
-      followingArtists:[]
+      followingArtists:[],
     });
     await this.cacheService.delete(cacheKey);
   }

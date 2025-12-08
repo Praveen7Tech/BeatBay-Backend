@@ -6,6 +6,7 @@ export interface User {
   email: string;
   password?: string | null;
   profilePicture?: string | null;
+  profileImagePublicId?: string | null
   googleId?: string| null;
   role : 'user' | 'admin';
   status?: boolean;

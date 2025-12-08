@@ -5,12 +5,33 @@ export type UserDocument = HydratedDocument<User>;
 
 const userSchema = new Schema<UserDocument>(
   {
-    name: { type: String },
-    email: { type: String, required: true, unique: true },
-    password: { type: String },
-    profilePicture: { type: String },
-    role: { type: String, enum: ['user', 'admin', 'artist'], default: 'user' },
-    status: { type: Boolean, default: true }, 
+    name: { 
+      type: String 
+    },
+    email: { 
+      type: String, 
+      required: true, 
+      unique: true 
+    },
+    password: { 
+      type: String 
+    },
+    profilePicture: { 
+      type: String 
+    },
+    profileImagePublicId:{
+      type: String,
+      default: null
+    },
+    role: { 
+      type: String, 
+      enum: ['user', 'admin', 'artist'], 
+      default: 'user' 
+    },
+    status: { 
+      type: Boolean, 
+      default: true 
+    }, 
     playLists:[{
       type: Schema.Types.ObjectId,
       ref: "PlayList",

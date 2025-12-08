@@ -29,6 +29,7 @@ import { GetAllPlaylistUseCase } from "../../../usecases/user/playList/getAllPla
 import { AddToPlayListUseCase } from "../../../usecases/user/playList/addToPlayList.useCase";
 import { SearchSongsUseCase } from "../../../usecases/user/song/searchSong.useCase";
 import { EditPlayListUseCase } from "../../../usecases/user/playList/editPlayList.useCase";
+import { GetUserByIdUseCase } from "../../../usecases/admin/users/adminGetUserById.useCase";
 
 export const userModule = {
     // Repository
@@ -46,6 +47,7 @@ export const userModule = {
     changePasswordUsecase: asClass(ChangePasswordUsecase).scoped(),
     fetchSongsUsecase: asClass(FetchSongsUsecase).scoped(),
     fetchAlbumsUsecase: asClass(FetchAlbumsUsecase).scoped(),
+    getUserDetailsUsecase: asClass(GetUserByIdUseCase).scoped(),
 
     // song usecases
     songDetailsUsecase: asClass(SongDetailsUseCase).scoped(),

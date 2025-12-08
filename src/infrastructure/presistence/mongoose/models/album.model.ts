@@ -20,6 +20,10 @@ const AlbumSchema = new Schema({
         type:String,
         required: true
     },
+    coverImagePublicId:{
+        type: String,
+        required: true
+    },
     songs:[{
         type:Schema.Types.ObjectId,
         ref : "Song"

@@ -5,6 +5,7 @@ export interface Album{
     title: string
     description: string
     coverImageUrl: string
+    coverImagePublicId: string
     songs: string[]
     createdAt: Date;
     updatedAt: Date;

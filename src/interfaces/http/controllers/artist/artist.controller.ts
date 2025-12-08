@@ -7,16 +7,13 @@ import { ChangePasswordRequestDTO, EditProfileRequestDTO } from "../../../../use
 import { ChangePasswordSchema, EditProfileSchema } from "../../validators/profile/profile.validators";
 import { ArtistChangePasswordUsecase } from "../../../../usecases/artist/profile/artistChangePassword.useCase";
 import { UploadSongDTO } from "../../../../usecases/dto/song/song.dto";
-import { UploadSongRequestSchema } from "../../validators/song/song.validator";
+import { EditSongRequestSchema, UploadSongRequestSchema } from "../../validators/song/song.validator";
 import { UploadSongUseCase } from "../../../../usecases/artist/song/uploadSong.useCase";
 import { GetSongsUseCase } from "../../../../usecases/artist/song/getSongs.useCase";
 import { ArtistCreateAlbumUseCase } from "../../../../usecases/artist/album/createAlbums.useCase";
 import { CreateAlbumDTO } from "../../../../usecases/dto/album/album.dto";
 import { CreateAlbumRequestSchema, EditAlbumRequestSchema } from "../../validators/album/album.validator";
 import { artistGetAlbumsUseCase } from "../../../../usecases/artist/album/artistGetAlbums.useCase";
-
-import ffprobe from 'ffprobe';
-import ffprobeStatic from 'ffprobe-static';
 import { GetSongDetailsByIdUseCase } from "../../../../usecases/artist/song/getSongById.useCase";
 import { EditSongUseCase } from "../../../../usecases/artist/song/editSong.useCase";
 import { GetAlbumDetailsByIdUseCase } from "../../../../usecases/artist/album/getAlbumDetailsById.useCase";
@@ -25,7 +22,9 @@ import { DeleteSongUseCase } from "../../../../usecases/artist/song/deleteSong.u
 import { DeleteAlbumUsecase } from "../../../../usecases/artist/album/artistDeleteAlbum.useCase";
 import cloudinary from "../../../../infrastructure/config/cloudinary";
 import logger from "../../../../infrastructure/utils/logger/logger";
-import { base64 } from "zod";
+import { AlbumDetailsUseCase } from "../../../../usecases/user/album/albumDetails.useCase";
+import { uploadOptionsType } from "../../../../infrastructure/config/cloudinary"; 
+import { GetArtistByIdUseCase } from "../../../../usecases/admin/artists/adminGetArtistById.useCase";
 
 export class ArtistController {
     constructor(
@@ -40,27 +39,41 @@ export class ArtistController {
         private readonly artistAlbumDetailsUsecase: GetAlbumDetailsByIdUseCase,
         private readonly artistEditAlbumUsecase: EditAlbumUseCase,
         private readonly artistDeleteSongUsecase: DeleteSongUseCase,
-        private readonly artistDeleteAlbumUsecase: DeleteAlbumUsecase
+        private readonly artistDeleteAlbumUsecase: DeleteAlbumUsecase,
+        private readonly getAlbumDetailsUsecase: AlbumDetailsUseCase,
+        private readonly getArtistDetailsUsecase: GetArtistByIdUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
         try {
             const artistId = req.user?.id
-            if(!artistId){
+            const existArtist = await this.getArtistDetailsUsecase.execute(artistId!)
+
+            if(!artistId || !existArtist){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
             let profileImageUrl : string | undefined;
+            let profilePicturePublicId : string | undefined
+
+            const existingPublicId = existArtist.profilePicturePublicId
+            const ARTIST_FOLDER = `/artist_profile/${artistId}`
             
             if(req.file){
                 const dataURL = `data:${req.file.mimetype}:base64,${req.file.buffer.toString("base64")}`;
 
-                const uploadImage = await cloudinary.uploader.upload(dataURL,{
-                    folder: `artist_profile/${artistId}`,
-                    resource_type: 'image'
-                })
+                const editOption : uploadOptionsType={
+                    resource_type:"image",
+                    public_id: existingPublicId,
+                    invalidate: true,
+                    folder: !existingPublicId ? ARTIST_FOLDER : undefined
+                }
+
+                const uploadImage = await cloudinary.uploader.upload(dataURL, editOption)
 
                 profileImageUrl = uploadImage.secure_url;
+                profilePicturePublicId = uploadImage.public_id
+
             }
             logger.info("artistId r")
             const dto : EditProfileRequestDTO = EditProfileSchema.parse({...req.body, profileImage: profileImageUrl}) 
@@ -103,47 +116,52 @@ export class ArtistController {
             }
 
             //coverImage upload
-            const coverImageDataURL = `data:${files['coverImage'][0].mimetype};base64,${files['coverImage'][0].buffer.toString("base64")}`;
+            const trackFile = files['trackFile'][0];
+            const coverImageFile = files['coverImage'][0];
+            const lrcFile = files['lrcFile'][0];
+
+            // coverImage upload
+            const coverImageDataURL = `data:${coverImageFile.mimetype};base64,${coverImageFile.buffer.toString("base64")}`;
             const coverImageUpload = await cloudinary.uploader.upload(coverImageDataURL,{
                 folder: `song/${artistId}/coverImage`,
                 resource_type: "image"
-            })
+            });
 
-            //audio file upload
-            const audioFileDataURL = `data:${files['trackFile'][0].mimetype};base64,${files['trackFile'][0].buffer.toString("base64")}`;
+            // audio file upload
+            const audioFileDataURL = `data:${trackFile.mimetype};base64,${trackFile.buffer.toString("base64")}`;
             const audioFileUpload = await cloudinary.uploader.upload(audioFileDataURL,{
                 folder: `song/${artistId}/trackFile`,
                 resource_type: "video"
-            })
+            });
 
-            //lrcFile upload
-            const lrcFileDataURL = `data:${files['lrcFile'][0].mimetype};base64,${files['lrcFile'][0].buffer.toString("base64")}`;
-            const lrcFileUpload =  await cloudinary.uploader.upload(lrcFileDataURL,{
+            // lrcFile upload
+            const lrcFileDataURL = `data:${lrcFile.mimetype};base64,${lrcFile.buffer.toString("base64")}`;
+            const lrcFileUpload = await cloudinary.uploader.upload(lrcFileDataURL,{
                 folder: `song/${artistId}/lrcFile`,
                 resource_type: "raw"
-            })
+            });
 
-            const songFilePath = audioFileUpload.secure_url
-            const coverImagePath = coverImageUpload.secure_url
-            const lrcFilePath = lrcFileUpload.secure_url
+            // Map results to DTO structure
+            const songFilePath = audioFileUpload.secure_url;
+            const coverImagePath = coverImageUpload.secure_url;
+            const lrcFilePath = lrcFileUpload.secure_url;
+            const songDuration = audioFileUpload.duration;
 
-            //const filePath = files['trackFile'][0].path
-            let songDuration = audioFileUpload.duration;
-            console.log("duration ",songDuration)
+            // Pass all public IDs to the DTO
+            const dto : UploadSongDTO = UploadSongRequestSchema.parse({
+                ...req.body, 
+                songFilePath, 
+                audioPublicId: audioFileUpload.public_id,
+                coverImagePath, 
+                coverImagePublicId: coverImageUpload.public_id,
+                lrcFilePath, 
+                lyricsPublicId: lrcFileUpload.public_id, 
+                duration:songDuration
+            });
 
-            // try {
-            //     const info = await ffprobe(filePath, {path:ffprobeStatic.path})
-            //     songDuration = info.streams[0].duration
-                
-            // } catch (error) {
-            //     console.error("Error determining song duration with ffprobe:", error);
-            // }
+            await this.artistUploadSongUsecase.execute(artistId,dto);
 
-            const dto : UploadSongDTO = UploadSongRequestSchema.parse({...req.body, songFilePath, coverImagePath, lrcFilePath, duration:songDuration})
-
-            await this.artistUploadSongUsecase.execute(artistId,dto)
-
-            return res.status(StatusCode.CREATED).json({message:"New Song uploaded successfully"})
+            return res.status(StatusCode.CREATED).json({message:"New Song uploaded successfully"});
         } catch (error) {
             next(error)
         }
@@ -171,11 +189,23 @@ export class ArtistController {
             }
 
             let coverImageUrl : string | undefined
+            let coverImagePublicId : string | undefined
             if(req.file){
-                coverImageUrl = req.file.filename
+                const dataURL = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+                const CoverImageUpload = await cloudinary.uploader.upload(dataURL,{
+                    folder: `album/${artistId}/coverImage`,
+                    resource_type: 'image'
+                })
+
+                coverImageUrl = CoverImageUpload.secure_url
+                coverImagePublicId = CoverImageUpload.public_id
             }
 
-            const dto: CreateAlbumDTO = CreateAlbumRequestSchema.parse({...req.body, coverImageUrl: coverImageUrl})
+            const dto: CreateAlbumDTO = CreateAlbumRequestSchema.parse({
+                ...req.body, 
+                coverImageUrl: coverImageUrl,
+                coverImagePublicId: coverImagePublicId 
+            })
 
             await this.artistCreateAlbumUsecase.execute(artistId, dto)
 
@@ -226,27 +256,68 @@ export class ArtistController {
             }
             
             const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+            const existingSong = await this.artistsongDetailsUsecase.execute(songId)
+             if (!existingSong) {
+                return res.status(StatusCode.NOT_FOUND).json({ message: "Song not found" });
+            }
             
             const updateData: Partial<UploadSongDTO> = {...req.body};
 
-            if (files['trackFile'] && files['trackFile'].length > 0) {
-                updateData.songFilePath = files['trackFile'][0].filename;
-                const filePath = files['trackFile'][0].path;
-                try {
-                    const info = await ffprobe(filePath, {path:ffprobeStatic.path});
-                    updateData.duration = Number(info.streams[0].duration)
-                } catch (error) {
-                    console.error("Error determining new song duration:", error);
-                }
+             if (files['trackFile'] && files['trackFile'].length > 0) {
+                const audioFile = files['trackFile'][0];
+                const audioFileDataURL = `data:${audioFile.mimetype};base64,${audioFile.buffer.toString("base64")}`;
+
+                const FileUploadOptions : uploadOptionsType = {
+                    resource_type: "video",
+                    public_id: existingSong.audioPublicId, 
+                    invalidate: true 
+                };
+
+                const audioFileUpload = await cloudinary.uploader.upload(audioFileDataURL,FileUploadOptions)
+
+                updateData.songFilePath = audioFileUpload.secure_url;
+                updateData.audioPublicId = audioFileUpload.public_id; 
+                updateData.duration = audioFileUpload.duration; 
             }
+            
+            // CoverImage Update 
             if (files['coverImage'] && files['coverImage'].length > 0) {
-                updateData.coverImagePath = files['coverImage'][0].filename;
-            }
-            if (files['lrcFile'] && files['lrcFile'].length > 0) {
-                updateData.lrcFilePath = files['lrcFile'][0].filename;
+                const coverImageFile = files['coverImage'][0];
+                const coverImageDataURL = `data:${coverImageFile.mimetype};base64,${coverImageFile.buffer.toString("base64")}`;
+
+                const UploadOption : uploadOptionsType = {
+                    resource_type: "image",
+                    public_id: existingSong.coverImagePublicId, 
+                    invalidate: true
+                }
+
+                const coverImageUpload = await cloudinary.uploader.upload(coverImageDataURL, UploadOption)
+                
+                updateData.coverImagePath = coverImageUpload.secure_url;
+                updateData.coverImagePublicId = coverImageUpload.public_id;
             }
 
-            await this.editSongUsecase.execute(songId, updateData); 
+            // LyricsFile Update 
+            if (files['lrcFile'] && files['lrcFile'].length > 0) {
+                const lrcFile = files['lrcFile'][0];
+                const lrcFileDataURL = `data:${lrcFile.mimetype};base64,${lrcFile.buffer.toString("base64")}`;
+
+                const UploadOption : uploadOptionsType = {
+                    resource_type: "raw", 
+                    public_id: existingSong.lyricsPublicId, 
+                    invalidate: true
+                };
+
+                const lrcFileUpload = await cloudinary.uploader.upload(lrcFileDataURL, UploadOption)
+
+                updateData.lrcFilePath = lrcFileUpload.secure_url;
+                updateData.lyricsPublicId = lrcFileUpload.public_id; 
+            }
+            
+            const validatedDto = EditSongRequestSchema.parse(updateData);
+
+            await this.editSongUsecase.execute(songId, validatedDto); 
 
             return res.status(StatusCode.OK).json({message:"Song updated successfully"});
         } catch (error) {
@@ -278,12 +349,34 @@ export class ArtistController {
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const dto : Partial<CreateAlbumDTO>= EditAlbumRequestSchema.parse({...req.body})
+            const existingAlbum = await this.getAlbumDetailsUsecase.execute(albumId)
+            if(!existingAlbum){
+                return res.status(StatusCode.NOT_FOUND).json({message: "album not found"})
+            }
+   
             
             let coverImageUrl: string | undefined = undefined;
-            if (req.file?.filename) {
-                dto.coverImageUrl = req.file.filename; 
+            let coverImagePublicId: string | undefined = undefined;
+
+            if (req.file) {
+                const dataURL = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+                const existingPublicId = existingAlbum.coverImagePublicId;
+
+                const uploadOptions: uploadOptionsType = {
+                    resource_type: 'image',
+                    public_id: existingPublicId, // existing ID with folder to overwrite
+                    invalidate: true // invalidate CDN cache
+                };
+
+                const coverImageUpload = await cloudinary.uploader.upload(dataURL, uploadOptions);
+                
+                coverImageUrl = coverImageUpload.secure_url;
+                coverImagePublicId = coverImageUpload.public_id; 
             }
+
+            const dto : Partial<CreateAlbumDTO>= EditAlbumRequestSchema.parse({...req.body})
+            if (coverImageUrl) dto.coverImageUrl = coverImageUrl;
+            if (coverImagePublicId) dto.coverImagePublicId = coverImagePublicId;
 
             await this.artistEditAlbumUsecase.execute(artistId,albumId, dto)
 

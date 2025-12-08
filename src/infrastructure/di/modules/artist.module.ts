@@ -30,6 +30,8 @@ import { DeleteSongUseCase } from "../../../usecases/artist/song/deleteSong.useC
 import { IPlayListRepository } from "../../../domain/repositories/playList.repository";
 import { MongoosePlayListRepository } from "../../presistence/mongoose/repositories/mongoose.playList.repository";
 import { DeleteAlbumUsecase } from "../../../usecases/artist/album/artistDeleteAlbum.useCase";
+import { AlbumDetailsUseCase } from "../../../usecases/user/album/albumDetails.useCase";
+import { GetArtistByIdUseCase } from "../../../usecases/admin/artists/adminGetArtistById.useCase";
 
 export const artistModule = {
 
@@ -50,6 +52,7 @@ export const artistModule = {
     artistVerifyEmailUsecase: asClass(ArtistVerifyEmailUsecase).scoped(),
     artistResetPasswordUsecase: asClass(ArtistResetPasswordUsecase).scoped(),
     artistChangePasswordUsecase: asClass(ArtistChangePasswordUsecase).scoped(),
+    getArtistDetailsUsecase: asClass(GetArtistByIdUseCase).scoped(),
 
     // song usecases
     artistUploadSongUsecase: asClass(UploadSongUseCase).scoped(),
@@ -64,6 +67,7 @@ export const artistModule = {
     artistAlbumDetailsUsecase: asClass(GetAlbumDetailsByIdUseCase).scoped(),
     artistEditAlbumUsecase: asClass(EditAlbumUseCase).scoped(),
     artistDeleteAlbumUsecase: asClass(DeleteAlbumUsecase).scoped(),
+    getAlbumDetailsUsecase: asClass(AlbumDetailsUseCase).scoped(),
     
 
     // controller

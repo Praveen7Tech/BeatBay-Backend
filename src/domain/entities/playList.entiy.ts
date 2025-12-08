@@ -7,6 +7,7 @@ export interface PlayList{
     name: string
     description: string | null
     coverImageUrl: string
+    coverImagePublicId: string
     songs: Song[]
     createdAt: Date
     updatedAt: Date

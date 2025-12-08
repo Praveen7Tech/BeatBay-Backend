@@ -18,6 +18,7 @@ export class ArtistCreateAlbumUseCase {
                 title:request.title,
                 description: request.description,
                 coverImageUrl: request.coverImageUrl,
+                coverImagePublicId: request.coverImagePublicId,
                 songs: [...request.songs]
             }
             const newAlbum = await this.albumRepository.create(AlbumData)

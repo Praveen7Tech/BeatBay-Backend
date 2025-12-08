@@ -10,11 +10,12 @@ export class editProfileUsecase {
     ){}
 
     async execute(userId: string,request:EditProfileRequestDTO): Promise<EditProfileResponseDTO>{
-        const {name, profileImage} = request
+        const {name, profileImage, profileImagePublicId} = request
 
         const updateData : Partial<User> = {}
         if(name !== undefined) updateData.name = name;
         if(profileImage !== undefined) updateData.profilePicture = profileImage;
+        if(profileImagePublicId) updateData.profileImagePublicId = profileImagePublicId
 
         const updatedUser = await this.userRepository.update(userId,updateData)
         if(!updatedUser) throw new NotFoundError("user not found for update")

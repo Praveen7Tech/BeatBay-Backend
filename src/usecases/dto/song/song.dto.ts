@@ -1,11 +1,14 @@
 
 export interface UploadSongDTO {
-    title: string, 
-    genre: string, 
-    description: string, 
+    title: string;
+    description: string;
+    genre: string,
     tags: string, 
-    songFilePath:string,
-    coverImagePath:string,
-    lrcFilePath:string
-    duration: number
+    songFilePath: string;
+    audioPublicId: string; 
+    coverImagePath: string;
+    coverImagePublicId: string; 
+    lrcFilePath: string;
+    lyricsPublicId: string; 
+    duration: number;
 }

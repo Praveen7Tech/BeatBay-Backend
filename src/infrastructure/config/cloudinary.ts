@@ -9,3 +9,12 @@ cloudinary.config({
 })
 
 export default cloudinary;
+
+
+// overwrite options
+export interface uploadOptionsType{
+    resource_type: "image" | "video" | "raw" | "auto"; 
+    public_id: string | undefined;
+    invalidate: boolean
+    folder?: string
+}

@@ -21,6 +21,10 @@ const PlayListSchema = new Schema({
         type: String,
         default: null
     },
+    coverImagePublicId:{
+        type: String,
+        default: null
+    },
     songs: [{
         type: Schema.Types.ObjectId,
         ref: "Song"

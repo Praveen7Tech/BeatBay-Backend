@@ -1,5 +1,6 @@
 import mongoose, { HydratedDocument, Model, Schema } from "mongoose";
 import { Song } from "../../../../domain/entities/song.entity";
+import { required } from "zod/v4/core/util.cjs";
 
 export type SongDocument = HydratedDocument<Song>;
 
@@ -19,11 +20,23 @@ const songSchema = new Schema({
         type: String, 
         required: true 
     },
+    audioPublicId:{
+        type: String,
+        required: true
+    },
     lyricsUrl: {
         type:String,
         required: true
     },
+    lyricsPublicId:{
+        type: String,
+        required: true
+    },
     coverImageUrl: { 
+        type: String, 
+        required: true 
+    },
+    coverImagePublicId: { 
         type: String, 
         required: true 
     },

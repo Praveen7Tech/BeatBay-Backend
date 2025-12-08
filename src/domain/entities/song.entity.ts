@@ -10,9 +10,12 @@ export interface Song {
     title: string;
     description?: string; 
     genre: string;
-    audioUrl: string;       
+    audioUrl: string;     
+    audioPublicId: string;  
     coverImageUrl: string;  
-    lyricsUrl?: string;     
+    coverImagePublicId: string
+    lyricsUrl: string;   
+    lyricsPublicId: string;  
     artistId: string | ArtistDetails          
     tags: string;        
     releaseDate?: Date;  

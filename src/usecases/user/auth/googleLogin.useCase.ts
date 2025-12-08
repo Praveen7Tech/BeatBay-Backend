@@ -25,13 +25,14 @@ export class GoogleLoginUsecase {
     if (!user) {
         
       user = await this.userRepository.create({
-        name ,
+        name,
         email,
-        password:null,
-        googleId:sub,
-        playLists:[],
+        password: null,
+        googleId: sub,
+        playLists: [],
         profilePicture: picture,
         role: 'user',
+        profileImagePublicId: null
       });
     }
 

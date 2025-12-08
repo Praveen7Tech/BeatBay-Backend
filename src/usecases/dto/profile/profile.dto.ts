@@ -6,6 +6,7 @@ export interface EditProfileRequestDTO {
   bio?:string
   password?: string;
   profileImage?: string;
+  profileImagePublicId?:string
 }
 
 export interface EditProfileResponseDTO {

@@ -17,8 +17,11 @@ export class EditSongUseCase {
         if (request.genre) updateData.genre = request.genre;
         if (request.tags) updateData.tags = request.tags;
         if (request.songFilePath) updateData.audioUrl = request.songFilePath; 
+        if (request.audioPublicId) updateData.audioPublicId = request.audioPublicId; 
         if (request.lrcFilePath) updateData.lyricsUrl = request.lrcFilePath; 
+        if (request.lyricsPublicId) updateData.lyricsPublicId = request.lyricsPublicId; 
         if (request.coverImagePath) updateData.coverImageUrl = request.coverImagePath; 
+        if (request.coverImagePublicId) updateData.coverImagePublicId = request.coverImagePublicId; 
         if (request.duration) updateData.duration = request.duration;
 
         await this.songRepository.edit(songId, updateData);

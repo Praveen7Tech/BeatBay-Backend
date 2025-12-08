@@ -21,6 +21,10 @@ const artistSchema = new Schema<ArtistDocument>(
         profilePicture:{
             typr:String
         },
+        profilePicturePublicId:{
+            type: String,
+            default: null
+        },
         bio:{
             type: String
         },

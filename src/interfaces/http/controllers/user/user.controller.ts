@@ -22,6 +22,8 @@ import { AddToPlayListUseCase } from "../../../../usecases/user/playList/addToPl
 import { SearchSongsUseCase } from "../../../../usecases/user/song/searchSong.useCase"
 import { EditPlayListUseCase } from "../../../../usecases/user/playList/editPlayList.useCase"
 import cloudinary from "../../../../infrastructure/config/cloudinary"
+import { GetUserByIdUseCase } from "../../../../usecases/admin/users/adminGetUserById.useCase"
+import { uploadOptionsType } from "../../../../infrastructure/config/cloudinary"
 
 export class UserController{
     constructor(
@@ -41,30 +43,43 @@ export class UserController{
         private readonly getAllPlayListUsecase: GetAllPlaylistUseCase,
         private readonly addToPlayListUsecase: AddToPlayListUseCase,
         private readonly searchSongsUseCase: SearchSongsUseCase,
-        private readonly editPlauListUsecase: EditPlayListUseCase
+        private readonly editPlauListUsecase: EditPlayListUseCase,
+        private readonly getUserDetailsUsecase: GetUserByIdUseCase
         
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction) =>{
         try {
             const userId = req.user?.id
-            if(!userId){
+            const existingUser = await this.getUserDetailsUsecase.execute(userId!)
+            if(!userId || !existingUser){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
+            const existingPublicId = existingUser.profileImagePublicId
+            const USER_FOLDER = `/user_profile/${userId}`
+
             let profileImageUrl : string | undefined;
+            let profileImagePublicId : string | undefined
             if(req.file){
                 const dataURL = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
 
-                const uploadImage = await cloudinary.uploader.upload(dataURL,{
-                    folder: `user_profile/${userId}`,
+                const uploadImageOption : uploadOptionsType ={
                     resource_type: "image",
-                })
+                    public_id: existingPublicId || undefined,
+                    invalidate: true,
+                    folder: !existingPublicId ? USER_FOLDER: undefined
+                }
+
+                const uploadImage = await cloudinary.uploader.upload(dataURL,uploadImageOption)
 
                 profileImageUrl = uploadImage.secure_url;
+                profileImagePublicId = uploadImage.public_id
             }
 
             const dto : EditProfileRequestDTO = EditProfileSchema.parse({...req.body, profileImage: profileImageUrl}) 
+            if(profileImagePublicId) dto.profileImagePublicId = profileImagePublicId
+
             const result = await this.editProfileUserUsecase.execute(userId,dto)
 
             return res.status(StatusCode.OK).json({user:result.user,message:MESSAGES.PROFILE_UPDATED})
@@ -317,13 +332,26 @@ export class UserController{
             const playListId = req.params.playListId;
             const updateData = req.body; 
 
+            const existingPlaylist = await this.getPlayListUsecase.execute(playListId)
+            if (!existingPlaylist) {
+                return res.status(404).json({ message: "Playlist not found" });
+            }
+            // Get the full public ID path from the database
+            let existingPublicId = existingPlaylist.coverImagePublicId;
+           const PLAYLIST_FOLDER = `/playList/${playListId}`
+
             if(req.file){
                 const dataURL = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`
-                const imageUpload = cloudinary.uploader.upload(dataURL,{
-                    folder: `playList/${playListId}`,
-                    resource_type: "image"
-                })
-                updateData.coverImageUrl = (await imageUpload).secure_url; 
+                const editOption : uploadOptionsType={
+                    resource_type:"image",
+                    public_id: existingPublicId,
+                    invalidate: true,
+                    folder: !existingPublicId ? PLAYLIST_FOLDER : undefined
+                }
+                const imageUpload = await cloudinary.uploader.upload(dataURL, editOption)
+
+                updateData.coverImageUrl = imageUpload.secure_url; 
+                updateData.coverImagePublicId= imageUpload.public_id
             }
             const result = await this.editPlauListUsecase.execute(playListId, updateData);
 

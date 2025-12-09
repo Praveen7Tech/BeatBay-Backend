@@ -12,4 +12,5 @@ export interface ISongRepository{
     edit(songId: string, data: Partial<Song>): Promise<Song | null>;
     delete(songId: string, session: ClientSession): Promise<boolean>
     countDocuments(): Promise<number>
+    addAlbumIdToSongs(songIds: string[],albumId:string, session: ClientSession): Promise<void>
 }

@@ -17,7 +17,8 @@ export class MongooseSongRepository implements ISongRepository{
     }
 
     async findById(id: string): Promise<Song | null> {
-        return SongModel.findById(id).populate({
+        return SongModel.findById(id)
+        .populate({
             path:'artistId',
             select: 'name profilePicture',
             model: 'Artist'
@@ -61,5 +62,13 @@ export class MongooseSongRepository implements ISongRepository{
 
     async countDocuments(): Promise<number> {
         return await SongModel.countDocuments()
+    }
+
+    async addAlbumIdToSongs(songIds: string[], albumId: string, session: ClientSession): Promise<void> {
+        await SongModel.updateMany(
+            {_id: {$in: songIds}},
+            {$addToSet: {albumIds: albumId}},
+            {session}
+        ).exec()
     }
 }

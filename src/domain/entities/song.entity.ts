@@ -16,7 +16,8 @@ export interface Song {
     coverImagePublicId: string
     lyricsUrl: string;   
     lyricsPublicId: string;  
-    artistId: string | ArtistDetails          
+    artistId: string | ArtistDetails   
+    albumIds?: string[]       
     tags: string;        
     releaseDate?: Date;  
     duration: number   

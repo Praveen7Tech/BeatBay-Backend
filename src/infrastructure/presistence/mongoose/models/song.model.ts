@@ -43,6 +43,11 @@ const songSchema = new Schema({
     description: {
         type: String
     },
+    albumIds:[{
+        type: Schema.Types.ObjectId,
+        ref: 'Album',
+        default:[]
+    }],
     duration:{
         type: String
     },

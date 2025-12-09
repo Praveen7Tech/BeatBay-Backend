@@ -11,7 +11,19 @@ export class SongRecommentationService implements IRecomentationService{
         const artistSongs = await SongModel.find({
             artistId: artistId,
             _id:{$ne: songId}
-        }).limit(limit).exec()
+        })
+        .populate({
+            path:'artistId',
+            select: 'name profilePicture',
+            model: 'Artist'
+        })
+        .populate({
+            path: "albumIds",
+            select: "_id name",
+            model: "Album"
+        })
+        .lean()
+        .limit(limit).exec()
 
         const playedSongIds = artistSongs.map(song=> song._id.toString())
         playedSongIds.push(currentSongId)
@@ -19,7 +31,19 @@ export class SongRecommentationService implements IRecomentationService{
         const genreSongs = await SongModel.find({
             genre: genre,
             _id:{$nin: playedSongIds}
-        }).limit(limit).exec()
+        })
+        .populate({
+            path:'artistId',
+            select: 'name profilePicture',
+            model: 'Artist'
+        })
+        .populate({
+            path: "albumIds",
+            select: "_id name",
+            model: "Album"
+        })
+        .lean()
+        .limit(limit).exec()
 
         const recomentations : Song[] = [...artistSongs, ...genreSongs]
 

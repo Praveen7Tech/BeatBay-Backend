@@ -15,7 +15,7 @@ export class GetFollowingListUseCase{
             id: follow._id?.toString(),
             name: follow.name,
             role: follow.role,
-            profilePicture: follow.profilePicture ?? 'default-profile-pic.png' 
+            profilePicture: follow?.profilePicture  
         }));
 
         return result;

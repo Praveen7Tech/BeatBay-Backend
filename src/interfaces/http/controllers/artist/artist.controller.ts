@@ -54,13 +54,13 @@ export class ArtistController {
             }
 
             let profileImageUrl : string | undefined;
-            let profilePicturePublicId : string | undefined
+            let profileImagePublicId : string | undefined
 
-            const existingPublicId = existArtist.profilePicturePublicId
+            const existingPublicId = existArtist.profileImagePublicId
             const ARTIST_FOLDER = `/artist_profile/${artistId}`
             
             if(req.file){
-                const dataURL = `data:${req.file.mimetype}:base64,${req.file.buffer.toString("base64")}`;
+                const dataURL = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
 
                 const editOption : uploadOptionsType={
                     resource_type:"image",
@@ -72,11 +72,13 @@ export class ArtistController {
                 const uploadImage = await cloudinary.uploader.upload(dataURL, editOption)
 
                 profileImageUrl = uploadImage.secure_url;
-                profilePicturePublicId = uploadImage.public_id
+                profileImagePublicId = uploadImage.public_id
 
             }
             logger.info("artistId r")
-            const dto : EditProfileRequestDTO = EditProfileSchema.parse({...req.body, profileImage: profileImageUrl}) 
+            const dto : EditProfileRequestDTO = EditProfileSchema.parse({...req.body, profileImage:profileImageUrl}) 
+            if(profileImagePublicId) dto.profileImagePublicId = profileImagePublicId
+
             const result = await this.artistEditProfileUsecase.execute(artistId,dto)
 
             return res.status(StatusCode.OK).json({user:result.user,message:MESSAGES.PROFILE_UPDATED})            

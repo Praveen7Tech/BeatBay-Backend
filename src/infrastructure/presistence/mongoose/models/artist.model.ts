@@ -19,9 +19,10 @@ const artistSchema = new Schema<ArtistDocument>(
             type:String
         },
         profilePicture:{
-            typr:String
+            type:String,
+            default: null
         },
-        profilePicturePublicId:{
+        profileImagePublicId:{
             type: String,
             default: null
         },

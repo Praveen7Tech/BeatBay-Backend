@@ -5,7 +5,7 @@ export interface Artist {
   email: string,
   password: string | null
   profilePicture?:string | null
-  profilePicturePublicId?: string
+  profileImagePublicId?: string
   googleId?:string | null
   bio?: string | null;
   role : 'user' | 'artist';

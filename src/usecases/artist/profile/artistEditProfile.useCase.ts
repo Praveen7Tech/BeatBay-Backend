@@ -9,12 +9,13 @@ export class ArtistEditProfileUsecase{
     ){}
 
     async execute(userId: string,request:EditProfileRequestDTO): Promise<EditProfileResponseDTO>{
-        const {name,bio, profileImage} = request
+        const {name,bio, profileImage, profileImagePublicId} = request
 
         const updateData : Partial<Artist> = {}
         if(name !== undefined) updateData.name = name;
         if(profileImage !== undefined) updateData.profilePicture = profileImage;
         if(bio !== undefined) updateData.bio = bio
+        if(profileImagePublicId) updateData.profileImagePublicId = profileImagePublicId
 
         const updatedUser = await this.artistRepository.update(userId,updateData)
         if(!updatedUser) throw new NotFoundError("Artist not found for edit")

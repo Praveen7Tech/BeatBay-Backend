@@ -1,5 +1,4 @@
 import { ArtistDetails, Song } from "../../../domain/entities/song.entity";
-import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { IRecomentationService } from "../../../domain/services/recomentation.service";
 import { SongResponseDTO } from "../../dto/song/song.response.dto";
@@ -10,13 +9,13 @@ function isArtistDetails(artist: string | ArtistDetails): artist is ArtistDetail
 
 export class SongDetailsUseCase {
     constructor(
-        private readonly mongooseSongRepository: ISongRepository,
-        private readonly recomentationService: IRecomentationService
+        private readonly _mongooseSongRepository: ISongRepository,
+        private readonly _recomentationService: IRecomentationService
     ){}
 
     async execute(songId: string): Promise<SongResponseDTO>{
 
-       const songDetails = await this.mongooseSongRepository.findById(songId)
+       const songDetails = await this._mongooseSongRepository.findById(songId)
         
        const artistId = songDetails?.artistId
        const genre = songDetails?.genre
@@ -34,7 +33,7 @@ export class SongDetailsUseCase {
             throw new Error("song recomentation logic failed")
         }
 
-        const recomentations = await this.recomentationService.getRecomentedSongs(
+        const recomentations = await this._recomentationService.getRecomentedSongs(
             songId,artistIdString,genre
         )
 

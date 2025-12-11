@@ -36,11 +36,11 @@ import { GetArtistByIdUseCase } from "../../../usecases/admin/artists/adminGetAr
 export const artistModule = {
 
     // repositories
-    artistRepository: asClass<IArtistRepository>(MongooseArtistRepository).scoped(),
-    transactionManager: asClass<ITransactionManager>(MongooseTransactionService).scoped(),
-    songRepository: asClass<ISongRepository>(MongooseSongRepository).scoped(),
-    albumRepository: asClass<IAlbumRepository>(MongooseAlbumRepository).scoped(),
-    playListRepository: asClass<IPlayListRepository>(MongoosePlayListRepository).scoped(),
+    _artistRepository: asClass<IArtistRepository>(MongooseArtistRepository).scoped(),
+    _transactionManager: asClass<ITransactionManager>(MongooseTransactionService).scoped(),
+    _songRepository: asClass<ISongRepository>(MongooseSongRepository).scoped(),
+    _albumRepository: asClass<IAlbumRepository>(MongooseAlbumRepository).scoped(),
+    _playListRepository: asClass<IPlayListRepository>(MongoosePlayListRepository).scoped(),
 
     // usecases
     artistSignupUsecase: asClass(ArtistSignupUsecase).scoped(),

@@ -3,11 +3,11 @@ import { IArtistRepository } from "../../../domain/repositories/artist.repositor
 
 export class ArtistDetailsUseCase{
     constructor(
-        private readonly mongooseArtistRepository: IArtistRepository
+        private readonly _mongooseArtistRepository: IArtistRepository
     ){}
 
     async execute(artistId:string): Promise<Artist | null>{
-        const artistDetails = await this.mongooseArtistRepository.findById(artistId)
+        const artistDetails = await this._mongooseArtistRepository.findById(artistId)
         return artistDetails
     }
 }

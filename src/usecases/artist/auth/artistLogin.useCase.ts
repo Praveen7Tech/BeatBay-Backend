@@ -8,14 +8,14 @@ import { IArtistRepository } from "../../../domain/repositories/artist.repositor
 
 export class ArtistLoginUsecase {
     constructor(
-        private readonly artistRepository: IArtistRepository,
-        private readonly passwordService: IPasswordService,
-        private readonly tokenService: ITokenService
+        private readonly _artistRepository: IArtistRepository,
+        private readonly _passwordService: IPasswordService,
+        private readonly _tokenService: ITokenService
     ){}
 
     async execute(request: LoginRequestDTO) : Promise<LoginResponseDTO> {
         
-        const artist = await this.artistRepository.findByEmail(request.email)
+        const artist = await this._artistRepository.findByEmail(request.email)
         if(!artist){
             throw new NotFoundError("Artist not found.!")
         }
@@ -27,15 +27,15 @@ export class ArtistLoginUsecase {
         if(!artist.password || !artist._id){
             throw new NotFoundError("Account uses Google login. Please continue with Google.")
         }
-        const password = await this.passwordService.compare(request.password, artist.password)
+        const password = await this._passwordService.compare(request.password, artist.password)
         
         if(!password){
             throw new BadRequestError("Invalid credentials")
         }
 
         const payload = {id: artist._id?.toString(), email: artist.email, role: artist.role}
-        const accessToken = await this.tokenService.generateAccessToken(payload)
-        const refreshToken = await this.tokenService.generateRefressToken(payload)
+        const accessToken = await this._tokenService.generateAccessToken(payload)
+        const refreshToken = await this._tokenService.generateRefressToken(payload)
 
         return {
             user:artist,

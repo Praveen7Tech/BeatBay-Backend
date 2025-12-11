@@ -4,12 +4,12 @@ import { ArtistTableResponseDTO } from "../../dto/admin/admin.response.dto"
 
 export class FetchAllArtistsUseCase{
     constructor(
-        private readonly artistRepository: IArtistRepository
+        private readonly _artistRepository: IArtistRepository
     ){}
 
     async execute(page: number, limit:number, search: string): Promise<ArtistTableResponseDTO>{
 
-            const {data:artists, totalCount} = await this.artistRepository.findAll(page, limit, search)
+            const {data:artists, totalCount} = await this._artistRepository.findAll(page, limit, search)
     
             const response = artists.map((artist: Artist)=>({
                 id: artist._id!,

@@ -6,15 +6,15 @@ import { CreateAlbumDTO } from "../../dto/album/album.dto";
 
 export class ArtistCreateAlbumUseCase {
     constructor(
-        private readonly albumRepository: IAlbumRepository,
-        private readonly transactionManager: ITransactionManager,
-        private readonly artistRepository: IArtistRepository,
-        private readonly songRepository: ISongRepository
+        private readonly _albumRepository: IAlbumRepository,
+        private readonly _transactionManager: ITransactionManager,
+        private readonly _artistRepository: IArtistRepository,
+        private readonly _songRepository: ISongRepository
     ){}
 
     async execute (artistId: string, request:CreateAlbumDTO): Promise<{success: boolean}>{
 
-        await this.transactionManager.withTransaction(async(session)=>{
+        await this._transactionManager.withTransaction(async(session)=>{
             const AlbumData = {
                 artistId: artistId,
                 title:request.title,
@@ -23,14 +23,14 @@ export class ArtistCreateAlbumUseCase {
                 coverImagePublicId: request.coverImagePublicId,
                 songs: [...request.songs]
             }
-            const newAlbum = await this.albumRepository.create(AlbumData)
+            const newAlbum = await this._albumRepository.create(AlbumData)
 
-            await this.artistRepository.addAlbumIdToArtist(artistId, newAlbum._id, session)
+            await this._artistRepository.addAlbumIdToArtist(artistId, newAlbum._id, session)
 
             const songIds = request.songs
             const albumId = newAlbum._id
 
-            await this.songRepository.addAlbumIdToSongs(songIds, albumId, session)
+            await this._songRepository.addAlbumIdToSongs(songIds, albumId, session)
         })
 
        

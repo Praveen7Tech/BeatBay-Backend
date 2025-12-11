@@ -6,14 +6,14 @@ import { IArtistRepository } from "../../../domain/repositories/artist.repositor
 
 export class ArtistChangePasswordUsecase {
     constructor(
-        private readonly passwordService: IPasswordService,
-        private readonly artistRepository: IArtistRepository,
+        private readonly _passwordService: IPasswordService,
+        private readonly _artistRepository: IArtistRepository,
     ) {}
 
     async execute(artistId: string, request: ChangePasswordRequestDTO): Promise<{ success: boolean }> {
         const { currentPassword, newPassword } = request;
 
-        const artist = await this.artistRepository.findById(artistId);
+        const artist = await this._artistRepository.findById(artistId);
         if (!artist ) {
             throw new NotFoundError("artist not found")
         }
@@ -21,15 +21,15 @@ export class ArtistChangePasswordUsecase {
             throw new NotFoundError("This accound created using email id.")
         }
 
-        const isMatch = await this.passwordService.compare(currentPassword, artist.password);
+        const isMatch = await this._passwordService.compare(currentPassword, artist.password);
 
         if (!isMatch) {
             throw new IncorrectPasswordError(); 
         }
 
-        const hashedPassword = await this.passwordService.hash(newPassword);
+        const hashedPassword = await this._passwordService.hash(newPassword);
         
-        await this.artistRepository.update(artistId, { password: hashedPassword });
+        await this._artistRepository.update(artistId, { password: hashedPassword });
 
         return { success: true };
     }

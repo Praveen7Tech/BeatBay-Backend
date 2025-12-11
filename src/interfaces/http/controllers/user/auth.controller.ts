@@ -12,9 +12,6 @@ import { VerifyEmailUsecase } from '../../../../usecases/user/auth/verify-email.
 import { ResetPasswordUsecase } from '../../../../usecases/user/auth/reset-password.useCase';
 import { GoogleLoginUsecase } from '../../../../usecases/user/auth/googleLogin.useCase';
 
-import { OAuth2Client } from 'google-auth-library'
-const client_id = process.env.GOOGLE_CLIENT_ID!;
-//const client = new OAuth2Client(client_id);
 
 import {
   SignupRequestDTO,

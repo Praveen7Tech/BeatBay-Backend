@@ -1,6 +1,5 @@
 import { IUserRepository } from '../../../domain/repositories/user.repository';
 import { ICacheService } from '../../../domain/services/cache.service';
-import { PasswordService } from '../../../infrastructure/services/password/password-service';
 import { IPasswordService } from '../../../domain/services/password.service';
 import { InvalidOtpError, OtpExpiredError } from '../../../common/errors/common/common.errors';
 
@@ -11,14 +10,14 @@ interface VerifyOtpRequest {
 
 export class VerifyOtpUsecase {
   constructor(
-    private readonly cacheService: ICacheService,
-    private readonly userRepository: IUserRepository,
-    private readonly passwordService: IPasswordService,
+    private readonly _cacheService: ICacheService,
+    private readonly _userRepository: IUserRepository,
+    private readonly _passwordService: IPasswordService,
   ) {}
 
   async execute(request: VerifyOtpRequest): Promise<void> {
     const cacheKey = `otp:${request.email}`;
-    const cachedData = await this.cacheService.get(cacheKey);
+    const cachedData = await this._cacheService.get(cacheKey);
     
     if (!cachedData) throw new OtpExpiredError();
 
@@ -27,9 +26,9 @@ export class VerifyOtpUsecase {
     if (Date.now() > otpExpiredAt) throw new OtpExpiredError();
     if (otp !== request.otp) throw new InvalidOtpError();
 
-    const passwordHash = await this.passwordService.hash(password)
+    const passwordHash = await this._passwordService.hash(password)
 
-    await this.userRepository.create({
+    await this._userRepository.create({
       name, 
       email,
       password: passwordHash ,
@@ -39,6 +38,6 @@ export class VerifyOtpUsecase {
       playLists:[],
       followingArtists:[],
     });
-    await this.cacheService.delete(cacheKey);
+    await this._cacheService.delete(cacheKey);
   }
 }

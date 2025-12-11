@@ -8,30 +8,30 @@ import { ITransactionManager } from "../../../domain/services/transaction.servic
 
 export class DeleteSongUseCase {
     constructor(
-        private readonly transactionManager: ITransactionManager,
-        private readonly songRepository: ISongRepository,
-        private readonly artistRepository: IArtistRepository,
-        private readonly albumRepository: IAlbumRepository,
-        private readonly playListRepository: IPlayListRepository
+        private readonly _transactionManager: ITransactionManager,
+        private readonly _songRepository: ISongRepository,
+        private readonly _artistRepository: IArtistRepository,
+        private readonly _albumRepository: IAlbumRepository,
+        private readonly _playListRepository: IPlayListRepository
     ) {}
 
     async execute(songId: string, artistId: string): Promise<boolean> {
 
-        const deleteSong =  await this.transactionManager.withTransaction(async (session) => {
+        const deleteSong =  await this._transactionManager.withTransaction(async (session) => {
 
-            const songDeleted = await this.songRepository.delete(songId, session);
+            const songDeleted = await this._songRepository.delete(songId, session);
             if (!songDeleted) {
                 throw new NotFoundError("Song not found or already deleted!");
             }
 
             //  Remove songId from artist repository
-            await this.artistRepository.removeSongIdFromArtist(artistId, songId, session);
+            await this._artistRepository.removeSongIdFromArtist(artistId, songId, session);
 
             // Remove songId from albums 
-            await this.albumRepository.removeSongFromAllAlbums(songId, session);
+            await this._albumRepository.removeSongFromAllAlbums(songId, session);
 
             //  Remove song from user playlists 
-            await this.playListRepository.removeSongFromAllPlaylists(songId, session);
+            await this._playListRepository.removeSongFromAllPlaylists(songId, session);
 
             // await this.s3Service.deleteFiles(songId);  (fix implimentation in future)
             

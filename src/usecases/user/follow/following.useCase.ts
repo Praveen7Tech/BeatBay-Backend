@@ -1,15 +1,14 @@
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { FollowingResponseDTO } from "../../dto/follow/following.dto";
-import { Artist } from "../../../domain/entities/arist.entity"; 
 
 export class GetFollowingListUseCase{
     constructor(
-        private readonly userRepository: IUserRepository
+        private readonly _userRepository: IUserRepository
     ){}
 
     async execute(userId: string): Promise<FollowingResponseDTO[]>{
 
-        const following = await this.userRepository.following(userId);
+        const following = await this._userRepository.following(userId);
 
         const result = following.map(follow => ({
             id: follow._id?.toString(),

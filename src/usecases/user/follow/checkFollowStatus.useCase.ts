@@ -1,9 +1,9 @@
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 
 export class CheckFollowStatusUseCase {
-    constructor(private readonly userRepository: IUserRepository) {}
+    constructor(private readonly _userRepository: IUserRepository) {}
 
     async execute(userId: string, artistId: string): Promise<boolean> {
-        return this.userRepository.isFollowing(userId, artistId);
+        return this._userRepository.isFollowing(userId, artistId);
     }
 }

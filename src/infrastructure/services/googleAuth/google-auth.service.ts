@@ -5,14 +5,14 @@ export class GoogleAuthService implements IGoogleAuthService {
     private client: OAuth2Client;
     //private clientId: string
 
-    constructor(private clientId: string) {   
-    this.client = new OAuth2Client(this.clientId);
+    constructor(private _clientId: string) {   
+    this.client = new OAuth2Client(this._clientId);
   }
 
     async verifyToken(token: string) {
         const ticket = await this.client.verifyIdToken({
         idToken: token,
-        audience: this.clientId,
+        audience: this._clientId,
         });
 
         const payload = ticket.getPayload();

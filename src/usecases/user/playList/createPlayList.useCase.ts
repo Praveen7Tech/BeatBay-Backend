@@ -5,14 +5,14 @@ import { CreatePlayListResponseDTO } from "../../dto/playList/request.dto";
 
 export class CreatePlayListUseCase{
     constructor(
-        private readonly mongoosePlayListRepository: IPlayListRepository,
-        private readonly transactionManager: ITransactionManager,
-        private readonly userRepository: IUserRepository
+        private readonly _mongoosePlayListRepository: IPlayListRepository,
+        private readonly _transactionManager: ITransactionManager,
+        private readonly _userRepository: IUserRepository
     ){}
 
     async execute(userId:string): Promise<CreatePlayListResponseDTO >{
       
-        const createdPlayList = await this.transactionManager.withTransaction(async(session)=>{
+        const createdPlayList = await this._transactionManager.withTransaction(async(session)=>{
 
             const palyListName = "My PlayList"
             const playListData ={
@@ -20,9 +20,9 @@ export class CreatePlayListUseCase{
                 name: palyListName,
                 songs: [],
             }
-            const newPlaylist = await this.mongoosePlayListRepository.create(playListData, session)
+            const newPlaylist = await this._mongoosePlayListRepository.create(playListData, session)
 
-            await this.userRepository.addPlayList(userId, newPlaylist._id.toString(), session)
+            await this._userRepository.addPlayList(userId, newPlaylist._id.toString(), session)
 
             return newPlaylist
         })

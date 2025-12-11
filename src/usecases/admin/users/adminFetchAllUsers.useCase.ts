@@ -4,11 +4,11 @@ import { UsersTableResponseDTO } from "../../dto/admin/admin.response.dto";
 
 export class FetchAllUsersUseCase{
     constructor(
-        private readonly userRepository: IUserRepository
+        private readonly _userRepository: IUserRepository
     ){}
 
     async execute(page: number, limit:number, search: string): Promise<UsersTableResponseDTO>{
-        const {data:users, totalCount} = await this.userRepository.findAll(page, limit, search)
+        const {data:users, totalCount} = await this._userRepository.findAll(page, limit, search)
 
         const response = users.map((user: User)=>({
             id: user._id!,

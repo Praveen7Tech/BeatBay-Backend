@@ -1,6 +1,4 @@
 import { BadRequestError } from "../../../common/errors/common/common.errors";
-import { User } from "../../../domain/entities/user.entity"
-import { AuthPayload } from "../../../domain/interfaces/jwt-payload.interface";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 import { IUserRepository } from "../../../domain/repositories/user.repository"
 import { ITokenService } from "../../../domain/services/token.service"
@@ -11,25 +9,25 @@ import { AuthStatusResponseDTO } from "../../dto/auth/response.dto";
 
 export class AuthStatusUsecase {
   constructor(
-    private readonly tokenService: ITokenService,
-    private readonly userRepository: IUserRepository,
-    private readonly artistRepository: IArtistRepository
+    private readonly _tokenService: ITokenService,
+    private readonly _userRepository: IUserRepository,
+    private readonly _artistRepository: IArtistRepository
   ){}
 
   async execute(request: AuthStatusRequestDTO) : Promise<AuthStatusResponseDTO> {
 
-    const payload = await this.tokenService.verifyRefreshToken(request.refreshToken);
+    const payload = await this._tokenService.verifyRefreshToken(request.refreshToken);
     if (!payload) {
       throw new BadRequestError("Invalid refresh token");
     }
 
     let user;
     if(payload.role === "user"){
-      user = await this.userRepository.findById(payload.id);
+      user = await this._userRepository.findById(payload.id);
     }else if( payload.role === 'admin'){
-      user = await this.userRepository.findById(payload.id);
+      user = await this._userRepository.findById(payload.id);
     }else if(payload.role === 'artist'){
-      user = await this.artistRepository.findById(payload.id)
+      user = await this._artistRepository.findById(payload.id)
     }
     
     if (!user || !user._id) {
@@ -37,8 +35,8 @@ export class AuthStatusUsecase {
     }
 
     const payloadTkn = { id: user._id.toString(), email: user.email, role:user.role };
-    const newAccessToken = await this.tokenService.generateAccessToken(payloadTkn);
-    const newRefreshToken = await this.tokenService.generateRefressToken(payloadTkn)
+    const newAccessToken = await this._tokenService.generateAccessToken(payloadTkn);
+    const newRefreshToken = await this._tokenService.generateRefressToken(payloadTkn)
 
     return { user, accessToken: newAccessToken, refreshToken: newRefreshToken};
   }

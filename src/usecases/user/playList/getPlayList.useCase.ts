@@ -3,11 +3,11 @@ import { IPlayListRepository } from "../../../domain/repositories/playList.repos
 
  export class GetPlayListUseCase{
     constructor(
-        private readonly mongoosePlayListRepository: IPlayListRepository
+        private readonly _mongoosePlayListRepository: IPlayListRepository
     ){}
 
     async execute(playListId: string): Promise<PlayList | null>{
-        const playList = await this.mongoosePlayListRepository.findById(playListId)
+        const playList = await this._mongoosePlayListRepository.findById(playListId)
 
         return playList
     }

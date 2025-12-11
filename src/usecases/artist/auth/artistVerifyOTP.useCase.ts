@@ -7,14 +7,14 @@ import { InvalidOtpError, OtpExpiredError } from "../../../common/errors/common/
 
 export class ArtistVerifyOTPuseCase {
     constructor(
-        private readonly cacheService: ICacheService,
-        private readonly passwordService: IPasswordService,
-        private readonly artistRepository: IArtistRepository,
+        private readonly _cacheService: ICacheService,
+        private readonly _passwordService: IPasswordService,
+        private readonly _artistRepository: IArtistRepository,
     ){}
 
     async execute(request: VerifyOtpRequestDTO): Promise<void> {
         const cacheKey = `artist_otp:${request.email}`;
-        const cachedData = await this.cacheService.get(cacheKey);
+        const cachedData = await this._cacheService.get(cacheKey);
         
         if (!cachedData) throw new OtpExpiredError();
     
@@ -23,12 +23,12 @@ export class ArtistVerifyOTPuseCase {
         if (Date.now() > otpExpiredAt) throw new OtpExpiredError();
         if (otp !== request.otp) throw new InvalidOtpError();
     
-        const passwordHash = await this.passwordService.hash(password);
+        const passwordHash = await this._passwordService.hash(password);
 
-        await this.artistRepository.create({
+        await this._artistRepository.create({
             name:name,email:email,password:passwordHash,googleId:null,role:"artist",bio:null
         })
     
-        await this.cacheService.delete(cacheKey);
+        await this._cacheService.delete(cacheKey);
     }
 }

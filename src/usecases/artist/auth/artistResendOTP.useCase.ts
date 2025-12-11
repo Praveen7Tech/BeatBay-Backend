@@ -8,21 +8,21 @@ import { ResendOtpResponseDTO } from "../../dto/auth/response.dto"
 
 export class ArtistResendOtpUseCase {
     constructor(
-        private readonly cacheService : ICacheService,
-        private readonly otpService: IOtpService,
-        private readonly emailService: IEmailService
+        private readonly _cacheService : ICacheService,
+        private readonly _otpService: IOtpService,
+        private readonly _emailService: IEmailService
     ){}
 
     async execute(request: ResendOtpRequestDTO) : Promise<ResendOtpResponseDTO>{
         const cacheKey = `artist_otp:${request.email}`
-        const otp = await this.otpService.generate()
+        const otp = await this._otpService.generate()
         logger.info(`artist resend OTP: ${otp}`)
         const otpExpiredAt = Date.now() + 2 * 60 * 1000
 
-        await this.cacheService.update(cacheKey,{otp, otpExpiredAt})
+        await this._cacheService.update(cacheKey,{otp, otpExpiredAt})
 
         const otpMail = EmailFormat.otp(otp)
-        await this.emailService.sendMail(
+        await this._emailService.sendMail(
             request.email,
             otpMail.subject,
             otpMail.text,

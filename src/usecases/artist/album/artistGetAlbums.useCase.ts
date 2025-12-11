@@ -5,17 +5,17 @@ import { AlbumResponseDTO, ArtistAlbumsResponseDTO } from "../../dto/album/album
 
 export class artistGetAlbumsUseCase {
     constructor(
-        private readonly artistRepository: IArtistRepository,
-        private readonly albumRepository: IAlbumRepository
+        private readonly _artistRepository: IArtistRepository,
+        private readonly _albumRepository: IAlbumRepository
     ) {}
 
     async execute(artistId: string): Promise<ArtistAlbumsResponseDTO> {
 
         // Fetch album IDs from artist
-        const albumIds = await this.artistRepository.fetchAlbums(artistId);
+        const albumIds = await this._artistRepository.fetchAlbums(artistId);
 
         //  Fetch full album objects
-        const albums = await this.albumRepository.getAlbumsByIds(albumIds);
+        const albums = await this._albumRepository.getAlbumsByIds(albumIds);
 
         //  Format to match DTO
         const formattedAlbums: AlbumResponseDTO[] = albums.map((album: Album) => ({

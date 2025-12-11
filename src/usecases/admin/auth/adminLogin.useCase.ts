@@ -9,27 +9,27 @@ import { BadRequestError, NotFoundError } from "../../../common/errors/common/co
 
 export class AdminLoginUsecase {
     constructor(
-        private readonly userRepository: IUserRepository,
-        private readonly passwordService: IPasswordService,
-        private readonly tokenService: ITokenService
+        private readonly _userRepository: IUserRepository,
+        private readonly _passwordService: IPasswordService,
+        private readonly _tokenService: ITokenService
     ){}
 
     async execute(request: LoginRequestDTO): Promise<LoginResponseDTO> {
         
-        const admin = await this.userRepository.findByEmail(request.email)
+        const admin = await this._userRepository.findByEmail(request.email)
 
         if(!admin || !admin.password || admin.role !== 'admin' || !admin._id){
             throw new NotFoundError("Admin not found.!")
         }
 
-        const passwordMatch = await this.passwordService.compare(request.password, admin.password)
+        const passwordMatch = await this._passwordService.compare(request.password, admin.password)
         if(!passwordMatch){
             throw new BadRequestError("invalid admin credentials.!")
         }
 
         const payload = {id: admin._id?.toString(), email: admin.email, role: admin.role}
-        const accessToken = await this.tokenService.generateAccessToken(payload)
-        const refreshToken = await this.tokenService.generateRefressToken(payload)
+        const accessToken = await this._tokenService.generateAccessToken(payload)
+        const refreshToken = await this._tokenService.generateRefressToken(payload)
 
         return {user:admin, accessToken, refreshToken}
     }

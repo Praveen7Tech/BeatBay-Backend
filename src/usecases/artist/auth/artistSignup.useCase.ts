@@ -11,28 +11,28 @@ import { SignupResponseDTO } from "../../dto/auth/response.dto";
 
 export class ArtistSignupUsecase {
     constructor(
-        private readonly artistRepository: IArtistRepository,
-        private readonly cacheService: ICacheService,
-        private readonly otpService: IOtpService,
-        private readonly emailService: IEmailService
+        private readonly _artistRepository: IArtistRepository,
+        private readonly _cacheService: ICacheService,
+        private readonly _otpService: IOtpService,
+        private readonly _emailService: IEmailService
     ) {}
 
     async execute(request: SignupRequestDTO): Promise<SignupResponseDTO> {
 
-        const existingUser = await this.artistRepository.findByEmail(request.email);
+        const existingUser = await this._artistRepository.findByEmail(request.email);
         if (existingUser) {
             throw new AlreadyExistError("Artist already exist in this email.!");
         }
 
-        const otp = await this.otpService.generate();
+        const otp = await this._otpService.generate();
         const cacheKey = `artist_otp:${request.email}`;
         const otpExpirationInSeconds = 300;
         const cachedData = { ...request, otp, otpExpiredAt: Date.now() + 2 * 60 * 1000, role: 'artist' };
 
-        await this.cacheService.set(cacheKey, cachedData, otpExpirationInSeconds);
+        await this._cacheService.set(cacheKey, cachedData, otpExpirationInSeconds);
         
         const otpMail = EmailFormat.otp(otp);
-        await this.emailService.sendMail(request.email, otpMail.subject, otpMail.text, otpMail.html);
+        await this._emailService.sendMail(request.email, otpMail.subject, otpMail.text, otpMail.html);
         
         logger.info(`artist OTP: ${otp}`)
         return { otp };

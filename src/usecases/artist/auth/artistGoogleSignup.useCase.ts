@@ -6,25 +6,25 @@ import { GoogleLoginRequestDTO } from "../../dto/auth/request.dto";
 
 export class ArtistGoogleLoginUseCase {
   constructor(
-    private readonly googleAuthService: IGoogleAuthService,
-    private readonly artistRepository: IArtistRepository,
-    private readonly tokenService: ITokenService,
+    private readonly _googleAuthService: IGoogleAuthService,
+    private readonly _artistRepository: IArtistRepository,
+    private readonly _tokenService: ITokenService,
   ) {}
 
   async execute(request: GoogleLoginRequestDTO) {
 
-    const payload = await this.googleAuthService.verifyToken(request.token);
+    const payload = await this._googleAuthService.verifyToken(request.token);
     const { name, email, picture, sub } = payload;
 
     if (!email || !name) {
       throw new BadRequestError("Google account did not return an email");
     }
 
-    let artist = await this.artistRepository.findByEmail(email);
+    let artist = await this._artistRepository.findByEmail(email);
 
     if (!artist) {
         
-      artist = await this.artistRepository.create({
+      artist = await this._artistRepository.create({
         name ,
         email,
         password:null,
@@ -39,8 +39,8 @@ export class ArtistGoogleLoginUseCase {
     }
     
     const payloadt = { id: artist._id!, email: artist.email, role:artist.role };
-    const accessToken = await this.tokenService.generateAccessToken(payloadt);
-    const refreshToken = await this.tokenService.generateRefressToken(payloadt);
+    const accessToken = await this._tokenService.generateAccessToken(payloadt);
+    const refreshToken = await this._tokenService.generateRefressToken(payloadt);
 
     return {
       user:artist,

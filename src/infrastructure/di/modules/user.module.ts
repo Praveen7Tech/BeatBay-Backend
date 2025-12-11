@@ -33,14 +33,14 @@ import { GetUserByIdUseCase } from "../../../usecases/admin/users/adminGetUserBy
 
 export const userModule = {
     // Repository
-    userReposistory: asClass<IUserRepository>(MongooseUserRepository).scoped(),
-    mongooseSongRepository: asClass<ISongRepository>(MongooseSongRepository).scoped(),
-    mongooseAlbumRepository: asClass<IAlbumRepository>(MongooseAlbumRepository).scoped(),
-    mongooseArtistRepository: asClass<IArtistRepository>(MongooseArtistRepository).scoped(),
-    mongoosePlayListRepository: asClass<IPlayListRepository>(MongoosePlayListRepository).scoped(),
+    _userReposistory: asClass<IUserRepository>(MongooseUserRepository).scoped(),
+    _mongooseSongRepository: asClass<ISongRepository>(MongooseSongRepository).scoped(),
+    _mongooseAlbumRepository: asClass<IAlbumRepository>(MongooseAlbumRepository).scoped(),
+    _mongooseArtistRepository: asClass<IArtistRepository>(MongooseArtistRepository).scoped(),
+    _mongoosePlayListRepository: asClass<IPlayListRepository>(MongoosePlayListRepository).scoped(),
 
     // services
-    recomentationService: asClass<IRecomentationService>(SongRecommentationService).scoped(),
+    _recomentationService: asClass<IRecomentationService>(SongRecommentationService).scoped(),
 
     //useCases
     editProfileUserUsecase: asClass(editProfileUsecase).scoped(),

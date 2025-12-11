@@ -6,20 +6,20 @@ import { DashBoardResponse } from "../../dto/admin/admin.response.dto";
 
 export class GetAdminDashBoardData{
     constructor(
-        private readonly userRepository: IUserRepository,
-        private readonly artistRepository: IArtistRepository,
-        private readonly songRepository: ISongRepository,
-        private readonly albumRepository: IAlbumRepository
+        private readonly _userRepository: IUserRepository,
+        private readonly _artistRepository: IArtistRepository,
+        private readonly _songRepository: ISongRepository,
+        private readonly _albumRepository: IAlbumRepository
     ){}
 
     async execute():Promise<DashBoardResponse>{
-        const userCount =  await this.userRepository.countDocuments()
+        const userCount =  await this._userRepository.countDocuments()
 
-        const artistCount =await this.artistRepository.countDocuments()
+        const artistCount =await this._artistRepository.countDocuments()
 
-        const songsCount = await this.songRepository.countDocuments()
+        const songsCount = await this._songRepository.countDocuments()
 
-        const albumCount = await this.albumRepository.countDocuments()
+        const albumCount = await this._albumRepository.countDocuments()
 
         return{
             totalUser: userCount,

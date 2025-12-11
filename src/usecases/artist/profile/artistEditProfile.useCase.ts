@@ -5,7 +5,7 @@ import { EditProfileRequestDTO, EditProfileResponseDTO } from "../../dto/profile
 
 export class ArtistEditProfileUsecase{
     constructor(
-        private readonly artistRepository: IArtistRepository,
+        private readonly _artistRepository: IArtistRepository,
     ){}
 
     async execute(userId: string,request:EditProfileRequestDTO): Promise<EditProfileResponseDTO>{
@@ -17,7 +17,7 @@ export class ArtistEditProfileUsecase{
         if(bio !== undefined) updateData.bio = bio
         if(profileImagePublicId) updateData.profileImagePublicId = profileImagePublicId
 
-        const updatedUser = await this.artistRepository.update(userId,updateData)
+        const updatedUser = await this._artistRepository.update(userId,updateData)
         if(!updatedUser) throw new NotFoundError("Artist not found for edit")
 
         return {user:updatedUser}

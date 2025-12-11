@@ -5,7 +5,7 @@ import { UploadSongDTO } from "../../dto/song/song.dto";
 
 export class EditSongUseCase {
     constructor(
-        private readonly songRepository: ISongRepository
+        private readonly _songRepository: ISongRepository
     ){}
 
     async execute(songId: string, request: Partial<UploadSongDTO>): Promise<{success: boolean}>{
@@ -24,7 +24,7 @@ export class EditSongUseCase {
         if (request.coverImagePublicId) updateData.coverImagePublicId = request.coverImagePublicId; 
         if (request.duration) updateData.duration = request.duration;
 
-        await this.songRepository.edit(songId, updateData);
+        await this._songRepository.edit(songId, updateData);
 
         return {success: true};
     }

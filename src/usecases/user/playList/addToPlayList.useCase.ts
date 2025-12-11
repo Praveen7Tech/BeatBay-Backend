@@ -2,12 +2,12 @@ import { IPlayListRepository } from "../../../domain/repositories/playList.repos
 
 export class AddToPlayListUseCase{
     constructor(
-        private readonly mongoosePlayListRepository: IPlayListRepository
+        private readonly _mongoosePlayListRepository: IPlayListRepository
     ){}
 
     async execute(playListId: string, songId: string): Promise<boolean>{
 
-        const updatedPlaylist = await this.mongoosePlayListRepository.update(playListId, songId)
+        const updatedPlaylist = await this._mongoosePlayListRepository.update(playListId, songId)
 
         return true
     }

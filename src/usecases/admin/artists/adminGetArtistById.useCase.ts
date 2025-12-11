@@ -3,12 +3,12 @@ import { IArtistRepository } from "../../../domain/repositories/artist.repositor
 
 export class GetArtistByIdUseCase{
     constructor(
-        private readonly artistRepository: IArtistRepository
+        private readonly _artistRepository: IArtistRepository
     ){}
     
     async execute(userId: string): Promise<Artist | null>{
     
-        const user = await this.artistRepository.findById(userId)
+        const user = await this._artistRepository.findById(userId)
     
         return user
     }

@@ -25,16 +25,16 @@ import { GoogleAuthService } from '../../services/googleAuth/google-auth.service
 
 export const authModule = {
       // as value
-      clientId: asValue(process.env.GOOGLE_CLIENT_ID),
+      _clientId: asValue(process.env.GOOGLE_CLIENT_ID),
     
       // Infrastructure
-      userRepository: asClass<IUserRepository>(MongooseUserRepository).scoped(),
-      cacheService: asClass<ICacheService>(RedisCacheServive).singleton(),
-      passwordService: asClass<IPasswordService>(PasswordService).scoped(),
-      otpService: asClass<IOtpService>(OtpService).scoped(),
-      tokenService: asClass<ITokenService>(JwtTokenService).scoped(),
-      emailService: asClass<IEmailService>(EmailService).singleton(),
-      googleAuthService: asClass<IGoogleAuthService>(GoogleAuthService).singleton(),
+      _userRepository: asClass<IUserRepository>(MongooseUserRepository).scoped(),
+      _cacheService: asClass<ICacheService>(RedisCacheServive).singleton(),
+      _passwordService: asClass<IPasswordService>(PasswordService).scoped(),
+      _otpService: asClass<IOtpService>(OtpService).scoped(),
+      _tokenService: asClass<ITokenService>(JwtTokenService).scoped(),
+      _emailService: asClass<IEmailService>(EmailService).singleton(),
+      _googleAuthService: asClass<IGoogleAuthService>(GoogleAuthService).singleton(),
     
       // Use cases
       signupUsecase: asClass(SignupUsecase).scoped(),

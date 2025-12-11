@@ -2,11 +2,11 @@ import { IArtistRepository } from "../../../domain/repositories/artist.repositor
 
 export class BlockArtistUseCase{
     constructor(
-        private readonly artistRepository: IArtistRepository
+        private readonly _artistRepository: IArtistRepository
     ){}
 
     async execute(artistId: string): Promise<boolean>{
-        const user = await this.artistRepository.blockById(artistId)
+        const user = await this._artistRepository.blockById(artistId)
 
         return user 
     }

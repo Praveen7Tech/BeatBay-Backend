@@ -6,7 +6,7 @@ import { EditProfileRequestDTO, EditProfileResponseDTO } from "../../dto/profile
 
 export class editProfileUsecase {
     constructor(
-        private readonly userRepository: IUserRepository,
+        private readonly _userRepository: IUserRepository,
     ){}
 
     async execute(userId: string,request:EditProfileRequestDTO): Promise<EditProfileResponseDTO>{
@@ -17,7 +17,7 @@ export class editProfileUsecase {
         if(profileImage !== undefined) updateData.profilePicture = profileImage;
         if(profileImagePublicId) updateData.profileImagePublicId = profileImagePublicId
 
-        const updatedUser = await this.userRepository.update(userId,updateData)
+        const updatedUser = await this._userRepository.update(userId,updateData)
         if(!updatedUser) throw new NotFoundError("user not found for update")
 
 

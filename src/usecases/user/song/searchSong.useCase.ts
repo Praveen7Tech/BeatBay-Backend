@@ -9,7 +9,7 @@ interface SearchSongsDTO {
 
 export class SearchSongsUseCase {
   constructor(
-    private readonly mongooseSongRepository: ISongRepository,
+    private readonly _mongooseSongRepository: ISongRepository,
   ){}
 
   async execute({ query, limit = 20, offset = 0 }: SearchSongsDTO): Promise<Song[]> {
@@ -20,6 +20,6 @@ export class SearchSongsUseCase {
 
     if (limit > 50) limit = 50;
 
-    return this.mongooseSongRepository.searchByQuery(trimmed, { limit, offset });
+    return this._mongooseSongRepository.searchByQuery(trimmed, { limit, offset });
   }
 }

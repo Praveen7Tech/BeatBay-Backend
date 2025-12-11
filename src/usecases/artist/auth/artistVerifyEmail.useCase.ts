@@ -8,26 +8,26 @@ import { VerifyEmailRequestDTO } from "../../dto/auth/request.dto"
 
 export class ArtistVerifyEmailUsecase {
     constructor(
-        private readonly artistRepository: IArtistRepository,
-        private readonly tokenService: ITokenService,
-        private readonly cacheService: ICacheService,
-        private readonly emailService: IEmailService
+        private readonly _artistRepository: IArtistRepository,
+        private readonly _tokenService: ITokenService,
+        private readonly _cacheService: ICacheService,
+        private readonly _emailService: IEmailService
     ){}
 
     async execute(request: VerifyEmailRequestDTO): Promise<void> {
             
-        const artist =  await this.artistRepository.findByEmail(request.email)
+        const artist =  await this._artistRepository.findByEmail(request.email)
         if(!artist || !artist._id) throw new NotFoundError("Artist not found")
             
         const artistId :string = artist._id?.toString()    
-        const token = await this.tokenService.generateResetToken(artistId)
+        const token = await this._tokenService.generateResetToken(artistId)
             
-        await this.cacheService.storeResetToken(artistId,token,10*60)
+        await this._cacheService.storeResetToken(artistId,token,10*60)
             
         const restLink = `http://localhost:5173/artist-reset-password?token=${token}`
         const restMail = passwordResetFormat.link(restLink)
             
-        await this.emailService.sendMail(request.email, restMail.subject, restMail.text, restMail.html)
+        await this._emailService.sendMail(request.email, restMail.subject, restMail.text, restMail.html)
             
     }
 }

@@ -6,14 +6,14 @@ import { UploadSongDTO } from "../../dto/song/song.dto";
 
 export class UploadSongUseCase {
     constructor(
-        private readonly songRepository: ISongRepository,
-        private readonly artistRepository: IArtistRepository,
-        private readonly transactionManager: ITransactionManager
+        private readonly _songRepository: ISongRepository,
+        private readonly _artistRepository: IArtistRepository,
+        private readonly _transactionManager: ITransactionManager
     ){}
 
     async execute(artistId:string,request: UploadSongDTO): Promise<{success: boolean}>{
 
-        await this.transactionManager.withTransaction(async(session)=>{
+        await this._transactionManager.withTransaction(async(session)=>{
             
             const songData = {
                 title: request.title,
@@ -29,9 +29,9 @@ export class UploadSongUseCase {
                 coverImagePublicId: request.coverImagePublicId,
                 duration: request.duration
             }
-        const newSong = await this.songRepository.create(songData, session)
+        const newSong = await this._songRepository.create(songData, session)
 
-        await this.artistRepository.addSongIdToArtist(artistId, newSong._id, session)
+        await this._artistRepository.addSongIdToArtist(artistId, newSong._id, session)
 
         })
 

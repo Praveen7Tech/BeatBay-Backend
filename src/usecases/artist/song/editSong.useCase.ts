@@ -1,14 +1,14 @@
 
 import { Song } from "../../../domain/entities/song.entity";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
-import { UploadSongDTO } from "../../dto/song/song.dto"; 
+import { EditSongDTO } from "../../dto/song/song.dto"; 
 
 export class EditSongUseCase {
     constructor(
         private readonly _songRepository: ISongRepository
     ){}
 
-    async execute(songId: string, request: Partial<UploadSongDTO>): Promise<{success: boolean}>{
+    async execute(songId: string, request: Partial<EditSongDTO>): Promise<{success: boolean}>{
 
         const updateData: Partial<Song> = {};
 

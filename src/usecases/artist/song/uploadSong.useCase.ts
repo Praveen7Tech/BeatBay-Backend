@@ -3,6 +3,7 @@ import { IArtistRepository } from "../../../domain/repositories/artist.repositor
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { ITransactionManager } from "../../../domain/services/transaction.service";
 import { UploadSongDTO } from "../../dto/song/song.dto";
+import { NotFoundError } from "../../../common/errors/common/common.errors";
 
 export class UploadSongUseCase {
     constructor(
@@ -14,6 +15,11 @@ export class UploadSongUseCase {
     async execute(artistId:string,request: UploadSongDTO): Promise<{success: boolean}>{
 
         await this._transactionManager.withTransaction(async(session)=>{
+
+            const artist = await this._artistRepository.findById(artistId)
+            if(!artist){
+                throw new NotFoundError("Artist not found")
+            }
             
             const songData = {
                 title: request.title,
@@ -25,6 +31,7 @@ export class UploadSongUseCase {
                 lyricsUrl: request.lrcFilePath,
                 lyricsPublicId: request.lyricsPublicId,
                 artistId:artistId,
+                artistName: artist?.name,
                 coverImageUrl:request.coverImagePath,
                 coverImagePublicId: request.coverImagePublicId,
                 duration: request.duration

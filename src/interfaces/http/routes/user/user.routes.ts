@@ -32,6 +32,7 @@ export default (container: AwilixContainer): Router=> {
     router.post('/edit-playList/:playListId', uploadImage.single("coverImage"), userController.editPlayList)
 
     router.get('/searchSong', userController.searchSongs)
+    router.get('/search', userController.searchDiscover)
 
     return router
 }

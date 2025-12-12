@@ -104,70 +104,86 @@ export class ArtistController {
         }
     }
     
-    upLoadSong = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+    upLoadSong = async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
-            const artistId = req.user?.id
-            if(!artistId){
-                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            const artistId = req.user?.id;
+            if (!artistId) {
+                return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });
             }
-            
+
             const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
-            if (!files['trackFile'] || !files['coverImage']) {
+            if (!files['trackFile'] || !files['coverImage'] || !files['lrcFile']) {
                 return res.status(400).json({ message: "Missing required files." });
             }
 
-            //coverImage upload
             const trackFile = files['trackFile'][0];
             const coverImageFile = files['coverImage'][0];
-            const lrcFile = files['lrcFile'][0];
+            const lrcFile = files['lrcFile'][0]; 
 
-            // coverImage upload
-            const coverImageDataURL = `data:${coverImageFile.mimetype};base64,${coverImageFile.buffer.toString("base64")}`;
-            const coverImageUpload = await cloudinary.uploader.upload(coverImageDataURL,{
-                folder: `song/${artistId}/coverImage`,
-                resource_type: "image"
-            });
+            // Cloudinary uploads 
+            const coverImageUpload = await cloudinary.uploader.upload(
+                `data:${coverImageFile.mimetype};base64,${coverImageFile.buffer.toString("base64")}`,
+                { folder: `song/${artistId}/coverImage`, resource_type: "image" }
+            );
 
-            // audio file upload
-            const audioFileDataURL = `data:${trackFile.mimetype};base64,${trackFile.buffer.toString("base64")}`;
-            const audioFileUpload = await cloudinary.uploader.upload(audioFileDataURL,{
-                folder: `song/${artistId}/trackFile`,
-                resource_type: "video"
-            });
+            const audioFileUpload = await cloudinary.uploader.upload(
+                `data:${trackFile.mimetype};base64,${trackFile.buffer.toString("base64")}`,
+                { folder: `song/${artistId}/trackFile`, resource_type: "video" }
+            );
 
-            // lrcFile upload
-            const lrcFileDataURL = `data:${lrcFile.mimetype};base64,${lrcFile.buffer.toString("base64")}`;
-            const lrcFileUpload = await cloudinary.uploader.upload(lrcFileDataURL,{
-                folder: `song/${artistId}/lrcFile`,
-                resource_type: "raw"
-            });
+            const lrcFileUpload = await cloudinary.uploader.upload(
+                `data:${lrcFile.mimetype};base64,${lrcFile.buffer.toString("base64")}`,
+                { folder: `song/${artistId}/lrcFile`, resource_type: "raw" }
+            );
 
-            // Map results to DTO structure
             const songFilePath = audioFileUpload.secure_url;
             const coverImagePath = coverImageUpload.secure_url;
             const lrcFilePath = lrcFileUpload.secure_url;
             const songDuration = audioFileUpload.duration;
 
-            // Pass all public IDs to the DTO
-            const dto : UploadSongDTO = UploadSongRequestSchema.parse({
-                ...req.body, 
-                songFilePath, 
+            const rawBody = req.body;
+            const transformedTags = rawBody.tags
+                ?.split(",")
+                .map((tag:string) => tag.trim())
+                .filter((tag: string) => tag.length > 0) || [];
+
+            const validatedData = UploadSongRequestSchema.parse({
+                title: rawBody.title,
+                description: rawBody.description,
+                genre: rawBody.genre,  
+                tags: rawBody.tags,   
+                songFilePath,
                 audioPublicId: audioFileUpload.public_id,
-                coverImagePath, 
+                coverImagePath,
                 coverImagePublicId: coverImageUpload.public_id,
-                lrcFilePath, 
-                lyricsPublicId: lrcFileUpload.public_id, 
-                duration:songDuration
+                lrcFilePath,
+                lyricsPublicId: lrcFileUpload.public_id,
+                duration: songDuration
             });
 
-            await this.artistUploadSongUsecase.execute(artistId,dto);
+            const dto: UploadSongDTO = {
+                title: validatedData.title,
+                description: validatedData.description,
+                genre: validatedData.genre,           
+                tags: transformedTags,                
+                songFilePath: validatedData.songFilePath,
+                audioPublicId: validatedData.audioPublicId,
+                coverImagePath: validatedData.coverImagePath,
+                coverImagePublicId: validatedData.coverImagePublicId,
+                lrcFilePath: validatedData.lrcFilePath,
+                lyricsPublicId: validatedData.lyricsPublicId,
+                duration: validatedData.duration
+            };
 
-            return res.status(StatusCode.CREATED).json({message:"New Song uploaded successfully"});
+            await this.artistUploadSongUsecase.execute(artistId, dto);
+
+            return res.status(StatusCode.CREATED).json({ message: "New Song uploaded successfully" });
         } catch (error) {
-            next(error)
+            next(error);
         }
-    }
+};
+
 
     fetchSongs = async(req:AuthRequest, res: Response, next: NextFunction)=>{
         try {
@@ -248,84 +264,93 @@ export class ArtistController {
         }
     }
 
-     editSong = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+    editSong = async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             const { songId } = req.params;
-            const artistId = req.user?.id; 
+            const artistId = req.user?.id;
 
-            if(!artistId || !songId){
-                return res.status(StatusCode.UNAUTHORIZED).json({message: "Unauthorized"})
+            if (!artistId || !songId) {
+                return res.status(StatusCode.UNAUTHORIZED).json({ message: "Unauthorized" });
             }
-            
-            const files = req.files as { [fieldname: string]: Express.Multer.File[] };
 
-            const existingSong = await this.artistsongDetailsUsecase.execute(songId)
-             if (!existingSong) {
+            const existingSong = await this.artistsongDetailsUsecase.execute(songId);
+            if (!existingSong) {
                 return res.status(StatusCode.NOT_FOUND).json({ message: "Song not found" });
             }
-            
-            const updateData: Partial<UploadSongDTO> = {...req.body};
+            // if (existingSong.artistId !== artistId) {
+            //     return res.status(StatusCode.FORBIDDEN).json({ message: "Not authorized to edit this song" });
+            // }
 
-             if (files['trackFile'] && files['trackFile'].length > 0) {
+            const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+            const updateData: any = { ...req.body }; 
+
+            // Transform tags if present
+            if (updateData.tags) {
+                updateData.tags = updateData.tags
+                    .split(",")
+                    .map((tag: string) => tag.trim())
+                    .filter((tag: string) => tag.length > 0);
+            }
+
+            // Audio file update (optional)
+            if (files['trackFile'] && files['trackFile'].length > 0) {
                 const audioFile = files['trackFile'][0];
                 const audioFileDataURL = `data:${audioFile.mimetype};base64,${audioFile.buffer.toString("base64")}`;
 
-                const FileUploadOptions : uploadOptionsType = {
+                const FileUploadOptions: uploadOptionsType = {
                     resource_type: "video",
-                    public_id: existingSong.audioPublicId, 
-                    invalidate: true 
+                    public_id: existingSong.audioPublicId,
+                    invalidate: true
                 };
 
-                const audioFileUpload = await cloudinary.uploader.upload(audioFileDataURL,FileUploadOptions)
-
+                const audioFileUpload = await cloudinary.uploader.upload(audioFileDataURL, FileUploadOptions);
                 updateData.songFilePath = audioFileUpload.secure_url;
-                updateData.audioPublicId = audioFileUpload.public_id; 
-                updateData.duration = audioFileUpload.duration; 
+                updateData.audioPublicId = audioFileUpload.public_id;
+                updateData.duration = audioFileUpload.duration;
             }
-            
-            // CoverImage Update 
+
+            // Cover image update (optional)
             if (files['coverImage'] && files['coverImage'].length > 0) {
                 const coverImageFile = files['coverImage'][0];
                 const coverImageDataURL = `data:${coverImageFile.mimetype};base64,${coverImageFile.buffer.toString("base64")}`;
 
-                const UploadOption : uploadOptionsType = {
+                const UploadOption: uploadOptionsType = {
                     resource_type: "image",
-                    public_id: existingSong.coverImagePublicId, 
+                    public_id: existingSong.coverImagePublicId,
                     invalidate: true
-                }
+                };
 
-                const coverImageUpload = await cloudinary.uploader.upload(coverImageDataURL, UploadOption)
-                
+                const coverImageUpload = await cloudinary.uploader.upload(coverImageDataURL, UploadOption);
                 updateData.coverImagePath = coverImageUpload.secure_url;
                 updateData.coverImagePublicId = coverImageUpload.public_id;
             }
 
-            // LyricsFile Update 
+            // Lyrics file update (optional)
             if (files['lrcFile'] && files['lrcFile'].length > 0) {
                 const lrcFile = files['lrcFile'][0];
                 const lrcFileDataURL = `data:${lrcFile.mimetype};base64,${lrcFile.buffer.toString("base64")}`;
 
-                const UploadOption : uploadOptionsType = {
-                    resource_type: "raw", 
-                    public_id: existingSong.lyricsPublicId, 
+                const UploadOption: uploadOptionsType = {
+                    resource_type: "raw",
+                    public_id: existingSong.lyricsPublicId,
                     invalidate: true
                 };
 
-                const lrcFileUpload = await cloudinary.uploader.upload(lrcFileDataURL, UploadOption)
-
+                const lrcFileUpload = await cloudinary.uploader.upload(lrcFileDataURL, UploadOption);
                 updateData.lrcFilePath = lrcFileUpload.secure_url;
-                updateData.lyricsPublicId = lrcFileUpload.public_id; 
+                updateData.lyricsPublicId = lrcFileUpload.public_id;
             }
-            
+
+            // Validate with Zod schema
             const validatedDto = EditSongRequestSchema.parse(updateData);
+            await this.editSongUsecase.execute(songId, validatedDto);
 
-            await this.editSongUsecase.execute(songId, validatedDto); 
-
-            return res.status(StatusCode.OK).json({message:"Song updated successfully"});
+            return res.status(StatusCode.OK).json({ message: "Song updated successfully" });
         } catch (error) {
             next(error);
         }
-    }
+};
+
 
     getAlbumById = async(req: AuthRequest, res: Response, next: NextFunction)=>{
         try {

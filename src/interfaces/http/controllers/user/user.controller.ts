@@ -24,6 +24,7 @@ import { EditPlayListUseCase } from "../../../../usecases/user/playList/editPlay
 import cloudinary from "../../../../infrastructure/config/cloudinary"
 import { GetUserByIdUseCase } from "../../../../usecases/admin/users/adminGetUserById.useCase"
 import { uploadOptionsType } from "../../../../infrastructure/config/cloudinary"
+import { UserGetSearchDataUseCase } from "../../../../usecases/user/search/searchData.useCase"
 
 export class UserController{
     constructor(
@@ -44,7 +45,8 @@ export class UserController{
         private readonly addToPlayListUsecase: AddToPlayListUseCase,
         private readonly searchSongsUseCase: SearchSongsUseCase,
         private readonly editPlauListUsecase: EditPlayListUseCase,
-        private readonly getUserDetailsUsecase: GetUserByIdUseCase
+        private readonly getUserDetailsUsecase: GetUserByIdUseCase,
+        private readonly userSearchDataUsecase: UserGetSearchDataUseCase
         
     ){}
 
@@ -358,6 +360,18 @@ export class UserController{
             return res.status(StatusCode.OK).json({message: "Playlist updated successfully", data: result});
         } catch (error) {
             next(error);
+        }
+    }
+
+    searchDiscover = async(req: AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const query = String(req.query.q)
+
+            const searchResult = await this.userSearchDataUsecase.execute(query)
+
+            return res.status(StatusCode.OK).json(searchResult)
+        } catch (error) {
+            next(error)
         }
     }
 }

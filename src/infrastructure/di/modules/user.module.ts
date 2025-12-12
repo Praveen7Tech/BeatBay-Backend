@@ -30,6 +30,7 @@ import { AddToPlayListUseCase } from "../../../usecases/user/playList/addToPlayL
 import { SearchSongsUseCase } from "../../../usecases/user/song/searchSong.useCase";
 import { EditPlayListUseCase } from "../../../usecases/user/playList/editPlayList.useCase";
 import { GetUserByIdUseCase } from "../../../usecases/admin/users/adminGetUserById.useCase";
+import { UserGetSearchDataUseCase } from "../../../usecases/user/search/searchData.useCase";
 
 export const userModule = {
     // Repository
@@ -67,6 +68,9 @@ export const userModule = {
     addToPlayListUsecase: asClass(AddToPlayListUseCase).scoped(),
     searchSongsUseCase: asClass(SearchSongsUseCase).scoped(),
     editPlauListUsecase: asClass(EditPlayListUseCase).scoped(),
+
+    //search(discover)
+    userSearchDataUsecase: asClass(UserGetSearchDataUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

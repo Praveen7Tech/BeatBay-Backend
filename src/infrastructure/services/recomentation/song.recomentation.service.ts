@@ -17,11 +17,6 @@ export class SongRecommentationService implements IRecomentationService{
             select: 'name profilePicture',
             model: 'Artist'
         })
-        .populate({
-            path: "albumIds",
-            select: "_id name",
-            model: "Album"
-        })
         .lean()
         .limit(limit).exec()
 
@@ -29,18 +24,13 @@ export class SongRecommentationService implements IRecomentationService{
         playedSongIds.push(currentSongId)
 
         const genreSongs = await SongModel.find({
-            genre: genre,
+             genre: genre,
             _id:{$nin: playedSongIds}
         })
         .populate({
             path:'artistId',
             select: 'name profilePicture',
             model: 'Artist'
-        })
-        .populate({
-            path: "albumIds",
-            select: "_id name",
-            model: "Album"
         })
         .lean()
         .limit(limit).exec()

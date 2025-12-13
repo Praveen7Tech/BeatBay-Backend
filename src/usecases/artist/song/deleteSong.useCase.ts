@@ -19,16 +19,20 @@ export class DeleteSongUseCase {
 
         const deleteSong =  await this._transactionManager.withTransaction(async (session) => {
 
+            const song = await this._songRepository.findById(songId)
+            
             const songDeleted = await this._songRepository.delete(songId, session);
-            if (!songDeleted) {
+            if (!songDeleted || !song) {
                 throw new NotFoundError("Song not found or already deleted!");
             }
+            const songTitle = song.title
 
             //  Remove songId from artist repository
             await this._artistRepository.removeSongIdFromArtist(artistId, songId, session);
 
-            // Remove songId from albums 
+            // Remove songId and title from albums 
             await this._albumRepository.removeSongFromAllAlbums(songId, session);
+            await this._albumRepository.removeSongTitleFromAllAlbums(songTitle, session)
 
             //  Remove song from user playlists 
             await this._playListRepository.removeSongFromAllPlaylists(songId, session);

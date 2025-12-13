@@ -368,7 +368,7 @@ export class UserController{
             const query = String(req.query.q)
 
             const searchResult = await this.userSearchDataUsecase.execute(query)
-
+          console.log("hh-", searchResult)
             return res.status(StatusCode.OK).json(searchResult)
         } catch (error) {
             next(error)

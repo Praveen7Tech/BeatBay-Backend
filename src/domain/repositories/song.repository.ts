@@ -9,7 +9,7 @@ export interface ISongRepository{
     getAll(): Promise<Song[]>
     findById(id: string): Promise<Song | null>
     searchByQuery(query: string, options?: {limit?: number; offset?: number}): Promise<Song[]>
-    edit(songId: string, data: Partial<Song>): Promise<Song | null>;
+    edit(songId: string, data: Partial<Song>, session?: ClientSession): Promise<Song | null>;
     delete(songId: string, session: ClientSession): Promise<boolean>
     countDocuments(): Promise<number>
     findSongsByIds(ids: string[]): Promise<Song[]>;

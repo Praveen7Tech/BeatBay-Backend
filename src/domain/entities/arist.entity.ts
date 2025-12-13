@@ -1,6 +1,6 @@
 
 export interface Artist {
-  _id?: string;
+  _id: string;
   name: string
   email: string,
   password: string | null

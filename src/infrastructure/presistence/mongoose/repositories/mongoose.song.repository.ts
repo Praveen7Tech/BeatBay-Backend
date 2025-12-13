@@ -44,11 +44,11 @@ export class MongooseSongRepository implements ISongRepository{
 
     }
 
-     async edit(songId: string, data: Partial<Song>): Promise<Song | null> {
+     async edit(songId: string, data: Partial<Song>, session?: ClientSession): Promise<Song | null> {
         const updatedSong = await SongModel.findByIdAndUpdate(
             songId,
             { $set: data }, // Use $set to update only the fields provided in the 'data' object
-            { new: true }   // Return the updated document
+            { new: true },   // Return the updated document
         ).lean().exec();
 
         return updatedSong ? (updatedSong as unknown as Song) : null;

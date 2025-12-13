@@ -1,17 +1,16 @@
-import { Interface } from "readline"
 
 export interface SongDTO{
     id: string
     title: string
     artist: string
-    duration: string
-    image: string
+    duration: number
+    coverImageUrl: string
 }
 
 export interface ArtistDTO {
-  id: string;
+  id: string 
   name: string;
-  image: string; 
+  profilePicture: string; 
 }
 
 export interface AlbumDTO {
@@ -19,21 +18,19 @@ export interface AlbumDTO {
   title: string;
   artist: string; 
   coverImageUrl: string;
-  type: 'album';
 }
 
 export interface TopResultDTO {
   id: string;
   title: string;
-  type: string; 
   artist: string;
-  image: string;
+  coverImageUrl: string;
 }
 
 export interface SearchResponseDTO{
     topResult: TopResultDTO
-    song: SongDTO[];
-    artists: ArtistDTO[];
     albums: AlbumDTO[]
-    
+    songs: SongDTO[];
+    artists: ArtistDTO[];
+    users: ArtistDTO[]
 }

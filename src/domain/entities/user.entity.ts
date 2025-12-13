@@ -1,7 +1,7 @@
 import { PlayList } from "./playList.entiy";
 
 export interface User {
-  _id?: string;
+  _id: string;
   name?: string;
   email: string;
   password?: string | null;

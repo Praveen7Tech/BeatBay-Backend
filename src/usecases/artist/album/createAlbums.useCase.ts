@@ -15,22 +15,30 @@ export class ArtistCreateAlbumUseCase {
     async execute (artistId: string, request:CreateAlbumDTO): Promise<{success: boolean}>{
 
         await this._transactionManager.withTransaction(async(session)=>{
+
+            const artist = await this._artistRepository.findById(artistId);
+            if (!artist) throw new Error("Artist not found.");
+            const artistName = artist.name; 
+
+             // Fetch all required Song titles 
+            const songsInRequest = await this._songRepository.findSongsByIds(request.songs);
+            // Map song IDs to the new required structure [{songId, songTitle}]
+            const songTitles = songsInRequest.map(song => song.title);
+
             const AlbumData = {
                 artistId: artistId,
+                artistName: artistName,
                 title:request.title,
                 description: request.description,
                 coverImageUrl: request.coverImageUrl,
                 coverImagePublicId: request.coverImagePublicId,
-                songs: [...request.songs]
+                songs: [...request.songs],
+                songTitles: songTitles
             }
-            const newAlbum = await this._albumRepository.create(AlbumData)
+            const newAlbum = await this._albumRepository.create(AlbumData, session)
 
             await this._artistRepository.addAlbumIdToArtist(artistId, newAlbum._id, session)
 
-            const songIds = request.songs
-            const albumId = newAlbum._id
-
-            await this._songRepository.addAlbumIdToSongs(songIds, albumId, session)
         })
 
        

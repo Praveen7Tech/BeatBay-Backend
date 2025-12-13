@@ -8,6 +8,10 @@ const AlbumSchema = new Schema({
         type: Schema.Types.ObjectId, ref: "Artist",
         required: true
     },
+    artistName:{
+        type:String,
+        required: true
+    },
     title:{
         type: String,
         required: true
@@ -24,9 +28,12 @@ const AlbumSchema = new Schema({
         type: String,
         required: true
     },
-    songs:[{
+    songs:[{ 
         type:Schema.Types.ObjectId,
         ref : "Song"
+    }],
+    songTitles: [{ 
+        type: String,
     }],
 
 }, {timestamps:true})

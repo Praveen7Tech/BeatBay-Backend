@@ -9,4 +9,5 @@ export interface IBaseRepository<T> {
     blockById(id: string): Promise<boolean>
     unBlockById(id: string): Promise<boolean>
     countDocuments(): Promise<number>
+    find(query: string): Promise<T[] | null>
 }

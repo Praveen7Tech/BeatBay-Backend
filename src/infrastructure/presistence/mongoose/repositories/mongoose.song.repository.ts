@@ -32,7 +32,6 @@ export class MongooseSongRepository implements ISongRepository{
             $or:[
                 {title: {$regex: query, $options: "i"}},
                 {artsitName: {$regex: query, $options: "i"}},
-                {album : {$regex: query, $options: "i"}}
             ]
         }
 
@@ -64,11 +63,10 @@ export class MongooseSongRepository implements ISongRepository{
         return await SongModel.countDocuments()
     }
 
-    async addAlbumIdToSongs(songIds: string[], albumId: string, session: ClientSession): Promise<void> {
-        await SongModel.updateMany(
-            {_id: {$in: songIds}},
-            {$addToSet: {albumIds: albumId}},
-            {session}
-        ).exec()
+    async findSongsByIds(ids: string[]): Promise<Song[]> {
+        const songs = await SongModel.find(
+            { _id: { $in: ids } }
+        ).lean().exec();
+        return songs as Song[];
     }
 }

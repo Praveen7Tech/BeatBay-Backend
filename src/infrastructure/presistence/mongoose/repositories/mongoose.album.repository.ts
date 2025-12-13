@@ -4,10 +4,10 @@ import { IAlbumRepository } from "../../../../domain/repositories/album.reposito
 import { AlbumModel } from "../models/album.model";
 
 export class MongooseAlbumRepository implements IAlbumRepository {
-    async create(albumData: Album): Promise<Album> {
+    async create(albumData: Album, session: ClientSession): Promise<Album> {
         const album = new AlbumModel(albumData)
 
-        const createdAlbum = await album.save()
+        const createdAlbum = await album.save({session})
         return createdAlbum.toObject()
     }
 

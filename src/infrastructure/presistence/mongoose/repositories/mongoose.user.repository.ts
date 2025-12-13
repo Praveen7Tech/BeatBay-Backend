@@ -129,4 +129,11 @@ export class MongooseUserRepository implements IUserRepository {
       return await UserModel.countDocuments({role: "user"})
   }
 
+
+  async find(query: string): Promise<User[] | null> {
+      const users = await UserModel.find({name: query}).exec()
+
+      return users
+  }
+
 }

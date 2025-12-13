@@ -31,6 +31,8 @@ import { SearchSongsUseCase } from "../../../usecases/user/song/searchSong.useCa
 import { EditPlayListUseCase } from "../../../usecases/user/playList/editPlayList.useCase";
 import { GetUserByIdUseCase } from "../../../usecases/admin/users/adminGetUserById.useCase";
 import { UserGetSearchDataUseCase } from "../../../usecases/user/search/searchData.useCase";
+import { ISearchService } from "../../../domain/services/search.service";
+import { SearchResponseService } from "../../services/search/search.service";
 
 export const userModule = {
     // Repository
@@ -42,6 +44,7 @@ export const userModule = {
 
     // services
     _recomentationService: asClass<IRecomentationService>(SongRecommentationService).scoped(),
+    _searchService: asClass<ISearchService>(SearchResponseService).singleton(),
 
     //useCases
     editProfileUserUsecase: asClass(editProfileUsecase).scoped(),

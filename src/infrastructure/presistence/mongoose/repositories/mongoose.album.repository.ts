@@ -63,4 +63,20 @@ export class MongooseAlbumRepository implements IAlbumRepository {
     async countDocuments(): Promise<number> {
         return await AlbumModel.countDocuments()
     }
+
+    async updateSongTitleInAlbums(songId: string, newTitle: string, session: ClientSession): Promise<void> {
+        await AlbumModel.updateMany(
+            {songs: songId},
+            {$set: {"songTitles.$": newTitle}},
+            {session}
+        ).exec()
+    }
+
+    async removeSongTitleFromAllAlbums(songTitle: string, session: ClientSession): Promise<void> {
+        await AlbumModel.updateMany(
+            {songTitles: songTitle},
+            {$pull: {songTitles: songTitle}},
+            {session}
+        ).exec()
+    }
 }

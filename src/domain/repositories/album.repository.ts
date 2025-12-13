@@ -11,4 +11,6 @@ export interface IAlbumRepository{
     removeSongFromAllAlbums(songId: string, session: ClientSession): Promise<void>
     delete(albumId: string, session: ClientSession): Promise<boolean>
     countDocuments(): Promise<number>
+    updateSongTitleInAlbums(songId: string, newTitle: string, session: ClientSession): Promise<void>
+    removeSongTitleFromAllAlbums(songTitle: string, session: ClientSession): Promise<void>
 }

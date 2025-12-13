@@ -52,4 +52,9 @@ const artistSchema = new Schema<ArtistDocument>(
     {timestamps: true}
 );
 
+artistSchema.index(
+    { name: "text" },
+    { weights: { name: 10 } } 
+);
+
 export const ArtistModel: Model<ArtistDocument> = mongoose.model<ArtistDocument>('Artist', artistSchema)

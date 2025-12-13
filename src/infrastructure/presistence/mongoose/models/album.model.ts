@@ -38,4 +38,21 @@ const AlbumSchema = new Schema({
 
 }, {timestamps:true})
 
+AlbumSchema.index(
+    {
+        title: "text",
+        description: "text",
+        artistName: "text",
+        songTitles: "text"
+    },{
+        name: "AlbumContentTextIndex",
+        weights:{
+            title: 10,
+            songTitles: 10,
+            artistName: 10,
+            description: 10
+        }
+    }
+)
+
 export const AlbumModel: Model<AlbumDocument> = mongoose.model<AlbumDocument>("Album", AlbumSchema)

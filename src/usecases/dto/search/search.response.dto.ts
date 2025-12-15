@@ -28,7 +28,7 @@ export interface TopResultDTO {
 }
 
 export interface SearchResponseDTO{
-    topResult: TopResultDTO
+    topResult: TopResultDTO | null
     albums: AlbumDTO[]
     songs: SongDTO[];
     artists: ArtistDTO[];

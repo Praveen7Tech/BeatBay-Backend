@@ -119,7 +119,13 @@ export class MongooseArtistRepository implements IArtistRepository {
       }
 
 
-      async find(query: string): Promise<Artist[] | null> {
-          return await ArtistModel.find({name: query}).lean().exec()
+      async searchByName(query: string): Promise<Artist[] | null> {
+            const artist = await ArtistModel.find(
+              {name: {$regex: new RegExp(query, 'i')}}
+            )
+            .limit(10)
+            .lean().exec()
+      
+            return artist
       }
 }

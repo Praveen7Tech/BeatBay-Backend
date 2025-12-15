@@ -49,15 +49,6 @@ const userSchema = new Schema<UserDocument>(
   { timestamps: true }
 );
 
-userSchema.index(
-    {
-        name: "text",
-    },{
-        name: "userContentTextIndex",
-        weights:{
-            name: 10,
-        }
-    }
-)
+userSchema.index({ name: 1 })
 
 export const UserModel: Model<UserDocument> = mongoose.model<UserDocument>('User', userSchema);

@@ -22,21 +22,4 @@ const songSchema = new Schema({
 }, { timestamps: true }); 
 
 
-songSchema.index(
-    {
-        title: "text",
-        description: "text",
-        tags: "text",
-        genre: "text"
-    },{
-        name: "SongContentTextIndex",
-        weights:{
-            title: 10,
-            tags: 10,
-            genre: 10,
-            description: 10
-        }
-    }
-)
-
 export const SongModel: Model<SongDocument> = mongoose.model<SongDocument>('Song', songSchema);

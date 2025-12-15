@@ -1,65 +1,85 @@
-
-import { SearchResult } from "../../../domain/entities/search.entity";
-import { AlbumResult, ArtistResult, SongResult, TopResult, UserResult } from "../../../domain/interfaces/search.interface";
-import { ISearchService } from "../../../domain/services/search.service";
 import { SongModel } from "../../presistence/mongoose/models/song.model";
 import { AlbumModel } from "../../presistence/mongoose/models/album.model";
-import { ArtistModel } from "../../presistence/mongoose/models/artist.model"; // Assuming this exists
-import { UserModel } from "../../presistence/mongoose/models/user.model";     // Assuming this exists
-import { Song } from "../../../domain/entities/song.entity";
+import { ArtistModel } from "../../presistence/mongoose/models/artist.model"; 
+import { UserModel } from "../../presistence/mongoose/models/user.model";     
+import { ISearchService } from "../../../domain/services/search.service";
+import { SearchResult } from "../../../domain/entities/search.entity";
+import { Song } from "../../../domain/entities/song.entity"; 
 import { Album } from "../../../domain/entities/album.entity";
-import { Artist } from "../../../domain/entities/arist.entity";
-import { User } from "../../../domain/entities/user.entity";
+import { Artist } from "../../../domain/entities/arist.entity"; 
+import { User } from "../../../domain/entities/user.entity"; 
 
 export class SearchResponseService implements ISearchService {
     
     async unifiedSearch(query: string): Promise<SearchResult> {
         
-        const [songs, albums, artists, users] = await Promise.all([
-            this.searchSongs(query, 10), 
-            this.searchAlbums(query, 5),
-            this.searchArtists(query, 5),
-            this.searchUsers(query, 5)
+        const [songs, albums, artists] = await Promise.all([
+            this.searchSongs(query, 5), 
+            this.searchAlbums(query, 10),
+            this.searchArtists(query, 10),
+            //this.searchUsers(query, 10) 
         ]);
 
+        let topResult: Song | null = null;
+        if (songs.length > 0) {
+            topResult = songs[0];
+        }
+
         return {
-            topResult: songs[0],
+            topResult: topResult,
             songs: songs,
             albums: albums,
             artists: artists,
-            users: users
+           // users: users
         };
     }
 
-   
-    private async searchByTextIndex(Model: any, query: string, type: string, limit: number): Promise<any[]>{
+    private async searchByAtlasSearch(Model: any, query: string, paths: string[], limit: number): Promise<any[]>{
+        // setup the index exaclty arranged in the atless SearchIndex collection name
+        const indexName = Model.collection.name; 
+        console.log("name ", indexName, paths)
+
+        const pipeline = [
+            {
+                $search: {
+                    index: indexName, 
+                    compound: {
+                        should: paths.map(path => ({
+                            autocomplete: { 
+                                query: query,
+                                path: path, 
+                                tokenOrder: "any", // flexible order of querying
+                                fuzzy: { // Adds typo tolerance
+                                    maxEdits: 1,
+                                    prefixLength: 2
+                                }
+                            }
+                        })),
+                    }
+                }
+            },
+            { $limit: limit }, 
+        ];
         
-        const results = await Model.find(
-            { $text: { $search: query } },
-            { score: { $meta: "textScore" } } 
-        )
-        .sort({ score: { $meta: "textScore" } }) 
-        .limit(limit) 
-        .lean()
-        .exec();
-        
-        return results
+        const results = await Model.aggregate(pipeline, { lean: true }).exec();
+        return results;
     }
 
-    // search helpers pass the limit to the main query method
+    // search helpers updated to pass an ARRAY of ALL paths:
+
     private async searchSongs(query: string, limit: number): Promise<Song[]>{
-        return this.searchByTextIndex(SongModel, query, "song", limit) 
+        return this.searchByAtlasSearch(SongModel, query, ['title','artistName', 'tags', 'genre', 'description'], limit); 
     }
 
     private async searchAlbums(query: string, limit: number): Promise<Album[]>{
-        return this.searchByTextIndex(AlbumModel, query, "album", limit) 
+        return this.searchByAtlasSearch(AlbumModel, query, ['title', 'artistName','songTitles', 'description'], limit);
     }
 
     private async searchArtists(query: string, limit: number): Promise<Artist[]> {
-        return this.searchByTextIndex(ArtistModel, query, 'artist', limit) 
+        return this.searchByAtlasSearch(ArtistModel, query, ['name', 'bio'], limit);
     }
 
-    private async searchUsers(query: string, limit: number): Promise<User[]> {
-        return this.searchByTextIndex(UserModel, query, 'user', limit) 
-    }
+    // private async searchUsers(query: string, limit: number): Promise<User[]> {
+    //     return this.searchByAtlasSearch(UserModel, query, ['name'], limit);
+    // }
 }

@@ -5,6 +5,7 @@ import { ITokenService } from "../../../domain/services/token.service";
 import { LoginRequestDTO } from "../../../application/dto/auth/request.dto";
 import { LoginResponseDTO } from "../../../application/dto/auth/response.dto";
 import { BadRequestError, NotFoundError } from "../../../common/errors/common/common.errors";
+import { AuthMapper } from "../../../application/mappers/user/auth.mapper";
 
 
 export class AdminLoginUsecase {
@@ -31,6 +32,8 @@ export class AdminLoginUsecase {
         const accessToken = await this._tokenService.generateAccessToken(payload)
         const refreshToken = await this._tokenService.generateRefressToken(payload)
 
-        return {user:admin, accessToken, refreshToken}
+        const adminData = AuthMapper.toAuthUserDTO(admin)
+
+        return {user:adminData, accessToken, refreshToken}
     }
 }

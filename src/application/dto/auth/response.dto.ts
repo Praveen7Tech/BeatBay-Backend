@@ -9,14 +9,27 @@ export interface ResendOtpResponseDTO {
   otp: string;
 }
 
+export interface AuthUserDTO {
+  id: string;
+  name: string;
+  email: string;
+  profilePicture: string;
+  followingCount: number;
+  role: string;
+}
+
+export interface AuthArtistDTO {
+  id: string;
+  name: string;
+  email: string;
+  profilePicture: string;
+  followersCount: number;
+  role: string;
+}
+
 export interface LoginResponseDTO {
-  user: User | Artist;
+  user: AuthUserDTO | AuthArtistDTO; 
   accessToken: string;
   refreshToken: string;
 }
 
-export interface AuthStatusResponseDTO {
-  user: User | Artist;
-  accessToken?: string;
-  refreshToken?: string;
-}

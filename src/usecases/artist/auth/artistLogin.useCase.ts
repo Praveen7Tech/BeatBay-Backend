@@ -5,6 +5,7 @@ import { LoginRequestDTO } from "../../../application/dto/auth/request.dto"
 import { LoginResponseDTO } from "../../../application/dto/auth/response.dto"
 import { BadRequestError, BlockedAccountError, NotFoundError } from "../../../common/errors/common/common.errors"
 import { IArtistRepository } from "../../../domain/repositories/artist.repository"
+import { AuthMapper } from "../../../application/mappers/user/auth.mapper"
 
 export class ArtistLoginUsecase {
     constructor(
@@ -37,8 +38,10 @@ export class ArtistLoginUsecase {
         const accessToken = await this._tokenService.generateAccessToken(payload)
         const refreshToken = await this._tokenService.generateRefressToken(payload)
 
+        const artistData = AuthMapper.toAuthArtistDTO(artist)
+
         return {
-            user:artist,
+            user:artistData,
             accessToken,
             refreshToken
         }

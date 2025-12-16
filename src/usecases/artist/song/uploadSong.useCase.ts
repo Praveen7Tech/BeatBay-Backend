@@ -2,7 +2,7 @@ import { duration } from "zod/v4/classic/iso.cjs";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { ITransactionManager } from "../../../domain/services/transaction.service";
-import { UploadSongDTO } from "../../dto/song/song.dto";
+import { UploadSongDTO } from "../../../application/dto/song/song.dto";
 import { NotFoundError } from "../../../common/errors/common/common.errors";
 
 export class UploadSongUseCase {

@@ -1,6 +1,6 @@
 
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
-import { AlbumDetailsDTO } from "../../dto/album/album.response.dto";
+import { AlbumDetailsDTO } from "../../../application/dto/album/album.response.dto";
 import { NotFoundError } from "../../../common/errors/common/common.errors";
 
 export class GetAlbumDetailsByIdUseCase{

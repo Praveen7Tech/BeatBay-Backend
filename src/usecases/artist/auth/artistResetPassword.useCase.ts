@@ -3,7 +3,7 @@ import { IArtistRepository } from "../../../domain/repositories/artist.repositor
 import { ICacheService } from "../../../domain/services/cache.service" 
 import { IPasswordService } from "../../../domain/services/password.service" 
 import { ITokenService } from "../../../domain/services/token.service" 
-import { ResetPasswordDTO } from "../../dto/auth/request.dto" 
+import { ResetPasswordDTO } from "../../../application/dto/auth/request.dto" 
 
 export class ArtistResetPasswordUsecase{
     constructor(

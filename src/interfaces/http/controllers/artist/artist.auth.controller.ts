@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { GoogleLoginRequestDTO,  LoginRequestDTO, ResendOtpRequestDTO, ResetPasswordDTO, SignupRequestDTO,   VerifyEmailRequestDTO,   VerifyOtpRequestDTO } from "../../../../usecases/dto/auth/request.dto";
+import { GoogleLoginRequestDTO,  LoginRequestDTO, ResendOtpRequestDTO, ResetPasswordDTO, SignupRequestDTO,   VerifyEmailRequestDTO,   VerifyOtpRequestDTO } from "../../../../application/dto/auth/request.dto";
 import { ArtistSignupUsecase } from "../../../../usecases/artist/auth/artistSignup.useCase"; 
 import { StatusCode } from "../../../../common/constants/status.enum";
 import { MESSAGES } from "../../../../common/constants/constants.message";

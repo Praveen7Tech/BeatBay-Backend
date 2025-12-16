@@ -3,8 +3,8 @@ import { IEmailService } from "../../../domain/services/mail.service"
 import { IOtpService } from "../../../domain/services/otp.service"
 import { EmailFormat } from "../../../infrastructure/services/email/email-format"
 import logger from "../../../infrastructure/utils/logger/logger"
-import { ResendOtpRequestDTO } from "../../dto/auth/request.dto"
-import { ResendOtpResponseDTO } from "../../dto/auth/response.dto"
+import { ResendOtpRequestDTO } from "../../../application/dto/auth/request.dto"
+import { ResendOtpResponseDTO } from "../../../application/dto/auth/response.dto"
 
 export class ArtistResendOtpUseCase {
     constructor(

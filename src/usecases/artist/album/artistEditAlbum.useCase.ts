@@ -1,7 +1,7 @@
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
 import { ITransactionManager } from "../../../domain/services/transaction.service";
 import { ForbiddenError, NotFoundError } from "../../../common/errors/common/common.errors";
-import { CreateAlbumDTO } from "../../dto/album/album.dto";
+import { CreateAlbumDTO } from "../../../application/dto/album/album.dto";
 import { ISongRepository } from "../../../domain/repositories/song.repository"; 
 import { Album } from "../../../domain/entities/album.entity";
 

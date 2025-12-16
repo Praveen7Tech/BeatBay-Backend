@@ -3,8 +3,8 @@ import { ICacheService } from '../../../domain/services/cache.service';
 import { IOtpService } from '../../../domain/services/otp.service';
 import { IEmailService } from '../../../domain/services/mail.service';
 import { EmailFormat } from '../../../infrastructure/services/email/email-format';
-import { SignupRequestDTO } from '../../dto/auth/request.dto';
-import { SignupResponseDTO } from '../../dto/auth/response.dto';
+import { SignupRequestDTO } from '../../../application/dto/auth/request.dto';
+import { SignupResponseDTO } from '../../../application/dto/auth/response.dto';
 import { AlreadyExistError } from '../../../common/errors/common/common.errors';
 import logger from '../../../infrastructure/utils/logger/logger';
 

@@ -3,7 +3,7 @@ import { Song } from "../../../domain/entities/song.entity";
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { ITransactionManager } from "../../../domain/services/transaction.service";
-import { EditSongDTO } from "../../dto/song/song.dto"; 
+import { EditSongDTO } from "../../../application/dto/song/song.dto"; 
 
 export class EditSongUseCase {
     constructor(

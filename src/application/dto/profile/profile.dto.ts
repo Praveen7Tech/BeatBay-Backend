@@ -1,0 +1,65 @@
+import { Artist } from "../../../domain/entities/arist.entity";
+import { User } from "../../../domain/entities/user.entity";
+
+export interface EditProfileRequestDTO {
+  name?: string;
+  bio?:string
+  password?: string;
+  profileImage?: string;
+  profileImagePublicId?:string
+}
+
+export interface EditProfileResponseDTO {
+  user: User | Artist;
+}
+
+export interface ChangePasswordRequestDTO{
+  currentPassword : string
+  newPassword: string
+}
+
+export interface followDTO{
+  id:string
+  name:string
+  profilePicture:string
+}
+
+export interface PlayListDTO{
+  id:string
+  title:string
+  coverImage:string
+}
+export interface UserDTO{
+  id:string
+  name:string
+  profilePicture:string
+  followingCount: number
+  palyListCount:number
+}
+
+export interface UserProfileRespnseDTO{
+  user: UserDTO,
+  followingArtists: followDTO[]
+  playlists: PlayListDTO[]
+
+}
+export interface FollowDTO {
+  id: string;
+  name: string;
+  profilePicture: string;
+}
+
+
+export interface UserProfileDTO {
+  id: string;
+  name: string;
+  profilePicture: string;
+  followingCount: number;
+  playListCount: number;
+}
+
+export interface UserProfileResponseDTO {
+  user: UserProfileDTO;
+  followingArtists: FollowDTO[];
+  playlists: PlayListDTO[];
+}

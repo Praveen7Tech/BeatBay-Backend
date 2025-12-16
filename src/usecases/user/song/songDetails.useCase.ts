@@ -1,7 +1,7 @@
 import { ArtistDetails, Song } from "../../../domain/entities/song.entity";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { IRecomentationService } from "../../../domain/services/recomentation.service";
-import { SongResponseDTO } from "../../dto/song/song.response.dto";
+import { SongResponseDTO } from "../../../application/dto/song/song.response.dto";
 
 function isArtistDetails(artist: string | ArtistDetails): artist is ArtistDetails {
     return typeof artist !== 'string' && artist !== null && typeof artist === 'object' && '_id' in artist;

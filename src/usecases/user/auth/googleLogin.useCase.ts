@@ -2,7 +2,7 @@ import { BadRequestError, BlockedAccountError } from "../../../common/errors/com
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { IGoogleAuthService } from "../../../domain/services/google-auth.service";
 import { ITokenService } from "../../../domain/services/token.service";
-import { GoogleLoginRequestDTO } from "../../dto/auth/request.dto";
+import { GoogleLoginRequestDTO } from "../../../application/dto/auth/request.dto";
 
 export class GoogleLoginUsecase {
   constructor(

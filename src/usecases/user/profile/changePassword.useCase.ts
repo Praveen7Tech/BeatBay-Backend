@@ -1,7 +1,7 @@
 
 import { IPasswordService } from "../../../domain/services/password.service"; 
 import { IUserRepository } from "../../../domain/repositories/user.repository"; 
-import { ChangePasswordRequestDTO } from "../../dto/profile/profile.dto"; 
+import { ChangePasswordRequestDTO } from "../../../application/dto/profile/profile.dto"; 
 import { IncorrectPasswordError, NotFoundError } from "../../../common/errors/common/common.errors";
 
 export class ChangePasswordUsecase {

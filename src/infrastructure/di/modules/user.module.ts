@@ -33,6 +33,7 @@ import { GetUserByIdUseCase } from "../../../usecases/admin/users/adminGetUserBy
 import { UserGetSearchDataUseCase } from "../../../usecases/user/search/searchData.useCase";
 import { ISearchService } from "../../../domain/services/search.service";
 import { SearchResponseService } from "../../services/search/search.service";
+import { GetUserProfileUseCase } from "../../../usecases/user/profile/getUserProfile.useCase";
 
 export const userModule = {
     // Repository
@@ -74,6 +75,7 @@ export const userModule = {
 
     //search(discover)
     userSearchDataUsecase: asClass(UserGetSearchDataUseCase).scoped(),
+    getUserProfileDetailsUsecase: asClass(GetUserProfileUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

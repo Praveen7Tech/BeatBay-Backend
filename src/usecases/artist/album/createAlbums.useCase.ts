@@ -2,7 +2,7 @@ import { IAlbumRepository } from "../../../domain/repositories/album.repository"
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { ITransactionManager } from "../../../domain/services/transaction.service";
-import { CreateAlbumDTO } from "../../dto/album/album.dto";
+import { CreateAlbumDTO } from "../../../application/dto/album/album.dto";
 
 export class ArtistCreateAlbumUseCase {
     constructor(

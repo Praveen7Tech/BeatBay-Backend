@@ -37,7 +37,6 @@ export class SearchResponseService implements ISearchService {
     private async searchByAtlasSearch(Model: any, query: string, paths: string[], limit: number): Promise<any[]>{
         // setup the index exaclty arranged in the atless SearchIndex collection name
         const indexName = Model.collection.name; 
-        console.log("name ", indexName, paths)
 
         const pipeline = [
             {

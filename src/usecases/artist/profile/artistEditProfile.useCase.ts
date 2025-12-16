@@ -1,7 +1,7 @@
 import { NotFoundError } from "../../../common/errors/common/common.errors";
 import { Artist } from "../../../domain/entities/arist.entity";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
-import { EditProfileRequestDTO, EditProfileResponseDTO } from "../../dto/profile/profile.dto";
+import { EditProfileRequestDTO, EditProfileResponseDTO } from "../../../application/dto/profile/profile.dto";
 
 export class ArtistEditProfileUsecase{
     constructor(

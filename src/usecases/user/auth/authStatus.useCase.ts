@@ -2,8 +2,8 @@ import { BadRequestError } from "../../../common/errors/common/common.errors";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 import { IUserRepository } from "../../../domain/repositories/user.repository"
 import { ITokenService } from "../../../domain/services/token.service"
-import { AuthStatusRequestDTO } from "../../dto/auth/request.dto"
-import { AuthStatusResponseDTO } from "../../dto/auth/response.dto";
+import { AuthStatusRequestDTO } from "../../../application/dto/auth/request.dto"
+import { AuthStatusResponseDTO } from "../../../application/dto/auth/response.dto";
 
 
 

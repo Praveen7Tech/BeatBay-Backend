@@ -3,7 +3,7 @@ import { StatusCode } from "../../../../common/constants/status.enum"
 import { MESSAGES } from "../../../../common/constants/constants.message"
 import { editProfileUsecase } from "../../../../usecases/user/profile/editProfile.useCase" 
 import { AuthRequest } from "../../../middleware/auth/authMiddleware"
-import { ChangePasswordRequestDTO, EditProfileRequestDTO } from "../../../../usecases/dto/profile/profile.dto"
+import { ChangePasswordRequestDTO, EditProfileRequestDTO } from "../../../../application/dto/profile/profile.dto"
 import { ChangePasswordSchema, EditProfileSchema } from "../../validators/profile/profile.validators"
 import { ChangePasswordUsecase } from "../../../../usecases/user/profile/changePassword.useCase"
 import { FetchSongsUsecase } from "../../../../usecases/user/song/fetchSongs.useCase"
@@ -25,6 +25,7 @@ import cloudinary from "../../../../infrastructure/config/cloudinary"
 import { GetUserByIdUseCase } from "../../../../usecases/admin/users/adminGetUserById.useCase"
 import { uploadOptionsType } from "../../../../infrastructure/config/cloudinary"
 import { UserGetSearchDataUseCase } from "../../../../usecases/user/search/searchData.useCase"
+import { GetUserProfileUseCase } from "../../../../usecases/user/profile/getUserProfile.useCase"
 
 export class UserController{
     constructor(
@@ -46,7 +47,8 @@ export class UserController{
         private readonly searchSongsUseCase: SearchSongsUseCase,
         private readonly editPlauListUsecase: EditPlayListUseCase,
         private readonly getUserDetailsUsecase: GetUserByIdUseCase,
-        private readonly userSearchDataUsecase: UserGetSearchDataUseCase
+        private readonly userSearchDataUsecase: UserGetSearchDataUseCase,
+        private readonly getUserProfileDetailsUsecase: GetUserProfileUseCase
         
     ){}
 
@@ -368,8 +370,20 @@ export class UserController{
             const query = String(req.query.q)
 
             const searchResult = await this.userSearchDataUsecase.execute(query)
-            console.log("search ", searchResult)
             return res.status(StatusCode.OK).json(searchResult)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    userDetails = async(req:AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const userId = req.params.userId
+            if(!userId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+            const userDetails = await this.getUserProfileDetailsUsecase.execute(userId)
+             return res.status(StatusCode.OK).json(userDetails)
         } catch (error) {
             next(error)
         }

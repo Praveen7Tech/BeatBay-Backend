@@ -2,7 +2,7 @@ import { IAlbumRepository } from "../../../domain/repositories/album.repository"
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { IUserRepository } from "../../../domain/repositories/user.repository";
-import { DashBoardResponse } from "../../dto/admin/admin.response.dto";
+import { DashBoardResponse } from "../../../application/dto/admin/admin.response.dto";
 
 export class GetAdminDashBoardData{
     constructor(

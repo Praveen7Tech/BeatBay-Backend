@@ -34,5 +34,7 @@ export default (container: AwilixContainer): Router=> {
     router.get('/searchSong', userController.searchSongs)
     router.get('/search', userController.searchDiscover)
 
+    router.get('/user-details/:userId', userController.userDetails)
+
     return router
 }

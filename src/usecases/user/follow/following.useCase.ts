@@ -1,5 +1,5 @@
 import { IUserRepository } from "../../../domain/repositories/user.repository";
-import { FollowingResponseDTO } from "../../dto/follow/following.dto";
+import { FollowingResponseDTO } from "../../../application/dto/follow/following.dto";
 
 export class GetFollowingListUseCase{
     constructor(

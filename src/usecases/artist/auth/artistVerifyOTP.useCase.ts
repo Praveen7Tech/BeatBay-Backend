@@ -1,7 +1,7 @@
 
 import { ICacheService } from "../../../domain/services/cache.service";
 import { IPasswordService } from "../../../domain/services/password.service";
-import { VerifyOtpRequestDTO } from "../../dto/auth/request.dto";
+import { VerifyOtpRequestDTO } from "../../../application/dto/auth/request.dto";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 import { InvalidOtpError, OtpExpiredError } from "../../../common/errors/common/common.errors";
 

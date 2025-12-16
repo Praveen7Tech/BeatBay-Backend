@@ -1,6 +1,6 @@
 import { User } from "../../../domain/entities/user.entity";
 import { IUserRepository } from "../../../domain/repositories/user.repository";
-import { UsersTableResponseDTO } from "../../dto/admin/admin.response.dto";
+import { UsersTableResponseDTO } from "../../../application/dto/admin/admin.response.dto";
 
 export class FetchAllUsersUseCase{
     constructor(

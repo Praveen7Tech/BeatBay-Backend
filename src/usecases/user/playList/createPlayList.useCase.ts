@@ -1,7 +1,7 @@
 import { IPlayListRepository } from "../../../domain/repositories/playList.repository";
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { ITransactionManager } from "../../../domain/services/transaction.service";
-import { CreatePlayListResponseDTO } from "../../dto/playList/request.dto";
+import { CreatePlayListResponseDTO } from "../../../application/dto/playList/request.dto";
 
 export class CreatePlayListUseCase{
     constructor(

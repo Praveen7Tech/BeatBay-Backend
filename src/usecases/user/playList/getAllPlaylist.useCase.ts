@@ -1,5 +1,5 @@
 import { IPlayListRepository } from "../../../domain/repositories/playList.repository";
-import { UserPlaylistResponse } from "../../dto/playList/request.dto";
+import { UserPlaylistResponse } from "../../../application/dto/playList/request.dto";
 
 export class GetAllPlaylistUseCase{
     constructor(

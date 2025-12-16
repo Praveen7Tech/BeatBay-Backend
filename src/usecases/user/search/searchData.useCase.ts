@@ -1,5 +1,5 @@
 import { ISearchService } from "../../../domain/services/search.service";
-import { SearchResponseDTO, SongDTO, AlbumDTO, ArtistDTO, TopResultDTO } from "../../dto/search/search.response.dto";
+import { SearchResponseDTO, SongDTO, AlbumDTO, ArtistDTO, TopResultDTO } from "../../../application/dto/search/search.response.dto";
 import { Song } from "../../../domain/entities/song.entity"; 
 import { Album } from "../../../domain/entities/album.entity";
 import { Artist } from "../../../domain/entities/arist.entity";  

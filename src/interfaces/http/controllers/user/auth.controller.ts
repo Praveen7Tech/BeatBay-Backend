@@ -21,7 +21,7 @@ import {
   VerifyEmailRequestDTO,
   ResetPasswordDTO,
   GoogleLoginRequestDTO
-} from "../../../../usecases/dto/auth/request.dto";
+} from "../../../../application/dto/auth/request.dto";
 
 import {
   SignupRequestSchema,

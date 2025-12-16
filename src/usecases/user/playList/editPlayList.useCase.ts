@@ -1,7 +1,7 @@
 import { NotFoundError } from "../../../common/errors/common/common.errors";
 import { PlayList } from "../../../domain/entities/playList.entiy";
 import { IPlayListRepository } from "../../../domain/repositories/playList.repository";
-import { PlayListEditRequestDTO } from "../../dto/playList/request.dto";
+import { PlayListEditRequestDTO } from "../../../application/dto/playList/request.dto";
 
 export class EditPlayListUseCase{
     constructor(

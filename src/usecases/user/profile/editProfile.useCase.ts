@@ -2,7 +2,7 @@
 import { User } from "../../../domain/entities/user.entity" 
 import { IUserRepository } from "../../../domain/repositories/user.repository" 
 import { NotFoundError } from "../../../common/errors/common/common.errors" 
-import { EditProfileRequestDTO, EditProfileResponseDTO } from "../../dto/profile/profile.dto"
+import { EditProfileRequestDTO, EditProfileResponseDTO } from "../../../application/dto/profile/profile.dto"
 
 export class editProfileUsecase {
     constructor(

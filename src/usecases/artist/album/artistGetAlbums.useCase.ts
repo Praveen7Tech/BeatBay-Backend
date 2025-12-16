@@ -1,7 +1,7 @@
 import { Album } from "../../../domain/entities/album.entity";
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
-import { AlbumResponseDTO, ArtistAlbumsResponseDTO } from "../../dto/album/album.response.dto";
+import { AlbumResponseDTO, ArtistAlbumsResponseDTO } from "../../../application/dto/album/album.response.dto";
 
 export class artistGetAlbumsUseCase {
     constructor(

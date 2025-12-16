@@ -1,6 +1,6 @@
 import { Artist } from "../../../domain/entities/arist.entity"
 import { IArtistRepository } from "../../../domain/repositories/artist.repository"
-import { ArtistTableResponseDTO } from "../../dto/admin/admin.response.dto"
+import { ArtistTableResponseDTO } from "../../../application/dto/admin/admin.response.dto"
 
 export class FetchAllArtistsUseCase{
     constructor(

@@ -2,8 +2,8 @@
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { IPasswordService } from "../../../domain/services/password.service";
 import { ITokenService } from "../../../domain/services/token.service";
-import { LoginRequestDTO } from "../../dto/auth/request.dto";
-import { LoginResponseDTO } from "../../dto/auth/response.dto";
+import { LoginRequestDTO } from "../../../application/dto/auth/request.dto";
+import { LoginResponseDTO } from "../../../application/dto/auth/response.dto";
 import { BadRequestError, NotFoundError } from "../../../common/errors/common/common.errors";
 
 

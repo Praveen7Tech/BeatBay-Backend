@@ -6,8 +6,8 @@ import { IEmailService } from "../../../domain/services/mail.service";
 import { IOtpService } from "../../../domain/services/otp.service";
 import { EmailFormat } from "../../../infrastructure/services/email/email-format";
 import logger from "../../../infrastructure/utils/logger/logger";
-import { SignupRequestDTO } from "../../dto/auth/request.dto";
-import { SignupResponseDTO } from "../../dto/auth/response.dto";
+import { SignupRequestDTO } from "../../../application/dto/auth/request.dto";
+import { SignupResponseDTO } from "../../../application/dto/auth/response.dto";
 
 export class ArtistSignupUsecase {
     constructor(

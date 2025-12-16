@@ -7,6 +7,7 @@ import { ClientSession, model } from 'mongoose';
 import path from 'path';
 import { PaginatedResult } from '../../../../domain/interfaces/paginatedResult.interface';
 import { title } from 'process';
+import { UserProfileRespnseDTO } from '../../../../application/dto/profile/profile.dto';
 
 export class MongooseUserRepository implements IUserRepository {
   constructor() {}
@@ -138,6 +139,21 @@ export class MongooseUserRepository implements IUserRepository {
       .lean().exec()
 
       return users
+  }
+
+  async getUserProfileDetails(userId: string): Promise<User | null> {
+      const user = await UserModel.findById(userId)
+          .populate({
+            path: "followingArtists",
+            select: "name profilePicture"
+          })
+          .populate({
+            path: "playLists",
+            select: "name coverImageUrl"
+          })
+          .lean(); 
+
+      return user
   }
 
 }

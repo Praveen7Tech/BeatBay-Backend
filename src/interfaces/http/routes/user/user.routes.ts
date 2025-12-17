@@ -20,9 +20,9 @@ export default (container: AwilixContainer): Router=> {
     router.get('/album-details/:id', userController.albumDetails)
 
     router.get('/artist-details/:id', userController.artistDetails)
-    router.get('/is-following/:artistId', userController.checkFollowStatus)
-    router.post('/follow/:artistId', userController.followArtist)
-    router.delete('/follow/:artistId', userController.unFollowArtist)
+    router.get('/is-following/:targetId', userController.checkFollowStatus)
+    router.post('/follow/:targetId', userController.handleFollow)
+    router.delete('/follow/:targetId', userController.handleFollow)
     router.get('/following', userController.following)
 
     router.post('/create-playlist', userController.createPlayList)
@@ -35,6 +35,7 @@ export default (container: AwilixContainer): Router=> {
     router.get('/search', userController.searchDiscover)
 
     router.get('/user-details/:userId', userController.userDetails)
+    router.get('/friends', userController.friends)
 
     return router
 }

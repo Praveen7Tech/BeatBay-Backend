@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import http from "http"
 import connectDB from './infrastructure/config/db';
 import { connectRedis } from './infrastructure/config/redis';
 import app from './interfaces/express/app';
@@ -12,6 +13,7 @@ import userRouterFactory from './interfaces/http/routes/user/user.routes'
 import logger from './infrastructure/utils/logger/logger';
 import adminFeaturesRouterFactory from './interfaces/http/routes/admin/admin.features.routes'
 import artistRouterFactory from './interfaces/http/routes/artist/artist.routes'
+import { SocketConfig } from './infrastructure/config/socket';
 
 dotenv.config();
 
@@ -21,6 +23,10 @@ async function startServer() {
   try {
     await connectDB();
     await connectRedis();
+
+    const httpServer = http.createServer(app)
+
+    SocketConfig.init(httpServer)
     
     app.use(loggerMiddleware);
 
@@ -44,7 +50,7 @@ async function startServer() {
 
     app.use(errorHandlerMiddleware)
 
-    app.listen(PORT, () => {
+    httpServer.listen(PORT, () => {
       logger.info(`✅ Server running on http://localhost:${PORT}`)
     });
   } catch (error) {

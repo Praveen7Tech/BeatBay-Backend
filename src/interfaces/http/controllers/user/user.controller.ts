@@ -12,8 +12,6 @@ import { SongDetailsUseCase } from "../../../../usecases/user/song/songDetails.u
 import { AlbumDetailsUseCase } from "../../../../usecases/user/album/albumDetails.useCase"
 import { ArtistDetailsUseCase } from "../../../../usecases/user/artist/artistDeatils.useCase"
 import { CheckFollowStatusUseCase } from "../../../../usecases/user/follow/checkFollowStatus.useCase"
-import { FollowArtistUseCase } from "../../../../usecases/user/follow/followArtist.useCase"
-import { UnfollowArtistUseCase } from "../../../../usecases/user/follow/unFollowArtist.useCase"
 import { GetFollowingListUseCase } from "../../../../usecases/user/follow/following.useCase"
 import { CreatePlayListUseCase } from "../../../../usecases/user/playList/createPlayList.useCase"
 import { GetPlayListUseCase } from "../../../../usecases/user/playList/getPlayList.useCase"
@@ -26,6 +24,8 @@ import { GetUserByIdUseCase } from "../../../../usecases/admin/users/adminGetUse
 import { uploadOptionsType } from "../../../../infrastructure/config/cloudinary"
 import { UserGetSearchDataUseCase } from "../../../../usecases/user/search/searchData.useCase"
 import { GetUserProfileUseCase } from "../../../../usecases/user/profile/getUserProfile.useCase"
+import { FollowingHandleUseCase } from "../../../../usecases/user/follow/followArtist.useCase"
+import { GetUserFriendsUseCase } from "../../../../usecases/user/friends/getFriends.useCase"
 
 export class UserController{
     constructor(
@@ -37,8 +37,7 @@ export class UserController{
         private readonly albumDetailsUsecase: AlbumDetailsUseCase,
         private readonly artistDetailsUsecase: ArtistDetailsUseCase,
         private readonly checkFollowStatusUsecase:CheckFollowStatusUseCase,
-        private readonly followArtistUsecase:FollowArtistUseCase,
-        private readonly unfollowArtistUsecase: UnfollowArtistUseCase,
+        private readonly followHandleUsecase:FollowingHandleUseCase,
         private readonly followingUsecase: GetFollowingListUseCase,
         private readonly createPlayListUsecase: CreatePlayListUseCase,
         private readonly getPlayListUsecase: GetPlayListUseCase,
@@ -48,7 +47,8 @@ export class UserController{
         private readonly editPlauListUsecase: EditPlayListUseCase,
         private readonly getUserDetailsUsecase: GetUserByIdUseCase,
         private readonly userSearchDataUsecase: UserGetSearchDataUseCase,
-        private readonly getUserProfileDetailsUsecase: GetUserProfileUseCase
+        private readonly getUserProfileDetailsUsecase: GetUserProfileUseCase,
+        private readonly userFriendsListsUseCase: GetUserFriendsUseCase
         
     ){}
 
@@ -185,14 +185,16 @@ export class UserController{
 
     checkFollowStatus = async(req: AuthRequest, res:Response, next: NextFunction)=>{
         try {
-            const userId = req.user?.id
-            const artistId = req.params.artistId
+            const followId = req.user?.id
+            const targetId = req.params.targetId
+            const role = (req.query.role as "user" | "artist") || "user"
+            console.log("check-", followId, targetId, role)
 
-             if(!userId || !artistId){
+             if(!followId || !targetId){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const isFollowing = await this.checkFollowStatusUsecase.execute(userId, artistId)
+            const isFollowing = await this.checkFollowStatusUsecase.execute(followId, targetId, role)
 
             return res.status(StatusCode.OK).json(isFollowing)
 
@@ -201,35 +203,20 @@ export class UserController{
         }
     }
 
-    followArtist = async(req: AuthRequest, res:Response, next: NextFunction)=>{
+    handleFollow = async(req:AuthRequest, res:Response,next: NextFunction)=>{
         try {
-            const userId = req.user?.id
-            const artistId = req.params.artistId
-
-             if(!userId || !artistId){
+            const followId = req.user?.id
+            const {targetId} = req.params
+            const role = (req.query.role as 'user' | 'artist') || 'user';
+            const action = req.method === "POST" ? "follow" : "unfollow"
+            console.log("cc", followId, targetId, role, action)
+            if(!followId){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const follow = await this.followArtistUsecase.execute(userId, artistId)
-            return res.status(StatusCode.OK).json({message: "Artist followed successfully"})
+            await this.followHandleUsecase.execute(followId,targetId,role,action)
 
-        } catch (error) {
-            next(error)
-        }
-    }
-
-    unFollowArtist = async(req: AuthRequest, res:Response, next: NextFunction)=>{
-        try {
-            const userId = req.user?.id
-            const artistId = req.params.artistId
-
-             if(!userId || !artistId){
-                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
-            }
-
-            const unfollow = await this.unfollowArtistUsecase.execute(userId, artistId)
-            return res.status(StatusCode.OK).json({message: "Unfollow Artist successfull."})
-
+            return res.status(StatusCode.OK).json({ message: `Successfully ${action}ed ${role}` })
         } catch (error) {
             next(error)
         }
@@ -384,6 +371,21 @@ export class UserController{
             }
             const userDetails = await this.getUserProfileDetailsUsecase.execute(userId)
              return res.status(StatusCode.OK).json(userDetails)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    friends = async(req: AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            if(!userId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const friends = await this.userFriendsListsUseCase.execute(userId)
+
+            return res.status(StatusCode.OK).json(friends)
         } catch (error) {
             next(error)
         }

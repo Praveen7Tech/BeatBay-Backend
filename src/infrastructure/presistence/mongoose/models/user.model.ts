@@ -1,5 +1,6 @@
 import mongoose, { Schema, Model, HydratedDocument } from 'mongoose';
 import { User } from '../../../../domain/entities/user.entity';
+import { number } from 'zod';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -41,10 +42,18 @@ const userSchema = new Schema<UserDocument>(
       type: Schema.Types.ObjectId,
       ref: "Artist"
     }],
+    followingUsers:[{
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    }],
     followingCount: {
       type: Number,
       default: 0
-    }
+    },
+    followersCount:{
+      type: Number,
+      default: 0
+    },
   },
   { timestamps: true }
 );

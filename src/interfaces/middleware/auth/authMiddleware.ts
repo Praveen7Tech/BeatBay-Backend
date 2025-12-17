@@ -20,7 +20,7 @@ export const authMiddleware: RequestHandler = (req: AuthRequest, res: Response, 
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_TOKEN_SECRET as string) as JwtPayload
-    logger.info("token verify complete ✅");
+    //logger.info("token verify complete ✅");
 
     req.user = {id : decoded.id, email: decoded.email}
     next();

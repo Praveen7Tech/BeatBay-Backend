@@ -1,13 +1,14 @@
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 
-export class FollowArtistUseCase {
+export class FollowingHandleUseCase {
     constructor(private readonly _userRepository: IUserRepository) {}
 
-    async execute(userId: string, artistId: string): Promise<void> {
+    async execute(followId: string, targetId: string, role: string, action: string): Promise<void> {
         
-        if (userId === artistId) {
+        if (followId === targetId) {
             throw new Error("Cannot follow yourself.");
         }
-        return this._userRepository.addFollow(userId, artistId);
+        //return this._userRepository.addFollow(userId, artistId);
+        return this._userRepository.toggleFollow(followId, targetId, role, action);
     }
 }

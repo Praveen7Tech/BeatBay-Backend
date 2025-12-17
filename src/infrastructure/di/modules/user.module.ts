@@ -18,8 +18,6 @@ import { ArtistDetailsUseCase } from "../../../usecases/user/artist/artistDeatil
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 import { MongooseArtistRepository } from "../../presistence/mongoose/repositories/mongoose.artist.repository";
 import { CheckFollowStatusUseCase } from "../../../usecases/user/follow/checkFollowStatus.useCase";
-import { FollowArtistUseCase } from "../../../usecases/user/follow/followArtist.useCase";
-import { UnfollowArtistUseCase } from "../../../usecases/user/follow/unFollowArtist.useCase";
 import { GetFollowingListUseCase } from "../../../usecases/user/follow/following.useCase";
 import { CreatePlayListUseCase } from "../../../usecases/user/playList/createPlayList.useCase";
 import { IPlayListRepository } from "../../../domain/repositories/playList.repository";
@@ -34,6 +32,8 @@ import { UserGetSearchDataUseCase } from "../../../usecases/user/search/searchDa
 import { ISearchService } from "../../../domain/services/search.service";
 import { SearchResponseService } from "../../services/search/search.service";
 import { GetUserProfileUseCase } from "../../../usecases/user/profile/getUserProfile.useCase";
+import { FollowingHandleUseCase } from "../../../usecases/user/follow/followArtist.useCase";
+import { GetUserFriendsUseCase } from "../../../usecases/user/friends/getFriends.useCase";
 
 export const userModule = {
     // Repository
@@ -61,8 +61,7 @@ export const userModule = {
 
     // follow/unfollow
     checkFollowStatusUsecase: asClass(CheckFollowStatusUseCase).scoped(),
-    followArtistUsecase: asClass(FollowArtistUseCase).scoped(),
-    unfollowArtistUsecase: asClass(UnfollowArtistUseCase).scoped(),
+    followHandleUsecase: asClass(FollowingHandleUseCase).scoped(),
     followingUsecase: asClass(GetFollowingListUseCase).scoped(),
 
     //playList
@@ -76,6 +75,9 @@ export const userModule = {
     //search(discover)
     userSearchDataUsecase: asClass(UserGetSearchDataUseCase).scoped(),
     getUserProfileDetailsUsecase: asClass(GetUserProfileUseCase).scoped(),
+
+    //friends
+    userFriendsListsUseCase: asClass(GetUserFriendsUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

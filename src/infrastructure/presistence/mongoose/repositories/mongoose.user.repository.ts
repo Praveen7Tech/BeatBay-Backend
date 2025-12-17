@@ -3,11 +3,12 @@ import { User } from '../../../../domain/entities/user.entity';
 import { UserModel } from '../models/user.model';
 import { userModule } from '../../../di/modules/user.module';
 import { Artist } from '../../../../domain/entities/arist.entity';
-import { ClientSession, model } from 'mongoose';
+import mongoose, { ClientSession, model } from 'mongoose';
 import path from 'path';
 import { PaginatedResult } from '../../../../domain/interfaces/paginatedResult.interface';
 import { title } from 'process';
 import { UserProfileRespnseDTO } from '../../../../application/dto/profile/profile.dto';
+import { ArtistModel } from '../models/artist.model';
 
 export class MongooseUserRepository implements IUserRepository {
   constructor() {}
@@ -32,24 +33,52 @@ export class MongooseUserRepository implements IUserRepository {
     return UserModel.findOneAndUpdate({ _id }, entity, { new: true }).lean();
   }
 
-  async isFollowing(userId: string, artistId: string): Promise<boolean> {
-      const user = await UserModel.findById(userId).select("followingArtists")
+  async isFollowing(followId: string, targetId: string, role: string): Promise<boolean> {
+      const followField = role === "artist" ? "followingArtists" : "followingUsers"
 
-      return user?.followingArtists?.includes(artistId) || false
+      const exists = await UserModel.exists({
+        _id: followId,
+        [followField]: targetId
+      })
+
+      return !!exists
   }
 
-  async addFollow(userId: string, artistId: string): Promise<void> {
-      await UserModel.findByIdAndUpdate(userId,{
-        $addToSet:{followingArtists: artistId},
-        $inc:{followingCount: 1}
-      }).exec()
-  }
+  async toggleFollow(followId: string, targetId: string, role: string, action: string): Promise<void> {
+      const session = await mongoose.startSession();
+    session.startTransaction();
 
-  async removeFollow(userId: string, artistId: string): Promise<void> {
-      await UserModel.findByIdAndUpdate(userId,{
-        $pull:{followingArtists: artistId},
-        $inc:{followingCount:-1}
-      }).exec()
+    try {
+        const isFollow = action === 'follow';
+        
+        // update based on the target role
+        const followField = role === 'artist' ? 'followingArtists' : 'followingUsers';
+        
+        const followerUpdate = isFollow 
+            ? { $addToSet: { [followField]: targetId }, $inc: { followingCount: 1 } }
+            : { $pull: { [followField]: targetId }, $inc: { followingCount: -1 } };
+
+        const targetUpdate = isFollow
+            ? { $inc: { followersCount: 1 } }
+            : { $inc: { followersCount: -1 } };
+
+        // update the user
+        await UserModel.findByIdAndUpdate(followId, followerUpdate, { session });
+
+        //  Update the target user or artist
+        if (role === 'artist') {
+            await ArtistModel.findByIdAndUpdate(targetId, targetUpdate, { session });
+        } else {
+            await UserModel.findByIdAndUpdate(targetId, targetUpdate, { session });
+        }
+
+        await session.commitTransaction();
+    } catch (error) {
+        await session.abortTransaction();
+        throw error;
+    } finally {
+        session.endSession();
+    }
   }
 
   async following(userId: string): Promise<Artist[] | []> {
@@ -154,6 +183,19 @@ export class MongooseUserRepository implements IUserRepository {
           .lean(); 
 
       return user
+  }
+
+  async getMutualFriends(userId: string): Promise<User[]> {
+      const user = await UserModel.findById(userId).select("followingUsers").lean()
+
+      if(!user || user.followingUsers.length == 0) return []
+
+      return await UserModel.find({
+        _id: {$in : user.followingUsers},
+        followingUsers: userId
+      })
+      .select("name profilePicture status")
+      .lean()
   }
 
 }

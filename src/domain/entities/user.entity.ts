@@ -1,3 +1,4 @@
+import { number } from "zod";
 import { PlayList } from "./playList.entiy";
 
 export interface User {
@@ -9,10 +10,12 @@ export interface User {
   profileImagePublicId?: string | null
   googleId?: string| null;
   role : 'user' | 'admin';
-  status?: boolean;
+  status: boolean;
   playLists: PlayList[]
   followingArtists?: string[]
+  followingUsers: string[]
   followingCount?: number
+  followersCount: number
   createdAt?: Date;
   updatedAt?: Date;
 }

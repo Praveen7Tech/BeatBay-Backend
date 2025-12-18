@@ -13,7 +13,8 @@ import userRouterFactory from './interfaces/http/routes/user/user.routes'
 import logger from './infrastructure/utils/logger/logger';
 import adminFeaturesRouterFactory from './interfaces/http/routes/admin/admin.features.routes'
 import artistRouterFactory from './interfaces/http/routes/artist/artist.routes'
-import { SocketConfig } from './infrastructure/config/socket';
+import { createSocketServer } from './infrastructure/config/socket';
+import { registerSocketHandler } from './infrastructure/socket/socket.handler';
 
 dotenv.config();
 
@@ -25,8 +26,9 @@ async function startServer() {
     await connectRedis();
 
     const httpServer = http.createServer(app)
+    const io = createSocketServer(httpServer)
 
-    SocketConfig.init(httpServer)
+    registerSocketHandler(io)
     
     app.use(loggerMiddleware);
 

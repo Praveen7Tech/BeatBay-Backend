@@ -22,6 +22,8 @@ import { ResetPasswordUsecase } from '../../../usecases/user/auth/reset-password
 import { GoogleLoginUsecase } from '../../../usecases/user/auth/googleLogin.useCase';
 import { IGoogleAuthService } from '../../../domain/services/google-auth.service';
 import { GoogleAuthService } from '../../services/googleAuth/google-auth.service';
+import { ISocketCacheService } from '../../../domain/services/redis/jamCache.service';
+import { SocketCacheService } from '../../cache/jam-cache/jam-cache.service';
 
 export const authModule = {
       // as value
@@ -35,6 +37,7 @@ export const authModule = {
       _tokenService: asClass<ITokenService>(JwtTokenService).scoped(),
       _emailService: asClass<IEmailService>(EmailService).singleton(),
       _googleAuthService: asClass<IGoogleAuthService>(GoogleAuthService).singleton(),
+      _cacheRoomService: asClass<ISocketCacheService>(SocketCacheService).singleton(),
     
       // Use cases
       signupUsecase: asClass(SignupUsecase).scoped(),

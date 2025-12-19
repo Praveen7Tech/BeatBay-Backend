@@ -1,5 +1,3 @@
-import { Artist } from "../../../domain/entities/arist.entity";
-import { User } from "../../../domain/entities/user.entity";
 
 export interface SignupResponseDTO {
   otp: string;
@@ -27,9 +25,17 @@ export interface AuthArtistDTO {
   role: string;
 }
 
+export interface RoomState{
+  roomId: string,
+  hostId: string,
+  guestId: string,
+  status: "pending" | "jamming"
+}
+
 export interface LoginResponseDTO {
   user: AuthUserDTO | AuthArtistDTO; 
   accessToken: string;
   refreshToken: string;
+  roomState?: RoomState | null
 }
 

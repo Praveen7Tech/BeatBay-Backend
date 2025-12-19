@@ -14,6 +14,12 @@ export class PrivateRoomHandler {
             logger.info(`registered socket : ${userId}`)
         })
 
+        // preistence check
+        socket.on("presistence", async(userId)=>{
+            logger.info(`presistence check : ${userId}`)
+            await this.socketCacheService.getRoom(userId)
+        })
+
         // Invite
         socket.on("invite_send", async ({ fromUserId, toUserId }) => {
             logger.info(`invite sended from :${fromUserId}, to : ${toUserId}`)
@@ -24,7 +30,8 @@ export class PrivateRoomHandler {
                 status: "pending",
             }
 
-            await this.socketCacheService.setRoom(toUserId, data, 60)
+            await this.socketCacheService.setRoom(fromUserId, data, 3600)
+            await this.socketCacheService.setRoom(toUserId, data, 3600)
 
             io.to(toUserId).emit("invite_received", { fromUserId })
         })
@@ -58,5 +65,25 @@ export class PrivateRoomHandler {
 
             io.to(hostId).emit("invite_rejected", {guestId})
         })
+
+        // left from room
+        socket.on("left_room", async ({ userId, roomId }) => {
+        logger.info(`User: ${userId} leaving room: ${roomId}`);
+
+        const roomData = await this.socketCacheService.getRoom(userId);
+        
+        if (roomData) {
+            await this.socketCacheService.deleteRoom(roomData.hostId);
+            await this.socketCacheService.deleteRoom(roomData.guestId);
+
+            const payload = { hostId: roomData.hostId, guestId: roomData.guestId };
+            
+            io.to(roomData.hostId).emit("room_cancelled", payload);
+            io.to(roomData.guestId).emit("room_cancelled", payload);
+
+            const sockets = await io.in(roomId).fetchSockets();
+            sockets.forEach(s => s.leave(roomId));
+        }
+    });
     }
 }

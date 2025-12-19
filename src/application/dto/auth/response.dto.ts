@@ -25,17 +25,24 @@ export interface AuthArtistDTO {
   role: string;
 }
 
-export interface RoomState{
-  roomId: string,
-  hostId: string,
-  guestId: string,
-  status: "pending" | "jamming"
+export interface RoomMember{
+    id:string
+    name:string
+    image: string
+    role: "host" | "guest"
+}
+
+export interface RoomData{
+    roomId: string
+    hostId: string
+    status: "pending" | "jamming"
+    members: RoomMember[]
 }
 
 export interface LoginResponseDTO {
   user: AuthUserDTO | AuthArtistDTO; 
   accessToken: string;
   refreshToken: string;
-  roomState?: RoomState | null
+  roomState?: RoomData | null
 }
 

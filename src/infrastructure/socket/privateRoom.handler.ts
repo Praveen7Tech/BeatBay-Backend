@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io"
-import { ISocketCacheService, RoomData } from "../../domain/services/redis/jamCache.service"
+import { ISocketCacheService, RoomData, RoomMember } from "../../domain/services/redis/jamCache.service"
 import logger from "../utils/logger/logger"
 
 export class PrivateRoomHandler {
@@ -14,76 +14,91 @@ export class PrivateRoomHandler {
             logger.info(`registered socket : ${userId}`)
         })
 
-        // preistence check
-        socket.on("presistence", async(userId)=>{
-            logger.info(`presistence check : ${userId}`)
-            await this.socketCacheService.getRoom(userId)
-        })
 
-        // Invite
-        socket.on("invite_send", async ({ fromUserId, toUserId }) => {
+        // Invite users to join room
+        socket.on("invite_send", async ({ fromUserId,fromUserName, fromUserImage, toUserId }) => {
             logger.info(`invite sended from :${fromUserId}, to : ${toUserId}`)
-            const data: RoomData = {
-                roomId: "",
-                hostId: fromUserId,
-                guestId: toUserId,
-                status: "pending",
+
+            const roomId = `room:_${fromUserId}`
+            const hostData:RoomMember = {
+                id:fromUserId,
+                name: fromUserName,
+                image: fromUserImage,
+                role: "host"
             }
 
-            await this.socketCacheService.setRoom(fromUserId, data, 3600)
-            await this.socketCacheService.setRoom(toUserId, data, 3600)
+            // checking for existing host room
+            const existRoom = await this.socketCacheService.getRoom(roomId)
+            if(!existRoom){
+                await this.socketCacheService.createRoom(roomId,fromUserId,hostData)
+                // setting useractive room history
+                await this.socketCacheService.setUserActiveRoom(fromUserId, roomId)
 
-            io.to(toUserId).emit("invite_received", { fromUserId })
+                socket.join(roomId)
+            }
+            
+            // create a temporary invite last only 10 minutes
+            const invite = {roomId, hostId: fromUserId, hostName: fromUserName}
+            await this.socketCacheService.setInvite(toUserId, invite, 600)
+
+            // emit event to curresponding users
+            io.to(toUserId).emit("invite_received", roomId)
+
         })
 
         // Accept invite
-        socket.on("accept_invite", async ({ hostId, guestId }) => {
-            logger.info(`invite accepted from: ${guestId}, from : ${hostId}`)
-            const roomId = `room:${hostId}_${guestId}`
+        socket.on("accept_invite", async ({ roomId, guestData}) => {
+           const memberData : RoomMember = {...guestData, role :"guest"}
 
-            const room: RoomData = {
-                roomId,
-                hostId,
-                guestId,
-                status: "jamming",
-            }
+           await this.socketCacheService.addMembersToRoom(roomId, memberData)
+           // set user active room history
+           await this.socketCacheService.setUserActiveRoom(memberData.id, roomId)
 
-            await this.socketCacheService.setRoom(hostId, room, 360)
-            await this.socketCacheService.setRoom(guestId, room, 360)
+           socket.join(roomId);
+           // fetch updated room from cache
+           const updatedRoom = await this.socketCacheService.getRoom(roomId)
 
-            io.to(hostId).socketsJoin(roomId)
-            io.to(guestId).socketsJoin(roomId)
-
-            io.to(roomId).emit("room_created", room)
+           // emit event to the curresponding room
+           io.to(roomId).emit("room_members_updated", updatedRoom)
         })
 
-        // reject Invite
-        socket.on("reject_invite", async({hostId, guestId})=>{
-            logger.info(`reject invite from: ${guestId} of : ${hostId}`)
+        //reject Invite
+        socket.on("reject_invite", async({hostId})=>{
+            const guestId = (socket as any).userId; // Trusted ID from auth middleware
+            logger.info(`Invite rejected by Guest: ${guestId} for Host: ${hostId}`);
 
-            await this.socketCacheService.deleteRoom(guestId)
+            await this.socketCacheService.deleteInvite(guestId);
 
-            io.to(hostId).emit("invite_rejected", {guestId})
+            // 2. NOTIFY HOST: Tell the host the invite was declined
+            // We send the guestId so the host knows which specific friend to reset in the UI
+            io.to(hostId).emit("invite_rejected", { guestId });
+            
+            // Optional: You can also notify the guest themselves to confirm the action
+            socket.emit("invite_status_updated", { state: "none" });
         })
 
         // left from room
         socket.on("left_room", async ({ userId, roomId }) => {
         logger.info(`User: ${userId} leaving room: ${roomId}`);
 
-        const roomData = await this.socketCacheService.getRoom(userId);
+        const room = await this.socketCacheService.getRoom(roomId);
         
-        if (roomData) {
-            await this.socketCacheService.deleteRoom(roomData.hostId);
-            await this.socketCacheService.deleteRoom(roomData.guestId);
+        if(room?.hostId === userId){
+            // if the host left completely delete room
+            await this.socketCacheService.deleteRoom(roomId)
+            // emit event to room
+            io.to(roomId).emit("room_deleted", {reason: "HOST_LEFT"})
+        }else{
+            // guest left
+            await this.socketCacheService.removeMember(roomId, userId)
+            const updatedRoom = await this.socketCacheService.getRoom(roomId)
 
-            const payload = { hostId: roomData.hostId, guestId: roomData.guestId };
-            
-            io.to(roomData.hostId).emit("room_cancelled", payload);
-            io.to(roomData.guestId).emit("room_cancelled", payload);
-
-            const sockets = await io.in(roomId).fetchSockets();
-            sockets.forEach(s => s.leave(roomId));
+            // update the room data and emit
+            io.to(roomId).emit("room_member_updated", updatedRoom)
+            // remove the socket connection from the room
+            socket.leave(roomId)
         }
+        
     });
     }
 }

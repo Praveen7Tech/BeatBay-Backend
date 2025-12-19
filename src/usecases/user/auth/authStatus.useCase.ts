@@ -3,7 +3,7 @@ import { IArtistRepository } from "../../../domain/repositories/artist.repositor
 import { IUserRepository } from "../../../domain/repositories/user.repository"
 import { ITokenService } from "../../../domain/services/token.service"
 import { AuthStatusRequestDTO } from "../../../application/dto/auth/request.dto"
-import { LoginResponseDTO, RoomState } from "../../../application/dto/auth/response.dto";
+import { LoginResponseDTO, RoomData } from "../../../application/dto/auth/response.dto";
 import { AuthMapper } from "../../../application/mappers/user/auth.mapper";
 import { Artist } from "../../../domain/entities/arist.entity";
 import { User } from "../../../domain/entities/user.entity";
@@ -39,9 +39,10 @@ export class AuthStatusUsecase {
       throw new BadRequestError("User not found using refresh token");
     }
 
-    let roomData : RoomState | null = null
-    if(payload.role === "user" && payload.id){
-        roomData = await this._cacheRoomService.getRoom(payload.id)
+    let roomData : RoomData | null = null
+    const roomId = await this._cacheRoomService.getUserActiveRooms(payload.id)
+    if(roomId){
+       roomData = await this._cacheRoomService.getRoom(roomId)
     }
 
     const payloadTkn = { id: userEntity._id.toString(), email: userEntity.email, role:userEntity.role };

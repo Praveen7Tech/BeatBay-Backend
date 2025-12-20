@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io"
 import { ISocketCacheService, RoomData, RoomMember } from "../../domain/services/redis/jamCache.service"
-import logger from "../utils/logger/logger"
+import logger from "../utils/logger/logger";
 
 export class PrivateRoomHandler {
     constructor(
@@ -10,95 +10,100 @@ export class PrivateRoomHandler {
     privateRoom(io: Server, socket: Socket) {
 
         socket.on("register", (userId: string) => {
-            socket.join(userId)
-            logger.info(`registered socket : ${userId}`)
-        })
+            socket.join(userId);
+            (socket as any).userId = userId;
+        });
 
+        /* ---------- INVITE SEND ---------- */
+        socket.on("invite_send", async ({ fromUserId, fromUserName, fromUserImage, toUserId }) => {
 
-        // Invite users to join room
-        socket.on("invite_send", async ({ fromUserId,fromUserName, fromUserImage, toUserId }) => {
-            logger.info(`invite sended from :${fromUserId}, to : ${toUserId}`)
+            const roomId = fromUserId;
 
-            const roomId = `room:_${fromUserId}`
-            const hostData:RoomMember = {
-                id:fromUserId,
+            const hostData: RoomMember = {
+                id: fromUserId,
                 name: fromUserName,
                 image: fromUserImage,
-                role: "host"
+                role: "host",
+            };
+
+            const existRoom = await this.socketCacheService.getRoom(roomId);
+
+            if (!existRoom) {
+                
+                await this.socketCacheService.createRoom(roomId, fromUserId, hostData);
+                await this.socketCacheService.setUserActiveRoom(fromUserId, roomId);
+                socket.join(roomId);
             }
 
-            // checking for existing host room
-            const existRoom = await this.socketCacheService.getRoom(roomId)
-            if(!existRoom){
-                await this.socketCacheService.createRoom(roomId,fromUserId,hostData)
-                // setting useractive room history
-                await this.socketCacheService.setUserActiveRoom(fromUserId, roomId)
+            // set pending invites
+            await this.socketCacheService.setInvite(toUserId,{ roomId, hostId: fromUserId }, 60);
+            // add pending users queue for the room
+            await this.socketCacheService.addPendingInviteToRoom(roomId, toUserId)
 
-                socket.join(roomId)
+            io.to(toUserId).emit("invite_received", roomId);
+        });
+
+        /* ---------- ACCEPT INVITE ---------- */
+        socket.on("accept_invite", async ({ roomId, guestData }) => {
+
+            // Validate the invite actually exists or expired
+            const inviteData = await this.socketCacheService.getInvite(guestData.id);
+            if (!inviteData || inviteData.roomId !== roomId) {
+                logger.info(`invite expired trigger ${inviteData}`)
+                io.to(guestData.id).emit("invite_expired",{
+                    message: "Invitation expired.!",
+                    friendId: roomId
+                }),
+                io.to(roomId).emit("invite_expired_host", {
+                    guestId: guestData.id 
+                });
+
+                return;
             }
-            
-            // create a temporary invite last only 10 minutes
-            const invite = {roomId, hostId: fromUserId, hostName: fromUserName}
-            await this.socketCacheService.setInvite(toUserId, invite, 600)
 
-            // emit event to curresponding users
-            io.to(toUserId).emit("invite_received", roomId)
+            const memberData: RoomMember = {
+                ...guestData,
+                role: "guest",
+            };
 
-        })
+            await this.socketCacheService.addMembersToRoom(roomId, memberData);
+            await this.socketCacheService.setUserActiveRoom(memberData.id, roomId);
 
-        // Accept invite
-        socket.on("accept_invite", async ({ roomId, guestData}) => {
-           const memberData : RoomMember = {...guestData, role :"guest"}
+            // remoev pending stageof guest after accept
+            await this.socketCacheService.deleteInvite(memberData.id);
+            await this.socketCacheService.removePendingInviteFromRoom(roomId, memberData.id)
 
-           await this.socketCacheService.addMembersToRoom(roomId, memberData)
-           // set user active room history
-           await this.socketCacheService.setUserActiveRoom(memberData.id, roomId)
+            socket.join(roomId);
 
-           socket.join(roomId);
-           // fetch updated room from cache
-           const updatedRoom = await this.socketCacheService.getRoom(roomId)
+            const updatedRoom = await this.socketCacheService.getRoom(roomId);
+            io.to(roomId).emit("room_members_updated", updatedRoom);
+        });
 
-           // emit event to the curresponding room
-           io.to(roomId).emit("room_members_updated", updatedRoom)
-        })
-
-        //reject Invite
-        socket.on("reject_invite", async({hostId})=>{
-            const guestId = (socket as any).userId; // Trusted ID from auth middleware
-            logger.info(`Invite rejected by Guest: ${guestId} for Host: ${hostId}`);
-
+        /* ---------- REJECT INVITE ---------- */
+        socket.on("reject_invite", async ({ hostId, guestId }) => {
             await this.socketCacheService.deleteInvite(guestId);
-
-            // 2. NOTIFY HOST: Tell the host the invite was declined
-            // We send the guestId so the host knows which specific friend to reset in the UI
+            await this.socketCacheService.removePendingInviteFromRoom(hostId, guestId)
             io.to(hostId).emit("invite_rejected", { guestId });
-            
-            // Optional: You can also notify the guest themselves to confirm the action
-            socket.emit("invite_status_updated", { state: "none" });
-        })
+        });
 
-        // left from room
+        /* ---------- LEAVE ROOM ---------- */
         socket.on("left_room", async ({ userId, roomId }) => {
-        logger.info(`User: ${userId} leaving room: ${roomId}`);
 
-        const room = await this.socketCacheService.getRoom(roomId);
-        
-        if(room?.hostId === userId){
-            // if the host left completely delete room
-            await this.socketCacheService.deleteRoom(roomId)
-            // emit event to room
-            io.to(roomId).emit("room_deleted", {reason: "HOST_LEFT"})
-        }else{
-            // guest left
-            await this.socketCacheService.removeMember(roomId, userId)
-            const updatedRoom = await this.socketCacheService.getRoom(roomId)
+            const room = await this.socketCacheService.getRoom(roomId);
+            if (!room) return;
 
-            // update the room data and emit
-            io.to(roomId).emit("room_member_updated", updatedRoom)
-            // remove the socket connection from the room
-            socket.leave(roomId)
-        }
-        
-    });
+            if (room.hostId === userId) {
+                await this.socketCacheService.deleteRoom(roomId);
+                io.to(roomId).emit("room_deleted");
+            } else {
+                await this.socketCacheService.removeMember(roomId, userId);
+                const updatedRoom = await this.socketCacheService.getRoom(roomId);
+                io.to(roomId).emit("room_members_updated", updatedRoom);
+            }
+
+            socket.leave(roomId);
+        });
+
     }
+
 }

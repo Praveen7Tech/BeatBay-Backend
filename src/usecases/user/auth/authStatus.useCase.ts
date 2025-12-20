@@ -27,8 +27,21 @@ export class AuthStatusUsecase {
     }
 
     let userEntity;
+    let roomData : RoomData | null = null;
+    let pendingInvite: any = null;
+
     if(payload.role === "user"){
       userEntity = await this._userRepository.findById(payload.id);
+
+      const roomId = await this._cacheRoomService.getUserActiveRooms(payload.id)
+      
+      if(roomId){
+        roomData = await this._cacheRoomService.getRoom(roomId)
+      }else{
+         pendingInvite = await this._cacheRoomService.getInvite(payload.id)
+      }
+      
+
     }else if( payload.role === 'admin'){
       userEntity = await this._userRepository.findById(payload.id);
     }else if(payload.role === 'artist'){
@@ -37,12 +50,6 @@ export class AuthStatusUsecase {
     
     if (!userEntity || !userEntity._id) {
       throw new BadRequestError("User not found using refresh token");
-    }
-
-    let roomData : RoomData | null = null
-    const roomId = await this._cacheRoomService.getUserActiveRooms(payload.id)
-    if(roomId){
-       roomData = await this._cacheRoomService.getRoom(roomId)
     }
 
     const payloadTkn = { id: userEntity._id.toString(), email: userEntity.email, role:userEntity.role };
@@ -57,7 +64,8 @@ export class AuthStatusUsecase {
       user: mappedUser, 
       accessToken: newAccessToken, 
       refreshToken: newRefreshToken,
-      roomState: roomData
+      roomState: roomData,
+      pendingState: pendingInvite
     };
   }
 }

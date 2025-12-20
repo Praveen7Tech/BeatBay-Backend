@@ -188,7 +188,6 @@ export class UserController{
             const followId = req.user?.id
             const targetId = req.params.targetId
             const role = (req.query.role as "user" | "artist") || "user"
-            console.log("check-", followId, targetId, role)
 
              if(!followId || !targetId){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
@@ -209,7 +208,6 @@ export class UserController{
             const {targetId} = req.params
             const role = (req.query.role as 'user' | 'artist') || 'user';
             const action = req.method === "POST" ? "follow" : "unfollow"
-            console.log("cc", followId, targetId, role, action)
             if(!followId){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }

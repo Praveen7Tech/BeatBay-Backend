@@ -109,7 +109,8 @@ export class AuthController {
           return res.status(StatusCode.OK).json({
               user: result.user,
               accessToken: result.accessToken,
-              roomState: result.roomState
+              roomState: result.roomState,
+              pendingInvite: result.pendingState
           });
       } catch (error) {
           res.clearCookie("refreshToken", COOKIE_OPTIONS);

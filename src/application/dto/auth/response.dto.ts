@@ -44,5 +44,6 @@ export interface LoginResponseDTO {
   accessToken: string;
   refreshToken: string;
   roomState?: RoomData | null
+  pendingState?: any | null
 }
 

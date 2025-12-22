@@ -17,26 +17,29 @@ export class PrivateRoomHandler {
         /* ---------- INVITE SEND ---------- */
         socket.on("invite_send", async ({ fromUserId, fromUserName, fromUserImage, toUserId }) => {
 
-            const roomId = fromUserId;
-
-            const hostData: RoomMember = {
-                id: fromUserId,
-                name: fromUserName,
-                image: fromUserImage,
-                role: "host",
-            };
-
-            const existRoom = await this.socketCacheService.getRoom(roomId);
+           // manage the invite from guest to guest (not host)
+            const userActiveRoom = await this.socketCacheService.getUserActiveRooms(fromUserId)
+            const roomId = userActiveRoom || fromUserId;
+           
+            let existRoom = await this.socketCacheService.getRoom(roomId);
 
             if (!existRoom) {
+                const hostData: RoomMember = {
+                    id: fromUserId,
+                    name: fromUserName,
+                    image: fromUserImage,
+                    role: "host",
+                };
                 
                 await this.socketCacheService.createRoom(roomId, fromUserId, hostData);
                 await this.socketCacheService.setUserActiveRoom(fromUserId, roomId);
                 socket.join(roomId);
+
+                existRoom = await this.socketCacheService.getRoom(roomId)
             }
 
             // set pending invites
-            await this.socketCacheService.setInvite(toUserId,{ roomId, hostId: fromUserId }, 60);
+            await this.socketCacheService.setInvite(toUserId,{ roomId, hostId: existRoom?.hostId }, 600);
             // add pending users queue for the room
             await this.socketCacheService.addPendingInviteToRoom(roomId, toUserId)
 
@@ -74,9 +77,10 @@ export class PrivateRoomHandler {
             await this.socketCacheService.removePendingInviteFromRoom(roomId, memberData.id)
 
             socket.join(roomId);
+            const type = "join"
 
             const updatedRoom = await this.socketCacheService.getRoom(roomId);
-            io.to(roomId).emit("room_members_updated", updatedRoom);
+            io.to(roomId).emit("room_members_updated",type, updatedRoom);
         });
 
         /* ---------- REJECT INVITE ---------- */
@@ -98,7 +102,10 @@ export class PrivateRoomHandler {
             } else {
                 await this.socketCacheService.removeMember(roomId, userId);
                 const updatedRoom = await this.socketCacheService.getRoom(roomId);
-                io.to(roomId).emit("room_members_updated", updatedRoom);
+                const type ="left"
+                io.to(roomId).emit("room_members_updated",type, updatedRoom, userId);
+
+                socket.emit("user_left")
             }
 
             socket.leave(roomId);

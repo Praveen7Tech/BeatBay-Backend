@@ -33,4 +33,6 @@ export interface ISocketCacheService{
     deleteRoom(roomId: string): Promise<void>
 
     removeMember(roomId: string, userId: string): Promise<void>
+
+    getFriendsGlobalStatus(userId: string, friendIds: string[]): Promise<Record<string, any>>;
 }

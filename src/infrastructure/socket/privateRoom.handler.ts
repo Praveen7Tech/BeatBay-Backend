@@ -1,20 +1,52 @@
 import { Server, Socket } from "socket.io"
 import { ISocketCacheService, RoomData, RoomMember } from "../../domain/services/redis/jamCache.service"
 import logger from "../utils/logger/logger";
+import { MutualFrindsStatus } from "../../usecases/user/friends/mutalFriendsStatus.UseCase";
 
 export class PrivateRoomHandler {
     constructor(
-        private readonly socketCacheService: ISocketCacheService
+        private readonly socketCacheService: ISocketCacheService,
+        private readonly mutalFrindsActivityUsecase: MutualFrindsStatus
     ) {}
+
+     private async notifyFriendsStatusChange(io: Server, userId: string, newState: "connected" | "none") {
+        try {
+            // Re-using your existing logic to get mutual friends
+            const friendsStatusMap = await this.mutalFrindsActivityUsecase.execute(userId);
+            const friendIds = Object.keys(friendsStatusMap);
+
+            friendIds.forEach(friendId => {
+                io.to(friendId).emit("friend_status_changed", {
+                    friendId: userId, 
+                    status: newState
+                });
+            });
+        } catch (error) {
+            logger.error("Error in notifyFriendsStatusChange:", error);
+        }
+    }
 
     privateRoom(io: Server, socket: Socket) {
 
-        socket.on("register", (userId: string) => {
+        // initial socket registration and hydration check
+        socket.on("register", async(userId: string) => {
             socket.join(userId);
-            (socket as any).userId = userId;
+            
+            const roomId = await this.socketCacheService.getUserActiveRooms(userId)
+            if(roomId){
+                socket.join(roomId)
+
+                const roomData = await this.socketCacheService.getRoom(roomId)
+                
+                socket.emit("restore_room_state", roomData)
+            }
+
+            const friendsStatusMap = await this.mutalFrindsActivityUsecase.execute(userId)
+            console.log("romm restore--", friendsStatusMap)
+            socket.emit("sync_friends_status", friendsStatusMap)
         });
 
-        /* ---------- INVITE SEND ---------- */
+        // INVITE SEND 
         socket.on("invite_send", async ({ fromUserId, fromUserName, fromUserImage, toUserId }) => {
 
            // manage the invite from guest to guest (not host)
@@ -43,23 +75,30 @@ export class PrivateRoomHandler {
             // add pending users queue for the room
             await this.socketCacheService.addPendingInviteToRoom(roomId, toUserId)
 
-            io.to(toUserId).emit("invite_received", roomId);
+            io.to(fromUserId).emit("room_created", existRoom)
+            io.to(toUserId).emit("invite_received", {fromUserId , roomId});
+
+           // this.notifyFriendsStatusChange(io, toUserId, "connected");
         });
 
-        /* ---------- ACCEPT INVITE ---------- */
+        //ACCEPT INVITE 
         socket.on("accept_invite", async ({ roomId, guestData }) => {
-
+            
+            const userActiveRoom = await this.socketCacheService.getUserActiveRooms(roomId)
+            const activeRoomId = userActiveRoom || roomId
+            
             // Validate the invite actually exists or expired
             const inviteData = await this.socketCacheService.getInvite(guestData.id);
-            if (!inviteData || inviteData.roomId !== roomId) {
+            
+            if (!inviteData || inviteData.roomId !== activeRoomId) {
                 logger.info(`invite expired trigger ${inviteData}`)
                 io.to(guestData.id).emit("invite_expired",{
                     message: "Invitation expired.!",
-                    friendId: roomId
-                }),
-                io.to(roomId).emit("invite_expired_host", {
-                    guestId: guestData.id 
-                });
+                    friendId: activeRoomId
+                })
+                // io.to(roomId).emit("invite_expired_host", {
+                //     guestId: guestData.id 
+                // });
 
                 return;
             }
@@ -69,28 +108,29 @@ export class PrivateRoomHandler {
                 role: "guest",
             };
 
-            await this.socketCacheService.addMembersToRoom(roomId, memberData);
-            await this.socketCacheService.setUserActiveRoom(memberData.id, roomId);
+            await this.socketCacheService.addMembersToRoom(activeRoomId, memberData);
+            await this.socketCacheService.setUserActiveRoom(memberData.id, activeRoomId);
 
             // remoev pending stageof guest after accept
             await this.socketCacheService.deleteInvite(memberData.id);
-            await this.socketCacheService.removePendingInviteFromRoom(roomId, memberData.id)
+            await this.socketCacheService.removePendingInviteFromRoom(activeRoomId, memberData.id)
 
-            socket.join(roomId);
-            const type = "join"
+            socket.join(activeRoomId);
 
-            const updatedRoom = await this.socketCacheService.getRoom(roomId);
-            io.to(roomId).emit("room_members_updated",type, updatedRoom);
+            const updatedRoom = await this.socketCacheService.getRoom(activeRoomId);
+            io.to(activeRoomId).emit("room_members_updated","join", updatedRoom);
+
+            this.notifyFriendsStatusChange(io, guestData.id, "connected");
         });
 
-        /* ---------- REJECT INVITE ---------- */
+        // REJECT INVITE 
         socket.on("reject_invite", async ({ hostId, guestId }) => {
             await this.socketCacheService.deleteInvite(guestId);
             await this.socketCacheService.removePendingInviteFromRoom(hostId, guestId)
             io.to(hostId).emit("invite_rejected", { guestId });
         });
 
-        /* ---------- LEAVE ROOM ---------- */
+        // LEAVE ROOM
         socket.on("left_room", async ({ userId, roomId }) => {
 
             const room = await this.socketCacheService.getRoom(roomId);
@@ -99,6 +139,8 @@ export class PrivateRoomHandler {
             if (room.hostId === userId) {
                 await this.socketCacheService.deleteRoom(roomId);
                 io.to(roomId).emit("room_deleted");
+
+                this.notifyFriendsStatusChange(io, userId, "none");
             } else {
                 await this.socketCacheService.removeMember(roomId, userId);
                 const updatedRoom = await this.socketCacheService.getRoom(roomId);
@@ -106,9 +148,12 @@ export class PrivateRoomHandler {
                 io.to(roomId).emit("room_members_updated",type, updatedRoom, userId);
 
                 socket.emit("user_left")
+                this.notifyFriendsStatusChange(io, userId, "none");
             }
 
             socket.leave(roomId);
+            const friendsStatusMap = await this.mutalFrindsActivityUsecase.execute(userId)
+            socket.emit("sync_friends_status", friendsStatusMap)
         });
 
     }

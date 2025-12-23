@@ -131,5 +131,25 @@ export class SocketCacheService implements ISocketCacheService{
         const key = this.pendingGuestKey(roomId)
         await this.client.sRem(key, guestId)
     }
+
+    // get friends status globbally for mutual friends
+    async getFriendsGlobalStatus(userId: string, friendIds: string[]): Promise<Record<string, any>> {
+        const pipeline = this.client.multi();
+
+        // 1. Get the user's own active room to check who THEY invited
+        const userRoomId = await this.getUserActiveRooms(userId);
+
+        friendIds.forEach(fId => {
+            pipeline.get(this.getUserPointer(fId)); // Is friend in a room?
+            pipeline.get(this.getInviteKey(userId)); // Did this friend invite ME?
+            if (userRoomId) {
+                // Is this friend in MY room's pending list?
+                pipeline.sIsMember(this.pendingGuestKey(userRoomId), fId);
+            }
+        });
+
+        const results = await pipeline.exec();
+        return { results, hasUserRoom: !!userRoomId };
+    }
     
 }

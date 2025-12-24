@@ -6,11 +6,23 @@ export interface RoomMember{
     role: "host" | "guest"
 }
 
+export interface SongData{
+    id:string
+    title:string
+    image: string
+    audioUrl: string
+    isPlaying: boolean
+    artist: string
+    timestamp: number
+    updatedAt: number
+}
+
 export interface RoomData{
     roomId: string
     hostId: string
     status: "pending" | "jamming"
     members: RoomMember[],
+    songData: SongData
     pendingGuests: string[]
 }
 
@@ -35,4 +47,6 @@ export interface ISocketCacheService{
     removeMember(roomId: string, userId: string): Promise<void>
 
     getFriendsGlobalStatus(userId: string, friendIds: string[]): Promise<Record<string, any>>;
+
+    updateRoomPlayBack(roomId: string, songData: SongData): Promise<void>
 }

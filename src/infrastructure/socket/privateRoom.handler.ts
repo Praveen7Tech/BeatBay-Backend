@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io"
-import { ISocketCacheService, RoomData, RoomMember } from "../../domain/services/redis/jamCache.service"
+import { ISocketCacheService, RoomData, RoomMember, SongData } from "../../domain/services/redis/jamCache.service"
 import logger from "../utils/logger/logger";
 import { MutualFrindsStatus } from "../../usecases/user/friends/mutalFriendsStatus.UseCase";
 
@@ -37,12 +37,10 @@ export class PrivateRoomHandler {
                 socket.join(roomId)
 
                 const roomData = await this.socketCacheService.getRoom(roomId)
-                
                 socket.emit("restore_room_state", roomData)
             }
 
             const friendsStatusMap = await this.mutalFrindsActivityUsecase.execute(userId)
-            console.log("romm restore--", friendsStatusMap)
             socket.emit("sync_friends_status", friendsStatusMap)
         });
 
@@ -167,6 +165,25 @@ export class PrivateRoomHandler {
             const friendsStatusMap = await this.mutalFrindsActivityUsecase.execute(userId)
             socket.emit("sync_friends_status", friendsStatusMap)
         })
+
+
+        /////////////////////////////////////
+
+        // UPDATE PLAYBACK
+        socket.on("player_sync", async ({ roomId, songData }: { roomId: string, songData: SongData }) => {
+            try {
+                const updatedSongData = {
+                    ...songData,
+                    updatedAt: Date.now()
+                };
+console.log("song data - ", updatedSongData)
+                await this.socketCacheService.updateRoomPlayBack(roomId, updatedSongData);
+
+                socket.to(roomId).emit("receive_player_sync", updatedSongData);
+            } catch (error) {
+                logger.error("Sync Error:", error);
+            }
+        });
 
     }
 

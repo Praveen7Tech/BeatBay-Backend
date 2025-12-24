@@ -91,20 +91,31 @@ export class SocketCacheService implements ISocketCacheService{
 
     // delete room when host left
     async deleteRoom(roomId: string): Promise<void> {
-        const room = await this.getRoom(roomId)
-        if(room){
-            for(let member of room.members){
-                // delete every users active room history when deleting
-                const key = this.getUserPointer(member.id)
-                await this.client.del(key)
+        const room = await this.getRoom(roomId);
+        if (!room) return;
+
+        const pipeline = this.client.multi();
+
+        // delete active room pointers for all actual members
+        for (const member of room.members) {
+            pipeline.del(this.getUserPointer(member.id));
+        }
+
+        //  Delete the individual invite notifications for all PENDING guests
+        // This prevents gurst from seeing an old invite after Host left
+        if (room.pendingGuests && room.pendingGuests.length > 0) {
+            for (const guestId of room.pendingGuests) {
+                pipeline.del(this.getInviteKey(guestId));
             }
         }
 
-        const roomKey = this.roomKey(roomId)
-        const memberKey = this.getMemberKey(roomId)
-        // delete room and 
-        await this.client.del(roomKey)
-        await this.client.del(memberKey)
+        // delete all room-specific metadata keys
+        pipeline.del(this.roomKey(roomId));
+        pipeline.del(this.getMemberKey(roomId));
+        pipeline.del(this.pendingGuestKey(roomId));
+
+        await pipeline.exec();
+        logger.info(`room ${roomId} and all pending data deleted.`);
     }
 
     // remove guests from room (admin- remove && user - left)

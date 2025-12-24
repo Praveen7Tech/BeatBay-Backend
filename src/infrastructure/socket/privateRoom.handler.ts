@@ -52,7 +52,7 @@ export class PrivateRoomHandler {
            // manage the invite from guest to guest (not host)
             const userActiveRoom = await this.socketCacheService.getUserActiveRooms(fromUserId)
             const roomId = userActiveRoom || fromUserId;
-           
+         
             let existRoom = await this.socketCacheService.getRoom(roomId);
 
             if (!existRoom) {
@@ -62,7 +62,7 @@ export class PrivateRoomHandler {
                     image: fromUserImage,
                     role: "host",
                 };
-                
+               
                 await this.socketCacheService.createRoom(roomId, fromUserId, hostData);
                 await this.socketCacheService.setUserActiveRoom(fromUserId, roomId);
                 socket.join(roomId);
@@ -76,29 +76,27 @@ export class PrivateRoomHandler {
             await this.socketCacheService.addPendingInviteToRoom(roomId, toUserId)
 
             io.to(fromUserId).emit("room_created", existRoom)
-            io.to(toUserId).emit("invite_received", {fromUserId , roomId});
+          
+            io.to(toUserId).emit("invite_received", fromUserId);
 
            // this.notifyFriendsStatusChange(io, toUserId, "connected");
         });
 
         //ACCEPT INVITE 
         socket.on("accept_invite", async ({ roomId, guestData }) => {
-            
+          
             const userActiveRoom = await this.socketCacheService.getUserActiveRooms(roomId)
             const activeRoomId = userActiveRoom || roomId
             
             // Validate the invite actually exists or expired
             const inviteData = await this.socketCacheService.getInvite(guestData.id);
-            
+         
             if (!inviteData || inviteData.roomId !== activeRoomId) {
                 logger.info(`invite expired trigger ${inviteData}`)
                 io.to(guestData.id).emit("invite_expired",{
                     message: "Invitation expired.!",
                     friendId: activeRoomId
                 })
-                // io.to(roomId).emit("invite_expired_host", {
-                //     guestId: guestData.id 
-                // });
 
                 return;
             }
@@ -155,6 +153,20 @@ export class PrivateRoomHandler {
             const friendsStatusMap = await this.mutalFrindsActivityUsecase.execute(userId)
             socket.emit("sync_friends_status", friendsStatusMap)
         });
+
+        // REMOVE USER FROM ROOM
+        socket.on("remove_user", async({userId, roomId})=>{
+            console.log("remove - ", userId, roomId)
+            const room = await this.socketCacheService.getRoom(roomId);
+            if (!room) return;
+
+            await this.socketCacheService.removeMember(roomId,userId)
+            const updatedRoom = await this.socketCacheService.getRoom(roomId);
+
+            io.to(roomId).emit("room_members_updated","remove", updatedRoom, userId);
+            const friendsStatusMap = await this.mutalFrindsActivityUsecase.execute(userId)
+            socket.emit("sync_friends_status", friendsStatusMap)
+        })
 
     }
 

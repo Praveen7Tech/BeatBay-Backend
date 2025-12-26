@@ -13,7 +13,9 @@ export class PrivateRoomHandler {
         try {
             // Re-using your existing logic to get mutual friends
             const friendsStatusMap = await this.mutalFrindsActivityUsecase.execute(userId);
-            const friendIds = Object.keys(friendsStatusMap);
+            const friendIds = Object.keys(friendsStatusMap).filter(
+                (friendId)=> friendsStatusMap[friendId] === 'none'
+            )
 
             friendIds.forEach(friendId => {
                 io.to(friendId).emit("friend_status_changed", {
@@ -50,7 +52,7 @@ export class PrivateRoomHandler {
            // manage the invite from guest to guest (not host)
             const userActiveRoom = await this.socketCacheService.getUserActiveRooms(fromUserId)
             const roomId = userActiveRoom || fromUserId;
-         
+      
             let existRoom = await this.socketCacheService.getRoom(roomId);
 
             if (!existRoom) {
@@ -74,17 +76,18 @@ export class PrivateRoomHandler {
             await this.socketCacheService.addPendingInviteToRoom(roomId, toUserId)
 
             io.to(fromUserId).emit("room_created", existRoom)
-          
+          console.log(`Sending invite from ${fromUserId} to room/user: ${toUserId}`);
             io.to(toUserId).emit("invite_received", fromUserId);
 
-           // this.notifyFriendsStatusChange(io, toUserId, "connected");
+            this.notifyFriendsStatusChange(io, fromUserId, "connected");
         });
 
         //ACCEPT INVITE 
         socket.on("accept_invite", async ({ roomId, guestData }) => {
-          
-            const userActiveRoom = await this.socketCacheService.getUserActiveRooms(roomId)
-            const activeRoomId = userActiveRoom || roomId
+        
+            const activeRoomId = await this.socketCacheService.getUserActiveRooms(roomId)
+   
+          if(!activeRoomId) return;
             
             // Validate the invite actually exists or expired
             const inviteData = await this.socketCacheService.getInvite(guestData.id);
@@ -121,6 +124,7 @@ export class PrivateRoomHandler {
 
         // REJECT INVITE 
         socket.on("reject_invite", async ({ hostId, guestId }) => {
+           
             await this.socketCacheService.deleteInvite(guestId);
             await this.socketCacheService.removePendingInviteFromRoom(hostId, guestId)
             io.to(hostId).emit("invite_rejected", { guestId });
@@ -143,11 +147,13 @@ export class PrivateRoomHandler {
                 const type ="left"
                 io.to(roomId).emit("room_members_updated",type, updatedRoom, userId);
 
-                socket.emit("user_left")
+                socket.emit("room_deleted")
                 this.notifyFriendsStatusChange(io, userId, "none");
             }
 
             socket.leave(roomId);
+            socket.join(userId);
+            
             const friendsStatusMap = await this.mutalFrindsActivityUsecase.execute(userId)
             socket.emit("sync_friends_status", friendsStatusMap)
         });

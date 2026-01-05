@@ -25,6 +25,8 @@ export default (container: AwilixContainer): Router=> {
     router.delete('/follow/:targetId', userController.handleFollow)
     router.get('/following', userController.following)
 
+    router.get('/followers', userController.followers)
+
     router.post('/create-playlist', userController.createPlayList)
     router.get('/get-playlist/:playListId', userController.getPlayList)
     router.get('/get-user-playlist', userController.getAllPlaylists)

@@ -1,22 +1,24 @@
 import { IUserRepository } from "../../../domain/repositories/user.repository";
-import { FollowingResponseDTO } from "../../../application/dto/follow/following.dto";
+import { FollowersResponseDTO, FollowingResponseDTO } from "../../../application/dto/follow/following.dto";
 
-export class GetFollowingListUseCase{
-    constructor(
-        private readonly _userRepository: IUserRepository
-    ){}
+export class GetFollowingListUseCase {
+    constructor(private readonly _userRepository: IUserRepository) {}
 
-    async execute(userId: string): Promise<FollowingResponseDTO[]>{
+    async execute(userId: string, page: number, limit: number): Promise<FollowersResponseDTO> {
+        const { docs, total } = await this._userRepository.following(userId, page, limit);
 
-        const following = await this._userRepository.following(userId);
-
-        const result = following.map(follow => ({
-            id: follow._id?.toString(),
-            name: follow.name,
-            role: follow.role,
-            profilePicture: follow?.profilePicture  
+        const mappedList: FollowingResponseDTO[] = docs.map((item) => ({
+            id: item._id.toString(),
+            name: item.name,
+            role: item.role,
+            profilePicture: item.profilePicture ?? ''
         }));
 
-        return result;
+        return {
+            docs: mappedList,
+            totalPages: Math.ceil(total / limit) || 1,
+            currentPage: page,
+            totalDocs: total
+        };
     }
 }

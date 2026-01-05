@@ -21,7 +21,6 @@ export class UserGetSearchDataUseCase{
        const songs = data.songs;
        const albums = data.albums;
        const artist = data.artists;
-      // const users = data.users;
 
        
        const resSong: SongDTO[] = songs.map((s: Song) => ({

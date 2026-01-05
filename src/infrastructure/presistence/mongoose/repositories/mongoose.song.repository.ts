@@ -69,4 +69,18 @@ export class MongooseSongRepository implements ISongRepository{
         ).lean().exec();
         return songs as Song[];
     }
+
+    async getAllSongs(page: number, limit: number, query?: string): Promise<{songs: Song[], total: number}> {
+        const skip = (page - 1) * limit;
+        
+        // Use a regex for simple filtering, or Atlas Search if integrated
+        const filter = query ? { title: { $regex: query, $options: 'i' } } : {};
+
+        const [songs, total] = await Promise.all([
+            SongModel.find(filter).skip(skip).limit(limit).lean().exec(),
+            SongModel.countDocuments(filter)
+        ]);
+
+        return { songs: songs as unknown as Song[], total };
+    }
 }

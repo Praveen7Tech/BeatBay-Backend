@@ -13,4 +13,6 @@ export interface IAlbumRepository{
     countDocuments(): Promise<number>
     updateSongTitleInAlbums(songId: string, newTitle: string, session: ClientSession): Promise<void>
     removeSongTitleFromAllAlbums(songTitle: string, session: ClientSession): Promise<void>
+
+    getAllAlbum(page: number, limit: number, query?: string): Promise<{albums: Album[], total: number}>
 }

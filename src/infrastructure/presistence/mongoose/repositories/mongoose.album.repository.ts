@@ -79,4 +79,18 @@ export class MongooseAlbumRepository implements IAlbumRepository {
             {session}
         ).exec()
     }
+
+    async getAllAlbum(page: number, limit: number, query?: string): Promise<{albums: Album[], total: number}> {
+        const skip = (page - 1) * limit;
+        
+        // Search filter (can be swapped for Atlas Search pipeline later)
+        const filter = query ? { title: { $regex: query, $options: 'i' } } : {};
+
+        const [albums, total] = await Promise.all([
+            AlbumModel.find(filter).skip(skip).limit(limit).lean().exec(),
+            AlbumModel.countDocuments(filter)
+        ]);
+
+        return { albums: albums as unknown as Album[], total };
+    }
 }

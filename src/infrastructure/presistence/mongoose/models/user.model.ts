@@ -17,7 +17,7 @@ const userSchema = new Schema<UserDocument>(
     password: { 
       type: String 
     },
-    profilePicture: { 
+    profilePicture: {   
       type: String 
     },
     profileImagePublicId:{

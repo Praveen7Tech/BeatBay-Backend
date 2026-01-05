@@ -28,6 +28,7 @@ import { FollowingHandleUseCase } from "../../../../usecases/user/follow/followA
 import { GetUserFriendsUseCase } from "../../../../usecases/user/friends/getFriends.useCase"
 import { FetchAllSongsUsecase } from "../../../../usecases/user/song/allSongs.UseCase"
 import { FetchAllAlbumsUsecase } from "../../../../usecases/user/album/allAlbums.UseCase"
+import { GetProfileFollowersPreviewUseCase } from "../../../../usecases/user/followers/getUserFollowers.UseCase"
 
 export class UserController{
     constructor(
@@ -52,7 +53,8 @@ export class UserController{
         private readonly getUserProfileDetailsUsecase: GetUserProfileUseCase,
         private readonly userFriendsListsUseCase: GetUserFriendsUseCase,
         private readonly fetchAllSongsUsecase: FetchAllSongsUsecase,
-        private readonly fetchallAlbumsUsecase: FetchAllAlbumsUsecase
+        private readonly fetchallAlbumsUsecase: FetchAllAlbumsUsecase,
+        private readonly followersUsecase:GetProfileFollowersPreviewUseCase
         
     ){}
 
@@ -231,9 +233,28 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const following = await this.followingUsecase.execute(userId)
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 6; 
+
+            const following = await this.followingUsecase.execute(userId, page, limit)
 
             return res.status(StatusCode.OK).json(following)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    followers = async(req: AuthRequest, res: Response, next:NextFunction)=>{
+        try {
+            const userId = req.user?.id;
+            if (!userId) return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });
+
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 6; 
+
+            const result = await this.followersUsecase.execute(userId, page, limit);
+            
+            return res.status(StatusCode.OK).json(result);
         } catch (error) {
             next(error)
         }

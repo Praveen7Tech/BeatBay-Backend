@@ -36,6 +36,7 @@ import { FollowingHandleUseCase } from "../../../usecases/user/follow/followArti
 import { GetUserFriendsUseCase } from "../../../usecases/user/friends/getFriends.useCase";
 import { FetchAllSongsUsecase } from "../../../usecases/user/song/allSongs.UseCase";
 import { FetchAllAlbumsUsecase } from "../../../usecases/user/album/allAlbums.UseCase";
+import { GetProfileFollowersPreviewUseCase } from "../../../usecases/user/followers/getUserFollowers.UseCase";
 
 export const userModule = {
     // Repository
@@ -68,6 +69,7 @@ export const userModule = {
     checkFollowStatusUsecase: asClass(CheckFollowStatusUseCase).scoped(),
     followHandleUsecase: asClass(FollowingHandleUseCase).scoped(),
     followingUsecase: asClass(GetFollowingListUseCase).scoped(),
+    followersUsecase:asClass(GetProfileFollowersPreviewUseCase).scoped(),
 
     //playList
     createPlayListUsecase: asClass(CreatePlayListUseCase).scoped(),

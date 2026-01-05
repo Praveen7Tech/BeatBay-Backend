@@ -9,6 +9,8 @@ import { PaginatedResult } from '../../../../domain/interfaces/paginatedResult.i
 import { title } from 'process';
 import { UserProfileRespnseDTO } from '../../../../application/dto/profile/profile.dto';
 import { ArtistModel } from '../models/artist.model';
+import { FollowedEntity, FollowingData } from '../../../../domain/interfaces/following';
+import { FollowerModel } from '../models/followers.model';
 
 export class MongooseUserRepository implements IUserRepository {
   constructor() {}
@@ -46,52 +48,82 @@ export class MongooseUserRepository implements IUserRepository {
 
   async toggleFollow(followId: string, targetId: string, role: string, action: string): Promise<void> {
       const session = await mongoose.startSession();
-    session.startTransaction();
+      session.startTransaction();
 
-    try {
-        const isFollow = action === 'follow';
-        
-        // update based on the target role
-        const followField = role === 'artist' ? 'followingArtists' : 'followingUsers';
-        
-        const followerUpdate = isFollow 
-            ? { $addToSet: { [followField]: targetId }, $inc: { followingCount: 1 } }
-            : { $pull: { [followField]: targetId }, $inc: { followingCount: -1 } };
+      try {
+          const isFollow = action === 'follow';
 
-        const targetUpdate = isFollow
-            ? { $inc: { followersCount: 1 } }
-            : { $inc: { followersCount: -1 } };
+          const follower = await UserModel.findById(followId).session(session);
 
-        // update the user
-        await UserModel.findByIdAndUpdate(followId, followerUpdate, { session });
+          const followField = role === 'artist' ? 'followingArtists' : 'followingUsers';
+          
+          const followerUpdate = isFollow 
+              ? { $addToSet: { [followField]: targetId }, $inc: { followingCount: 1 } }
+              : { $pull: { [followField]: targetId }, $inc: { followingCount: -1 } };
 
-        //  Update the target user or artist
-        if (role === 'artist') {
-            await ArtistModel.findByIdAndUpdate(targetId, targetUpdate, { session });
-        } else {
-            await UserModel.findByIdAndUpdate(targetId, targetUpdate, { session });
-        }
+          const targetUpdate = isFollow
+              ? { $inc: { followersCount: 1 } }
+              : { $inc: { followersCount: -1 } };
 
-        await session.commitTransaction();
-    } catch (error) {
-        await session.abortTransaction();
-        throw error;
-    } finally {
-        session.endSession();
-    }
+          await UserModel.findByIdAndUpdate(followId, followerUpdate, { session });
+
+          if (role === 'artist') {
+              await ArtistModel.findByIdAndUpdate(targetId, targetUpdate, { session });
+          } else {
+              await UserModel.findByIdAndUpdate(targetId, targetUpdate, { session });
+          }
+
+          if (isFollow) {
+              await FollowerModel.create([{ 
+                  followerId: followId, 
+                  targetId: targetId, 
+                  targetType: role === 'artist' ? 'Artist' : 'User' 
+              }], { session });
+          } else {
+              await FollowerModel.deleteOne({ followerId: followId, targetId: targetId }, { session });
+          }
+
+          await session.commitTransaction();
+      } catch (error) {
+          await session.abortTransaction();
+          throw error;
+      } finally {
+          session.endSession();
+      }
   }
 
-  async following(userId: string): Promise<Artist[] | []> {
-      const following = await UserModel.findById(userId)
-      .select("followingArtists")
-      .populate({
-        path: "followingArtists",
-        select: "name role profilePicture"
-      })
-      .exec()
 
-      return following?.followingArtists as unknown as Artist[] || []
-  }
+  async following(userId: string, page: number, limit: number): Promise<{ docs: FollowedEntity[], total: number }> {
+    const skip = (page - 1) * limit;
+
+    const user = await UserModel.findById(userId)
+        .select("followingArtists followingUsers")
+        .lean();
+
+    if (!user) return { docs: [], total: 0 };
+
+    const allFollowingIds = [
+        ...(user.followingArtists || []),
+        ...(user.followingUsers || [])
+    ];
+
+    const total = allFollowingIds.length;
+
+    const paginatedIds = allFollowingIds.slice(skip, skip + limit);
+
+    const [artists, users] = await Promise.all([
+        ArtistModel.find({ _id: { $in: paginatedIds } }).select("name role profilePicture").lean(),
+        UserModel.find({ _id: { $in: paginatedIds } }).select("name role profilePicture").lean()
+    ]);
+
+    const combined = [...artists, ...users];
+    const sortedDocs = paginatedIds.map(id => 
+        combined.find(item => item._id.toString() === id.toString())
+    ).filter(Boolean) as FollowedEntity[];
+
+    return { docs: sortedDocs, total };
+}
+
 
   async addPlayList(userId: string, playListId: string, session?: ClientSession): Promise<void> {
       await UserModel.findByIdAndUpdate(
@@ -197,5 +229,33 @@ export class MongooseUserRepository implements IUserRepository {
       .select("name profilePicture status")
       .lean()
   }
+
+
+  async getFollowersList(targetId: string, page: number, limit: number): Promise<{ followers: FollowedEntity[], total: number }> {
+    const skip = (page - 1) * limit;
+
+    const [followerDocs, total] = await Promise.all([
+        FollowerModel.find({ targetId })
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 }) 
+            .populate<{ followerId: any }>({
+                path: "followerId",
+                select: "name role profilePicture" 
+            })
+            .lean()
+            .exec(),
+        FollowerModel.countDocuments({ targetId })
+    ]);
+
+    const followers: FollowedEntity[] = followerDocs.map(f => ({
+        _id: f.followerId._id.toString(),
+        name: f.followerId.name,
+        role: f.followerId.role,
+        profilePicture: f.followerId.profilePicture || ''
+    }));
+
+    return { followers, total };
+}
 
 }

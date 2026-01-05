@@ -34,6 +34,8 @@ import { SearchResponseService } from "../../services/search/search.service";
 import { GetUserProfileUseCase } from "../../../usecases/user/profile/getUserProfile.useCase";
 import { FollowingHandleUseCase } from "../../../usecases/user/follow/followArtist.useCase";
 import { GetUserFriendsUseCase } from "../../../usecases/user/friends/getFriends.useCase";
+import { FetchAllSongsUsecase } from "../../../usecases/user/song/allSongs.UseCase";
+import { FetchAllAlbumsUsecase } from "../../../usecases/user/album/allAlbums.UseCase";
 
 export const userModule = {
     // Repository
@@ -53,6 +55,9 @@ export const userModule = {
     fetchSongsUsecase: asClass(FetchSongsUsecase).scoped(),
     fetchAlbumsUsecase: asClass(FetchAlbumsUsecase).scoped(),
     getUserDetailsUsecase: asClass(GetUserByIdUseCase).scoped(),
+
+    fetchAllSongsUsecase:asClass(FetchAllSongsUsecase).scoped(),
+    fetchallAlbumsUsecase:asClass(FetchAllAlbumsUsecase).scoped(),
 
     // song usecases
     songDetailsUsecase: asClass(SongDetailsUseCase).scoped(),

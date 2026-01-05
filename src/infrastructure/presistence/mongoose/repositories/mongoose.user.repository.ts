@@ -163,7 +163,7 @@ export class MongooseUserRepository implements IUserRepository {
   async searchByName(query: string): Promise<User[] | null> {
       const users = await UserModel.find(
         {name: {$regex: new RegExp(query, 'i')}}
-      )
+      ) 
       .limit(10)
       .lean().exec()
 

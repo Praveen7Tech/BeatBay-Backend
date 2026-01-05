@@ -191,6 +191,24 @@ console.log("song data - ", updatedSongData)
             }
         });
 
+       socket.on("addTo_queue", async ({ roomId, song }: { roomId: string, song: SongData }) => {
+            try {
+                console.log("queue updation start")
+                const room = await this.socketCacheService.getRoom(roomId);
+                if (!room) return;
+
+                const updatedQueue = [...(room.queue || []), song];
+
+                await this.socketCacheService.updateRoomQueue(roomId, updatedQueue);
+
+                io.to(roomId).emit("queue_updated", updatedQueue);
+                
+                logger.info(`Song added to queue in room ${roomId}`);
+            } catch (error) {
+                logger.error("Add to queue error:", error);
+            }
+        });
+
     }
 
 }

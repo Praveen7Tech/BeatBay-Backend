@@ -13,4 +13,5 @@ export interface ISongRepository{
     delete(songId: string, session: ClientSession): Promise<boolean>
     countDocuments(): Promise<number>
     findSongsByIds(ids: string[]): Promise<Song[]>;
+    getAllSongs(page: number, limit: number, query?: string): Promise<{songs: Song[], total: number}>
 }

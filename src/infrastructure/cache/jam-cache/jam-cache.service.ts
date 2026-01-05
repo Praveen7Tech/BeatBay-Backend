@@ -1,4 +1,4 @@
-import { ISocketCacheService, RoomData, RoomMember } from "../../../domain/services/redis/jamCache.service";
+import { ISocketCacheService, RoomData, RoomMember, SongData } from "../../../domain/services/redis/jamCache.service";
 import { getRedisClient } from "../../config/redis";
 import logger from "../../utils/logger/logger";
 
@@ -55,7 +55,8 @@ export class SocketCacheService implements ISocketCacheService{
             members: members,
             status: roomData.status as "jamming",
             pendingGuests: pendingGuests,
-            songData: roomData.songData ? JSON.parse(roomData.songData) : null
+            songData: roomData.songData ? JSON.parse(roomData.songData) : null,
+            queue: roomData.queue ? JSON.parse(roomData.queue) : []
         }
     }
 
@@ -169,6 +170,14 @@ export class SocketCacheService implements ISocketCacheService{
 
         const results = await pipeline.exec();
         return { results, hasUserRoom: !!userRoomId };
+    }
+
+    async updateRoomQueue(roomId: string, queue: SongData[]): Promise<void> {
+        const key = this.roomKey(roomId);
+        // Serialize the array to a string for Redis Hash storage
+        await this.client.hSet(key, "queue", JSON.stringify(queue));
+        // Ensure the room doesn't expire while active (optional/safety)
+        await this.client.expire(key, 86400); 
     }
     
 }

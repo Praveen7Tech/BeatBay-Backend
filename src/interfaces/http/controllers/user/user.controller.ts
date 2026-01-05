@@ -26,6 +26,8 @@ import { UserGetSearchDataUseCase } from "../../../../usecases/user/search/searc
 import { GetUserProfileUseCase } from "../../../../usecases/user/profile/getUserProfile.useCase"
 import { FollowingHandleUseCase } from "../../../../usecases/user/follow/followArtist.useCase"
 import { GetUserFriendsUseCase } from "../../../../usecases/user/friends/getFriends.useCase"
+import { FetchAllSongsUsecase } from "../../../../usecases/user/song/allSongs.UseCase"
+import { FetchAllAlbumsUsecase } from "../../../../usecases/user/album/allAlbums.UseCase"
 
 export class UserController{
     constructor(
@@ -48,7 +50,9 @@ export class UserController{
         private readonly getUserDetailsUsecase: GetUserByIdUseCase,
         private readonly userSearchDataUsecase: UserGetSearchDataUseCase,
         private readonly getUserProfileDetailsUsecase: GetUserProfileUseCase,
-        private readonly userFriendsListsUseCase: GetUserFriendsUseCase
+        private readonly userFriendsListsUseCase: GetUserFriendsUseCase,
+        private readonly fetchAllSongsUsecase: FetchAllSongsUsecase,
+        private readonly fetchallAlbumsUsecase: FetchAllAlbumsUsecase
         
     ){}
 
@@ -386,6 +390,43 @@ export class UserController{
             return res.status(StatusCode.OK).json(friends)
         } catch (error) {
             next(error)
+        }
+    }
+
+    allSongs = async (req: AuthRequest, res: Response, next: NextFunction) => {
+        console.log("reach")
+        try {
+            if (!req.user?.id) {
+                return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });
+            }
+
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 12;
+            const search = req.query.q as string;
+
+            const result = await this.fetchAllSongsUsecase.execute(page, limit, search);
+        
+            return res.status(StatusCode.OK).json(result);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    allAlbums = async (req: AuthRequest, res: Response, next: NextFunction) => {
+        try {
+            if (!req.user?.id) {
+                return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });
+            }
+
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 12;
+            const search = req.query.q as string;
+
+            const result = await this.fetchallAlbumsUsecase.execute(page, limit, search);
+ 
+            return res.status(StatusCode.OK).json(result);
+        } catch (error) {
+            next(error);
         }
     }
 }

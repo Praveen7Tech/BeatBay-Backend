@@ -23,7 +23,8 @@ export interface RoomData{
     status: "pending" | "jamming"
     members: RoomMember[],
     songData: SongData
-    pendingGuests: string[]
+    pendingGuests: string[],
+    queue: SongData[]
 }
 
 
@@ -49,4 +50,6 @@ export interface ISocketCacheService{
     getFriendsGlobalStatus(userId: string, friendIds: string[]): Promise<Record<string, any>>;
 
     updateRoomPlayBack(roomId: string, songData: SongData): Promise<void>
+
+    updateRoomQueue(roomId: string, queue: SongData[]): Promise<void>;
 }

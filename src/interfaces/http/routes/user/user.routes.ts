@@ -37,5 +37,8 @@ export default (container: AwilixContainer): Router=> {
     router.get('/user-details/:userId', userController.userDetails)
     router.get('/friends', userController.friends)
 
+    router.get('/songs', userController.allSongs)
+    router.get('/albums', userController.allAlbums);
+
     return router
 }

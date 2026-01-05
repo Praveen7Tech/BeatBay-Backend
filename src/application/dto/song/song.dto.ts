@@ -26,3 +26,19 @@ export interface EditSongDTO {
     lyricsPublicId?: string;
     duration?: number;
 }
+
+export interface SongListDTO {
+    id: string;
+    title: string;
+    coverImageUrl: string;
+    artistName: string;
+    duration: number;
+}
+
+export interface PaginatedResponseDTO<T> {
+    docs: T[];
+    totalPages: number;
+    currentPage: number;
+    totalDocs: number;
+}
+

@@ -2,6 +2,7 @@ import { IPlayListRepository } from "../../../domain/repositories/playList.repos
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { ITransactionManager } from "../../../domain/services/transaction.service";
 import { CreatePlayListResponseDTO } from "../../../application/dto/playList/request.dto";
+import { PlayListMapper } from "../../../application/mappers/user/playlist/playlist.mapper";
 
 export class CreatePlayListUseCase{
     constructor(
@@ -31,9 +32,6 @@ export class CreatePlayListUseCase{
                 throw new Error("Playlist creation failed inside transaction");
             }
 
-        return {
-            id: createdPlayList._id.toString(),
-            name: createdPlayList.name,
-        };
+        return PlayListMapper.toCreatePlayListResponseDTO(createdPlayList);
     }
 }

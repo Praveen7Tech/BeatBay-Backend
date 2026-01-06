@@ -5,7 +5,7 @@ import { LoginRequestDTO } from "../../../application/dto/auth/request.dto"
 import { LoginResponseDTO } from "../../../application/dto/auth/response.dto"
 import { BadRequestError, BlockedAccountError, NotFoundError } from "../../../common/errors/common/common.errors"
 import { IArtistRepository } from "../../../domain/repositories/artist.repository"
-import { AuthMapper } from "../../../application/mappers/user/auth.mapper"
+import { AuthMapper } from "../../../application/mappers/user/auth/auth.mapper"
 
 export class ArtistLoginUsecase {
     constructor(

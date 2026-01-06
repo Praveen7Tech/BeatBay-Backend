@@ -1,6 +1,6 @@
-import { Artist } from "../../../domain/entities/arist.entity";
-import { User } from "../../../domain/entities/user.entity";
-import { AuthArtistDTO, AuthUserDTO } from "../../dto/auth/response.dto";
+import { Artist } from "../../../../domain/entities/arist.entity";
+import { User } from "../../../../domain/entities/user.entity";
+import { AuthArtistDTO, AuthUserDTO } from "../../../dto/auth/response.dto";
 
 export class AuthMapper {
     static toAuthUserDTO(user: User): AuthUserDTO{

@@ -1,6 +1,7 @@
 import { Artist } from "../../../domain/entities/arist.entity"
 import { IArtistRepository } from "../../../domain/repositories/artist.repository"
 import { ArtistTableResponseDTO } from "../../../application/dto/admin/admin.response.dto"
+import { ArtistMapper } from "../../../application/mappers/admin/artist/artist.mapper";
 
 export class FetchAllArtistsUseCase{
     constructor(
@@ -11,16 +12,7 @@ export class FetchAllArtistsUseCase{
 
             const {data:artists, totalCount} = await this._artistRepository.findAll(page, limit, search)
     
-            const response = artists.map((artist: Artist)=>({
-                id: artist._id!,
-                name: artist.name!,
-                email: artist.email!,
-                profilePicture: artist.profilePicture!,
-                status: artist.status!,
-                joinDate: new Date(artist.createdAt!).toISOString().split("T")[0],
-                followersCount: artist.followersCount || 0,
-                songsCount: artist.songs?.length!
-            }))
+            const response = ArtistMapper.toTableRows(artists);
             const totalPages = Math.ceil(totalCount/ limit)
     
             return {artist:response, totalCount, page, limit, totalPages}

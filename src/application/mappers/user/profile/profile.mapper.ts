@@ -1,7 +1,7 @@
-import { User } from "../../domain/entities/user.entity";
-import { Artist } from "../../domain/entities/arist.entity"; 
-import { PlayList } from "../../domain/entities/playList.entiy";
-import { UserProfileResponseDTO } from "../dto/profile/profile.dto";
+import { User } from "../../../../domain/entities/user.entity";
+import { Artist } from "../../../../domain/entities/arist.entity"; 
+import { PlayList } from "../../../../domain/entities/playList.entiy";
+import { UserProfileResponseDTO } from "../../../dto/profile/profile.dto";
 
 type PopulatedUser = Omit<User, 'followingArtists' | 'playLists'> & {
   followingArtists: Artist[];

@@ -1,4 +1,5 @@
 import { PaginatedResponseDTO, SongListDTO } from "../../../application/dto/song/song.dto";
+import { SongMapper } from "../../../application/mappers/user/song/song.mapper";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 
 export class FetchAllSongsUsecase {
@@ -7,16 +8,8 @@ export class FetchAllSongsUsecase {
     async execute(page: number, limit: number, query?: string): Promise<PaginatedResponseDTO<SongListDTO>> {
         const { songs, total } = await this._mongooseSongRepository.getAllSongs(page, limit, query);
 
-        const mappedSongs: SongListDTO[] = songs.map(song => ({
-            id: song._id.toString(),
-            title: song.title,
-            coverImageUrl: song.coverImageUrl,
-            artistName: song.artistName,
-            duration: song.duration
-        }));
-
         return {
-            docs: mappedSongs,
+            docs: songs.map(SongMapper.toSongListDTO),
             totalPages: Math.ceil(total / limit),
             currentPage: page,
             totalDocs: total

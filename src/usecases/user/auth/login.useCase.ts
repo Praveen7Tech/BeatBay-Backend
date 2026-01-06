@@ -5,7 +5,7 @@ import { ITokenService } from "../../../domain/services/token.service"
 import { ROLES } from "../../core/types/roles"
 import { LoginRequestDTO } from "../../../application/dto/auth/request.dto"
 import { LoginResponseDTO } from "../../../application/dto/auth/response.dto"
-import { AuthMapper } from "../../../application/mappers/user/auth.mapper"
+import { AuthMapper } from "../../../application/mappers/user/auth/auth.mapper"
 
 
 export class LoginUsecase {

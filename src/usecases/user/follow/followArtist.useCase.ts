@@ -8,7 +8,7 @@ export class FollowingHandleUseCase {
         if (followId === targetId) {
             throw new Error("Cannot follow yourself.");
         }
-        //return this._userRepository.addFollow(userId, artistId);
+        
         return this._userRepository.toggleFollow(followId, targetId, role, action);
     }
 }

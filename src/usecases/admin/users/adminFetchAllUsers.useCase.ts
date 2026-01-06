@@ -1,6 +1,7 @@
 import { User } from "../../../domain/entities/user.entity";
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { UsersTableResponseDTO } from "../../../application/dto/admin/admin.response.dto";
+import { UserMapper } from "../../../application/mappers/admin/user/user.mapper";
 
 export class FetchAllUsersUseCase{
     constructor(
@@ -10,15 +11,7 @@ export class FetchAllUsersUseCase{
     async execute(page: number, limit:number, search: string): Promise<UsersTableResponseDTO>{
         const {data:users, totalCount} = await this._userRepository.findAll(page, limit, search)
 
-        const response = users.map((user: User)=>({
-            id: user._id!,
-            name: user.name!,
-            email: user.email!,
-            profilePicture: user.profilePicture!,
-            status: user.status!,
-            joinDate: new Date(user.createdAt!).toISOString().split("T")[0],
-            followersCount: user.followingCount!
-        }))
+        const response = UserMapper.toTableRows(users);
         const totalPages = Math.ceil(totalCount/ limit)
 
         return {users:response, totalCount, page, limit, totalPages}

@@ -17,6 +17,7 @@ export interface Song {
     lyricsPublicId: string;
     artistId: string | ArtistDetails;
     artistName: string;
+    status: boolean
     tags: string[];
     duration: number;
     playCount: number;

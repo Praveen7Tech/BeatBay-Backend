@@ -415,7 +415,7 @@ export class UserController{
     }
 
     allSongs = async (req: AuthRequest, res: Response, next: NextFunction) => {
-        console.log("reach")
+        
         try {
             if (!req.user?.id) {
                 return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });

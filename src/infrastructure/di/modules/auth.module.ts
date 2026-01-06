@@ -37,7 +37,6 @@ export const authModule = {
       _tokenService: asClass<ITokenService>(JwtTokenService).scoped(),
       _emailService: asClass<IEmailService>(EmailService).singleton(),
       _googleAuthService: asClass<IGoogleAuthService>(GoogleAuthService).singleton(),
-      _cacheRoomService: asClass<ISocketCacheService>(SocketCacheService).singleton(),
     
       // Use cases
       _signupUsecase: asClass(SignupUsecase).scoped(),

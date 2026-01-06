@@ -3,12 +3,10 @@ import { IArtistRepository } from "../../../domain/repositories/artist.repositor
 import { IUserRepository } from "../../../domain/repositories/user.repository"
 import { ITokenService } from "../../../domain/services/token.service"
 import { AuthStatusRequestDTO } from "../../../application/dto/auth/request.dto"
-import { LoginResponseDTO, RoomData } from "../../../application/dto/auth/response.dto";
-import { AuthMapper } from "../../../application/mappers/user/auth.mapper";
+import { LoginResponseDTO } from "../../../application/dto/auth/response.dto";
+import { AuthMapper } from "../../../application/mappers/user/auth/auth.mapper";
 import { Artist } from "../../../domain/entities/arist.entity";
 import { User } from "../../../domain/entities/user.entity";
-import { ISocketCacheService } from "../../../domain/services/redis/jamCache.service";
-
 
 
 export class AuthStatusUsecase {
@@ -16,7 +14,6 @@ export class AuthStatusUsecase {
     private readonly _tokenService: ITokenService,
     private readonly _userRepository: IUserRepository,
     private readonly _artistRepository: IArtistRepository,
-    private readonly _cacheRoomService: ISocketCacheService
   ){}
 
   async execute(request: AuthStatusRequestDTO) : Promise<LoginResponseDTO> {
@@ -27,20 +24,9 @@ export class AuthStatusUsecase {
     }
 
     let userEntity;
-    let roomData : RoomData | null = null;
-    let pendingInvite: any = null;
 
     if(payload.role === "user"){
       userEntity = await this._userRepository.findById(payload.id);
-
-      const roomId = await this._cacheRoomService.getUserActiveRooms(payload.id)
-      
-      if(roomId){
-        roomData = await this._cacheRoomService.getRoom(roomId)
-      }else{
-         pendingInvite = await this._cacheRoomService.getInvite(payload.id)
-      }
-      
 
     }else if( payload.role === 'admin'){
       userEntity = await this._userRepository.findById(payload.id);
@@ -64,8 +50,6 @@ export class AuthStatusUsecase {
       user: mappedUser, 
       accessToken: newAccessToken, 
       refreshToken: newRefreshToken,
-      roomState: roomData,
-      pendingState: pendingInvite
     };
   }
 }

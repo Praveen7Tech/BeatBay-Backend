@@ -2,6 +2,7 @@
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
 import { AlbumDetailsDTO } from "../../../application/dto/album/album.response.dto";
 import { NotFoundError } from "../../../common/errors/common/common.errors";
+import { AlbumDetailsMapper } from "../../../application/mappers/artist/album/album-details.mapper";
 
 export class GetAlbumDetailsByIdUseCase{
     constructor(
@@ -15,20 +16,6 @@ export class GetAlbumDetailsByIdUseCase{
             throw new NotFoundError("album not found")
         }
 
-        const songFormat = album.songs?.map((s: any) => ({
-            id: typeof s === "string" ? s : s._id,
-            title: typeof s === "string" ? "" : s.title,
-            coverImageUrl: typeof s === "string" ? "" : s.coverImageUrl
-        })) ?? [];
-
-        const albumFormat: AlbumDetailsDTO = {
-            id: album._id,
-            title: album.title,
-            description: album.description,
-            coverImageUrl: album.coverImageUrl,
-            songs: songFormat
-        }
-
-        return albumFormat
+       return AlbumDetailsMapper.toResponse(album);
     }
 }

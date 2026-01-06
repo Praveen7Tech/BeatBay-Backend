@@ -9,13 +9,13 @@ import { MESSAGES } from "../../../../common/constants/constants.message";
 
 export class AdminAuthController {
     constructor(
-        private readonly adminLoginUsecase: AdminLoginUsecase
+        private readonly _adminLoginUsecase: AdminLoginUsecase
     ){}
 
     async login(req: Request, res:Response, next: NextFunction) {
         try {
             const dto : LoginRequestDTO = LoginRequestSchema.parse(req.body)
-            const data = await this.adminLoginUsecase.execute(dto)
+            const data = await this._adminLoginUsecase.execute(dto)
 
             res.cookie("refreshToken", data.refreshToken, COOKIE_OPTIONS)
 

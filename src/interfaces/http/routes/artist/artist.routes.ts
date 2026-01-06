@@ -6,13 +6,14 @@ import { uploadSongMiddleware } from "../../../middleware/song/uploadSondMiddlew
 import { CreateAlbumMiddleware } from "../../../middleware/album/createAlbum.Middleware";
 import { ArtistStatusCheckMiddleware } from "../../../middleware/status/artsitStatusCheckMiddleware"; 
 import { uploadImage } from "../../../middleware/uploads/uploadImage";
+import { authorizeRoles } from "../../../middleware/auth/autharizeRole.middleware";
 
 export default (container: AwilixContainer): Router=> {
     const router = Router()
 
     const artistController = container.resolve<ArtistController>('artistController')
 
-    router.use(authMiddleware, ArtistStatusCheckMiddleware)
+    router.use(authMiddleware,authorizeRoles("artist"), ArtistStatusCheckMiddleware)
 
     router.put('/edit-profile', uploadImage.single("profileImage"), artistController.editProfile)
     router.put('/change-password', artistController.changePassword)

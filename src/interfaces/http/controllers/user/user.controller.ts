@@ -32,36 +32,36 @@ import { GetProfileFollowersPreviewUseCase } from "../../../../usecases/user/fol
 
 export class UserController{
     constructor(
-        private readonly editProfileUserUsecase: editProfileUsecase,
-        private readonly changePasswordUsecase: ChangePasswordUsecase,
-        private readonly fetchSongsUsecase: FetchSongsUsecase,
-        private readonly fetchAlbumsUsecase: FetchAlbumsUsecase,
-        private readonly songDetailsUsecase: SongDetailsUseCase,
-        private readonly albumDetailsUsecase: AlbumDetailsUseCase,
-        private readonly artistDetailsUsecase: ArtistDetailsUseCase,
-        private readonly checkFollowStatusUsecase:CheckFollowStatusUseCase,
-        private readonly followHandleUsecase:FollowingHandleUseCase,
-        private readonly followingUsecase: GetFollowingListUseCase,
-        private readonly createPlayListUsecase: CreatePlayListUseCase,
-        private readonly getPlayListUsecase: GetPlayListUseCase,
-        private readonly getAllPlayListUsecase: GetAllPlaylistUseCase,
-        private readonly addToPlayListUsecase: AddToPlayListUseCase,
-        private readonly searchSongsUseCase: SearchSongsUseCase,
-        private readonly editPlauListUsecase: EditPlayListUseCase,
-        private readonly getUserDetailsUsecase: GetUserByIdUseCase,
-        private readonly userSearchDataUsecase: UserGetSearchDataUseCase,
-        private readonly getUserProfileDetailsUsecase: GetUserProfileUseCase,
-        private readonly userFriendsListsUseCase: GetUserFriendsUseCase,
-        private readonly fetchAllSongsUsecase: FetchAllSongsUsecase,
-        private readonly fetchallAlbumsUsecase: FetchAllAlbumsUsecase,
-        private readonly followersUsecase:GetProfileFollowersPreviewUseCase
+        private readonly _editProfileUserUsecase: editProfileUsecase,
+        private readonly _changePasswordUsecase: ChangePasswordUsecase,
+        private readonly _fetchSongsUsecase: FetchSongsUsecase,
+        private readonly _fetchAlbumsUsecase: FetchAlbumsUsecase,
+        private readonly _songDetailsUsecase: SongDetailsUseCase,
+        private readonly _albumDetailsUsecase: AlbumDetailsUseCase,
+        private readonly _artistDetailsUsecase: ArtistDetailsUseCase,
+        private readonly _checkFollowStatusUsecase:CheckFollowStatusUseCase,
+        private readonly _followHandleUsecase:FollowingHandleUseCase,
+        private readonly _followingUsecase: GetFollowingListUseCase,
+        private readonly _createPlayListUsecase: CreatePlayListUseCase,
+        private readonly _getPlayListUsecase: GetPlayListUseCase,
+        private readonly _getAllPlayListUsecase: GetAllPlaylistUseCase,
+        private readonly _addToPlayListUsecase: AddToPlayListUseCase,
+        private readonly _searchSongsUseCase: SearchSongsUseCase,
+        private readonly _editPlauListUsecase: EditPlayListUseCase,
+        private readonly _getUserDetailsUsecase: GetUserByIdUseCase,
+        private readonly _userSearchDataUsecase: UserGetSearchDataUseCase,
+        private readonly _getUserProfileDetailsUsecase: GetUserProfileUseCase,
+        private readonly _userFriendsListsUseCase: GetUserFriendsUseCase,
+        private readonly _fetchAllSongsUsecase: FetchAllSongsUsecase,
+        private readonly _fetchallAlbumsUsecase: FetchAllAlbumsUsecase,
+        private readonly _followersUsecase:GetProfileFollowersPreviewUseCase
         
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction) =>{
         try {
             const userId = req.user?.id
-            const existingUser = await this.getUserDetailsUsecase.execute(userId!)
+            const existingUser = await this._getUserDetailsUsecase.execute(userId!)
             if(!userId || !existingUser){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
@@ -90,7 +90,7 @@ export class UserController{
             const dto : EditProfileRequestDTO = EditProfileSchema.parse({...req.body, profileImage: profileImageUrl}) 
             if(profileImagePublicId) dto.profileImagePublicId = profileImagePublicId
 
-            const result = await this.editProfileUserUsecase.execute(userId,dto)
+            const result = await this._editProfileUserUsecase.execute(userId,dto)
 
             return res.status(StatusCode.OK).json({user:result.user,message:MESSAGES.PROFILE_UPDATED})
         } catch (error) {
@@ -107,7 +107,7 @@ export class UserController{
 
             const dto : ChangePasswordRequestDTO = ChangePasswordSchema.parse(req.body) 
             
-            await this.changePasswordUsecase.execute(userId, dto)
+            await this._changePasswordUsecase.execute(userId, dto)
 
             return res.status(StatusCode.OK).json({message: MESSAGES.PASSWORD_UPDATED})
         } catch (error) {
@@ -120,7 +120,7 @@ export class UserController{
             if(!req.user?.id){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
-            const songs = await this.fetchSongsUsecase.execute()
+            const songs = await this._fetchSongsUsecase.execute()
 
             return res.status(StatusCode.OK).json(songs)
         } catch (error) {
@@ -133,7 +133,7 @@ export class UserController{
             if(!req.user?.id){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
-            const songs = await this.fetchAlbumsUsecase.execute()
+            const songs = await this._fetchAlbumsUsecase.execute()
 
             return res.status(StatusCode.OK).json(songs)
         } catch (error) {
@@ -149,7 +149,7 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result =  await this.songDetailsUsecase.execute(songId)
+            const result =  await this._songDetailsUsecase.execute(songId)
 
             return res.status(StatusCode.OK).json({songs:result.songs, recomentations:result.recomentations})
         } catch (error) {
@@ -165,7 +165,7 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result = await this.albumDetailsUsecase.execute(albumId)
+            const result = await this._albumDetailsUsecase.execute(albumId)
 
             return res.status(StatusCode.OK).json(result)
         } catch (error) {
@@ -181,7 +181,7 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result = await this.artistDetailsUsecase.execute(artistId)
+            const result = await this._artistDetailsUsecase.execute(artistId)
 
             return res.status(StatusCode.OK).json(result)
         } catch (error) {
@@ -199,7 +199,7 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const isFollowing = await this.checkFollowStatusUsecase.execute(followId, targetId, role)
+            const isFollowing = await this._checkFollowStatusUsecase.execute(followId, targetId, role)
 
             return res.status(StatusCode.OK).json(isFollowing)
 
@@ -218,7 +218,7 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            await this.followHandleUsecase.execute(followId,targetId,role,action)
+            await this._followHandleUsecase.execute(followId,targetId,role,action)
 
             return res.status(StatusCode.OK).json({ message: `Successfully ${action}ed ${role}` })
         } catch (error) {
@@ -236,7 +236,7 @@ export class UserController{
             const page = parseInt(req.query.page as string) || 1;
             const limit = parseInt(req.query.limit as string) || 6; 
 
-            const following = await this.followingUsecase.execute(userId, page, limit)
+            const following = await this._followingUsecase.execute(userId, page, limit)
 
             return res.status(StatusCode.OK).json(following)
         } catch (error) {
@@ -252,7 +252,7 @@ export class UserController{
             const page = parseInt(req.query.page as string) || 1;
             const limit = parseInt(req.query.limit as string) || 6; 
 
-            const result = await this.followersUsecase.execute(userId, page, limit);
+            const result = await this._followersUsecase.execute(userId, page, limit);
             
             return res.status(StatusCode.OK).json(result);
         } catch (error) {
@@ -267,7 +267,7 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const playlist = await this.createPlayListUsecase.execute(userId)
+            const playlist = await this._createPlayListUsecase.execute(userId)
             return res.status(StatusCode.CREATED).json(playlist)
         } catch (error) {
             next(error)
@@ -282,7 +282,7 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const playlist = await this.getPlayListUsecase.execute(playListId)
+            const playlist = await this._getPlayListUsecase.execute(playListId)
 
             return res.status(StatusCode.OK).json(playlist)
         } catch (error) {
@@ -297,7 +297,7 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const plalists = await this.getAllPlayListUsecase.execute(userId)
+            const plalists = await this._getAllPlayListUsecase.execute(userId)
 
             return res.status(StatusCode.OK).json(plalists)
         } catch (error) {
@@ -314,7 +314,7 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result = await this.addToPlayListUsecase.execute(playListId,songId)
+            const result = await this._addToPlayListUsecase.execute(playListId,songId)
 
             return res.status(StatusCode.CREATED).json({message: "song added to playlist"})
         } catch (error) {
@@ -328,7 +328,7 @@ export class UserController{
       const limit = req.query.limit ? Number(req.query.limit) : undefined;
       const offset = req.query.offset ? Number(req.query.offset) : undefined;
 
-      const songs = await this.searchSongsUseCase.execute({
+      const songs = await this._searchSongsUseCase.execute({
         query,
         limit,
         offset,
@@ -346,7 +346,7 @@ export class UserController{
             const playListId = req.params.playListId;
             const updateData = req.body; 
 
-            const existingPlaylist = await this.getPlayListUsecase.execute(playListId)
+            const existingPlaylist = await this._getPlayListUsecase.execute(playListId)
             if (!existingPlaylist) {
                 return res.status(404).json({ message: "Playlist not found" });
             }
@@ -367,7 +367,7 @@ export class UserController{
                 updateData.coverImageUrl = imageUpload.secure_url; 
                 updateData.coverImagePublicId= imageUpload.public_id
             }
-            const result = await this.editPlauListUsecase.execute(playListId, updateData);
+            const result = await this._editPlauListUsecase.execute(playListId, updateData);
 
             return res.status(StatusCode.OK).json({message: "Playlist updated successfully", data: result});
         } catch (error) {
@@ -379,7 +379,7 @@ export class UserController{
         try {
             const query = String(req.query.q)
 
-            const searchResult = await this.userSearchDataUsecase.execute(query)
+            const searchResult = await this._userSearchDataUsecase.execute(query)
             return res.status(StatusCode.OK).json(searchResult)
         } catch (error) {
             next(error)
@@ -392,7 +392,7 @@ export class UserController{
             if(!userId){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
-            const userDetails = await this.getUserProfileDetailsUsecase.execute(userId)
+            const userDetails = await this._getUserProfileDetailsUsecase.execute(userId)
              return res.status(StatusCode.OK).json(userDetails)
         } catch (error) {
             next(error)
@@ -406,7 +406,7 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const friends = await this.userFriendsListsUseCase.execute(userId)
+            const friends = await this._userFriendsListsUseCase.execute(userId)
 
             return res.status(StatusCode.OK).json(friends)
         } catch (error) {
@@ -425,7 +425,7 @@ export class UserController{
             const limit = parseInt(req.query.limit as string) || 12;
             const search = req.query.q as string;
 
-            const result = await this.fetchAllSongsUsecase.execute(page, limit, search);
+            const result = await this._fetchAllSongsUsecase.execute(page, limit, search);
         
             return res.status(StatusCode.OK).json(result);
         } catch (error) {
@@ -443,7 +443,7 @@ export class UserController{
             const limit = parseInt(req.query.limit as string) || 12;
             const search = req.query.q as string;
 
-            const result = await this.fetchallAlbumsUsecase.execute(page, limit, search);
+            const result = await this._fetchallAlbumsUsecase.execute(page, limit, search);
  
             return res.status(StatusCode.OK).json(result);
         } catch (error) {

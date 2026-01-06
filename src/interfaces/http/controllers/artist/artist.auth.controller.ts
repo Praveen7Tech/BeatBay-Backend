@@ -15,19 +15,19 @@ import { ArtistResetPasswordUsecase } from "../../../../usecases/artist/auth/art
 
 export class artistAuthController {
     constructor(
-        private readonly artistSignupUsecase:ArtistSignupUsecase,
-        private readonly artistVerifyOTPusecase:ArtistVerifyOTPuseCase,
-        private readonly artistResendOtpUsecase: ArtistResendOtpUseCase,
-        private readonly artistLoginUsecase:ArtistLoginUsecase,
-        private readonly artistGoogleLoginUsecase: ArtistGoogleLoginUseCase,
-        private readonly artistVerifyEmailUsecase: ArtistVerifyEmailUsecase,
-        private readonly artistResetPasswordUsecase: ArtistResetPasswordUsecase,
+        private readonly _artistSignupUsecase:ArtistSignupUsecase,
+        private readonly _artistVerifyOTPusecase:ArtistVerifyOTPuseCase,
+        private readonly _artistResendOtpUsecase: ArtistResendOtpUseCase,
+        private readonly _artistLoginUsecase:ArtistLoginUsecase,
+        private readonly _artistGoogleLoginUsecase: ArtistGoogleLoginUseCase,
+        private readonly _artistVerifyEmailUsecase: ArtistVerifyEmailUsecase,
+        private readonly _artistResetPasswordUsecase: ArtistResetPasswordUsecase,
     ){}
 
     signUp = async(req:Request, res:Response, next: NextFunction) =>{
         try {
             const dto: SignupRequestDTO = SignupRequestSchema.parse(req.body)
-            await this.artistSignupUsecase.execute(dto)
+            await this._artistSignupUsecase.execute(dto)
 
             return res.status(StatusCode.OK).json({message:MESSAGES.OTP_SEND})
         } catch (error) {
@@ -39,7 +39,7 @@ export class artistAuthController {
         try {
             const dto: VerifyOtpRequestDTO = VerifyOtpRequestSchema.parse(req.body)
     
-            await this.artistVerifyOTPusecase.execute(dto);
+            await this._artistVerifyOTPusecase.execute(dto);
             return res.status(200).json(MESSAGES.OTP_VERIFIED);
         } catch (error) {
             next(error);
@@ -49,7 +49,7 @@ export class artistAuthController {
     resendOTP = async(req:Request, res:Response, next:NextFunction)=>{
         try {
             const dto: ResendOtpRequestDTO= ResendOtpRequestSchema.parse(req.body)
-            await this.artistResendOtpUsecase.execute(dto)
+            await this._artistResendOtpUsecase.execute(dto)
           
             return res.status(StatusCode.OK).json(MESSAGES.OTP_RESEND_SUCCESS)
         } catch (error) {
@@ -61,7 +61,7 @@ export class artistAuthController {
         try {
             const dto: LoginRequestDTO= LoginRequestSchema.parse(req.body)
 
-            const result = await this.artistLoginUsecase.execute(dto)
+            const result = await this._artistLoginUsecase.execute(dto)
 
             // send access and refresh token
             res.cookie('refreshToken', result.refreshToken, COOKIE_OPTIONS);
@@ -84,7 +84,7 @@ export class artistAuthController {
     googleSignup = async(req:Request, res:Response, next: NextFunction)=>{
         try {
         const dto : GoogleLoginRequestDTO = GoogleLoginRequestSchema.parse(req.body)
-        const response = await this.artistGoogleLoginUsecase.execute(dto)
+        const response = await this._artistGoogleLoginUsecase.execute(dto)
         
         res.cookie("refreshToken", response.refreshToken, COOKIE_OPTIONS)
         return res.status(StatusCode.CREATED).json({ message:MESSAGES.GOOGLE_LOGIN,accessToken:response.accessToken, user: response.user})
@@ -96,7 +96,7 @@ export class artistAuthController {
     verifyEmail = async(req: Request, res:Response, next: NextFunction)=>{
         try {
              const dto : VerifyEmailRequestDTO = VerifyEmailRequestSchema.parse(req.body)
-            await this.artistVerifyEmailUsecase.execute(dto)
+            await this._artistVerifyEmailUsecase.execute(dto)
             return res.status(StatusCode.CREATED).json({message:MESSAGES.PASSWORD_RESET_LINK})            
         } catch (error) {
             next(error)
@@ -110,7 +110,7 @@ export class artistAuthController {
     
             const dto : ResetPasswordDTO = ResetPassRequestSchema.parse({token,password})
     
-            await this.artistResetPasswordUsecase.execute(dto)
+            await this._artistResetPasswordUsecase.execute(dto)
             
             return res.status(StatusCode.OK).json({message:MESSAGES.REST_PASSWORD_SUCCESS})
         } catch (error) {

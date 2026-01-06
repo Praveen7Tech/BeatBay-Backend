@@ -36,21 +36,21 @@ import {
 
 export class AuthController {
   constructor(
-    private readonly signupUsecase: SignupUsecase,
-    private readonly verifyOtpUsecase: VerifyOtpUsecase,
-    private readonly resendOtpUsecase: ResendOtpUseCase,
-    private readonly loginUsecase: LoginUsecase,
-    private readonly authStatusUsecase: AuthStatusUsecase,
-    private readonly verifyEmailUsecase: VerifyEmailUsecase,
-    private readonly resetPasswordUsecase: ResetPasswordUsecase,
-    private readonly googleLoginUsecase: GoogleLoginUsecase
+    private readonly _signupUsecase: SignupUsecase,
+    private readonly _verifyOtpUsecase: VerifyOtpUsecase,
+    private readonly _resendOtpUsecase: ResendOtpUseCase,
+    private readonly _loginUsecase: LoginUsecase,
+    private readonly _authStatusUsecase: AuthStatusUsecase,
+    private readonly _verifyEmailUsecase: VerifyEmailUsecase,
+    private readonly _resetPasswordUsecase: ResetPasswordUsecase,
+    private readonly _googleLoginUsecase: GoogleLoginUsecase
   ) {}
 
   async signup(req: Request, res: Response, next: NextFunction) {
     try {
       const dto: SignupRequestDTO= SignupRequestSchema.parse(req.body)
 
-      const result = await this.signupUsecase.execute(dto);
+      const result = await this._signupUsecase.execute(dto);
       return res.status(201).json({message:MESSAGES.OTP_SEND});
     } catch (error) {
       next(error); 
@@ -61,7 +61,7 @@ export class AuthController {
     try {
       const dto: VerifyOtpRequestDTO = VerifyOtpRequestSchema.parse(req.body)
 
-      await this.verifyOtpUsecase.execute(dto);
+      await this._verifyOtpUsecase.execute(dto);
       return res.status(200).json({message:MESSAGES.OTP_VERIFIED});
     } catch (error) {
       next(error);
@@ -71,7 +71,7 @@ export class AuthController {
   async resendOtp(req: Request, res: Response, next: NextFunction) {
     try {
       const dto: ResendOtpRequestDTO= ResendOtpRequestSchema.parse(req.body)
-      const result = await this.resendOtpUsecase.execute(dto)
+      const result = await this._resendOtpUsecase.execute(dto)
       
       return res.status(StatusCode.OK).json({message:MESSAGES.OTP_RESEND_SUCCESS})
     } catch (error) {
@@ -84,7 +84,7 @@ export class AuthController {
     try {
       const dto: LoginRequestDTO= LoginRequestSchema.parse(req.body)
 
-      const result = await this.loginUsecase.execute(dto)
+      const result = await this._loginUsecase.execute(dto)
 
       // send access and refresh token
       res.cookie('refreshToken', result.refreshToken, COOKIE_OPTIONS);
@@ -103,7 +103,7 @@ export class AuthController {
               return res.status(StatusCode.OK).json({ user: null, accessToken: null });
           }
 
-          const result = await this.authStatusUsecase.execute({ refreshToken });
+          const result = await this._authStatusUsecase.execute({ refreshToken });
 
           res.cookie("refreshToken", result.refreshToken, COOKIE_OPTIONS);
           return res.status(StatusCode.OK).json({
@@ -130,7 +130,7 @@ export class AuthController {
   async verifyEmail(req:Request, res: Response, next: NextFunction) {
     try {
       const dto : VerifyEmailRequestDTO = VerifyEmailRequestSchema.parse(req.body)
-      await this.verifyEmailUsecase.execute(dto)
+      await this._verifyEmailUsecase.execute(dto)
       return res.status(StatusCode.CREATED).json({message:MESSAGES.PASSWORD_RESET_LINK})
     } catch (error) {
       next(error)
@@ -143,7 +143,7 @@ export class AuthController {
 
       const dto : ResetPasswordDTO = ResetPassRequestSchema.parse({token,password})
 
-      await this.resetPasswordUsecase.execute(dto)
+      await this._resetPasswordUsecase.execute(dto)
       return res.status(StatusCode.OK).json({message:MESSAGES.REST_PASSWORD_SUCCESS})
     } catch (error) {
       next(error)
@@ -153,7 +153,7 @@ export class AuthController {
   async googleSignup(req:Request, res:Response, next: NextFunction){
     try {
        const dto : GoogleLoginRequestDTO = GoogleLoginRequestSchema.parse(req.body)
-       const response = await this.googleLoginUsecase.execute(dto)
+       const response = await this._googleLoginUsecase.execute(dto)
     
        res.cookie("refreshToken", response.refreshToken, COOKIE_OPTIONS)
        return res.status(StatusCode.CREATED).json({ message:MESSAGES.GOOGLE_LOGIN,accessToken:response.accessToken, user: response.user})

@@ -4,12 +4,13 @@ import { UserController } from "../../controllers/user/user.controller"
 import { authMiddleware } from "../../../middleware/auth/authMiddleware"
 import { statusCheckMiddleware } from "../../../middleware/status/statusCheckMiddleware"
 import { uploadImage } from "../../../middleware/uploads/uploadImage"
+import { authorizeRoles } from "../../../middleware/auth/autharizeRole.middleware"
 
 export default (container: AwilixContainer): Router=> {
     const router = Router()
     const userController = container.resolve<UserController>('userController')
 
-    router.use(authMiddleware, statusCheckMiddleware)
+    router.use(authMiddleware,authorizeRoles("user"), statusCheckMiddleware)
 
     router.put('/edit-profile', uploadImage.single("profileImage"), userController.editProfile)
     router.put('/change-password', userController.changePassword)

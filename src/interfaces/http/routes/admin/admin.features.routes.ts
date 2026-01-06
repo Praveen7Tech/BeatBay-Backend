@@ -3,6 +3,7 @@ import { Router } from "express";
 import { AdminFeaturesController } from "../../controllers/admin/adminFeatures.controller";
 import { authMiddleware } from "../../../middleware/auth/authMiddleware";
 import { route } from "awilix-express";
+import { authorizeRoles } from "../../../middleware/auth/autharizeRole.middleware";
 
 
 export default (container: AwilixContainer): Router=>{
@@ -10,17 +11,19 @@ export default (container: AwilixContainer): Router=>{
 
     const adminFeaturesController = container.resolve<AdminFeaturesController>('adminFeaturesController');
 
-    router.get('/fetch-allusers', authMiddleware, adminFeaturesController.getAllUser)
-    router.get('/get-userById/:userId', authMiddleware, adminFeaturesController.getUserById)
-    router.put('/block-user/:userId', authMiddleware, adminFeaturesController.blockUser)
-    router.put('/unBlock-user/:userId', authMiddleware, adminFeaturesController.unBlockUser)
+    router.use(authMiddleware, authorizeRoles("admin"))
 
-    router.get('/fetch-allArtist', authMiddleware, adminFeaturesController.getAllArtists)
-    router.get('/get-artistById/:artistId', authMiddleware, adminFeaturesController.getArtistById)
-    router.put('/block-artist/:artistId', authMiddleware, adminFeaturesController.blockArtist)
-    router.put('/unBlock-artist/:artistId', authMiddleware, adminFeaturesController.unBlockArtist)
+    router.get('/fetch-allusers',  adminFeaturesController.getAllUser)
+    router.get('/get-userById/:userId',  adminFeaturesController.getUserById)
+    router.put('/block-user/:userId',  adminFeaturesController.blockUser)
+    router.put('/unBlock-user/:userId',  adminFeaturesController.unBlockUser)
 
-    router.get('/get-dashboard-data', authMiddleware, adminFeaturesController.getDadhBoradDara)
+    router.get('/fetch-allArtist',  adminFeaturesController.getAllArtists)
+    router.get('/get-artistById/:artistId',  adminFeaturesController.getArtistById)
+    router.put('/block-artist/:artistId',  adminFeaturesController.blockArtist)
+    router.put('/unBlock-artist/:artistId',  adminFeaturesController.unBlockArtist)
+
+    router.get('/get-dashboard-data',  adminFeaturesController.getDadhBoradDara)
 
     return router
 }

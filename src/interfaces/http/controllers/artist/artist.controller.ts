@@ -28,26 +28,26 @@ import { GetArtistByIdUseCase } from "../../../../usecases/admin/artists/adminGe
 
 export class ArtistController {
     constructor(
-        private readonly artistEditProfileUsecase:ArtistEditProfileUsecase,
-        private readonly artistChangePasswordUsecase: ArtistChangePasswordUsecase,
-        private readonly artistUploadSongUsecase: UploadSongUseCase,
-        private readonly artistGetSongsUsecase :GetSongsUseCase,
-        private readonly artistCreateAlbumUsecase: ArtistCreateAlbumUseCase,
-        private readonly artistGetAlbumsUsecase: artistGetAlbumsUseCase,
-        private readonly artistsongDetailsUsecase: GetSongDetailsByIdUseCase,
-        private readonly editSongUsecase: EditSongUseCase,
-        private readonly artistAlbumDetailsUsecase: GetAlbumDetailsByIdUseCase,
-        private readonly artistEditAlbumUsecase: EditAlbumUseCase,
-        private readonly artistDeleteSongUsecase: DeleteSongUseCase,
-        private readonly artistDeleteAlbumUsecase: DeleteAlbumUsecase,
-        private readonly getAlbumDetailsUsecase: AlbumDetailsUseCase,
-        private readonly getArtistDetailsUsecase: GetArtistByIdUseCase
+        private readonly _artistEditProfileUsecase:ArtistEditProfileUsecase,
+        private readonly _artistChangePasswordUsecase: ArtistChangePasswordUsecase,
+        private readonly _artistUploadSongUsecase: UploadSongUseCase,
+        private readonly _artistGetSongsUsecase :GetSongsUseCase,
+        private readonly _artistCreateAlbumUsecase: ArtistCreateAlbumUseCase,
+        private readonly _artistGetAlbumsUsecase: artistGetAlbumsUseCase,
+        private readonly _artistsongDetailsUsecase: GetSongDetailsByIdUseCase,
+        private readonly _editSongUsecase: EditSongUseCase,
+        private readonly _artistAlbumDetailsUsecase: GetAlbumDetailsByIdUseCase,
+        private readonly _artistEditAlbumUsecase: EditAlbumUseCase,
+        private readonly _artistDeleteSongUsecase: DeleteSongUseCase,
+        private readonly _artistDeleteAlbumUsecase: DeleteAlbumUsecase,
+        private readonly _getAlbumDetailsUsecase: AlbumDetailsUseCase,
+        private readonly _getArtistDetailsUsecase: GetArtistByIdUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
         try {
             const artistId = req.user?.id
-            const existArtist = await this.getArtistDetailsUsecase.execute(artistId!)
+            const existArtist = await this._getArtistDetailsUsecase.execute(artistId!)
 
             if(!artistId || !existArtist){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
@@ -79,7 +79,7 @@ export class ArtistController {
             const dto : EditProfileRequestDTO = EditProfileSchema.parse({...req.body, profileImage:profileImageUrl}) 
             if(profileImagePublicId) dto.profileImagePublicId = profileImagePublicId
 
-            const result = await this.artistEditProfileUsecase.execute(artistId,dto)
+            const result = await this._artistEditProfileUsecase.execute(artistId,dto)
 
             return res.status(StatusCode.OK).json({user:result.user,message:MESSAGES.PROFILE_UPDATED})            
         } catch (error) {
@@ -96,7 +96,7 @@ export class ArtistController {
 
             const dto : ChangePasswordRequestDTO = ChangePasswordSchema.parse(req.body) 
             
-            await this.artistChangePasswordUsecase.execute(artistId, dto)
+            await this._artistChangePasswordUsecase.execute(artistId, dto)
 
             return res.status(StatusCode.OK).json({message: MESSAGES.PASSWORD_UPDATED})
         } catch (error) {
@@ -176,7 +176,7 @@ export class ArtistController {
                 duration: validatedData.duration
             };
 
-            await this.artistUploadSongUsecase.execute(artistId, dto);
+            await this._artistUploadSongUsecase.execute(artistId, dto);
 
             return res.status(StatusCode.CREATED).json({ message: "New Song uploaded successfully" });
         } catch (error) {
@@ -191,7 +191,7 @@ export class ArtistController {
             if(!artistId){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
-            const result = await this.artistGetSongsUsecase.execute(artistId)
+            const result = await this._artistGetSongsUsecase.execute(artistId)
 
             return res.status(StatusCode.OK).json(result)
         } catch (error) {
@@ -225,7 +225,7 @@ export class ArtistController {
                 coverImagePublicId: coverImagePublicId 
             })
 
-            await this.artistCreateAlbumUsecase.execute(artistId, dto)
+            await this._artistCreateAlbumUsecase.execute(artistId, dto)
 
             return res.status(StatusCode.CREATED).json({message: "New album created successfully."})
         } catch (error) {
@@ -240,7 +240,7 @@ export class ArtistController {
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
            }
 
-           const response = await this.artistGetAlbumsUsecase.execute(artistId)
+           const response = await this._artistGetAlbumsUsecase.execute(artistId)
            return res.status(StatusCode.OK).json(response)
 
         } catch (error) {
@@ -256,7 +256,7 @@ export class ArtistController {
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result =  await this.artistsongDetailsUsecase.execute(songId)
+            const result =  await this._artistsongDetailsUsecase.execute(songId)
 
             return res.status(StatusCode.OK).json(result)
         } catch (error) {
@@ -273,7 +273,7 @@ export class ArtistController {
                 return res.status(StatusCode.UNAUTHORIZED).json({ message: "Unauthorized" });
             }
 
-            const existingSong = await this.artistsongDetailsUsecase.execute(songId);
+            const existingSong = await this._artistsongDetailsUsecase.execute(songId);
             if (!existingSong) {
                 return res.status(StatusCode.NOT_FOUND).json({ message: "Song not found" });
             }
@@ -343,7 +343,7 @@ export class ArtistController {
 
             // Validate with Zod schema
             const validatedDto = EditSongRequestSchema.parse(updateData);
-            await this.editSongUsecase.execute(songId, validatedDto);
+            await this._editSongUsecase.execute(songId, validatedDto);
 
             return res.status(StatusCode.OK).json({ message: "Song updated successfully" });
         } catch (error) {
@@ -360,7 +360,7 @@ export class ArtistController {
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result =  await this.artistAlbumDetailsUsecase.execute(albumId)
+            const result =  await this._artistAlbumDetailsUsecase.execute(albumId)
 
             return res.status(StatusCode.OK).json(result)
         } catch (error) {
@@ -376,7 +376,7 @@ export class ArtistController {
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const existingAlbum = await this.getAlbumDetailsUsecase.execute(albumId)
+            const existingAlbum = await this._getAlbumDetailsUsecase.execute(albumId)
             if(!existingAlbum){
                 return res.status(StatusCode.NOT_FOUND).json({message: "album not found"})
             }
@@ -405,7 +405,7 @@ export class ArtistController {
             if (coverImageUrl) dto.coverImageUrl = coverImageUrl;
             if (coverImagePublicId) dto.coverImagePublicId = coverImagePublicId;
 
-            await this.artistEditAlbumUsecase.execute(artistId,albumId, dto)
+            await this._artistEditAlbumUsecase.execute(artistId,albumId, dto)
 
             return res.status(StatusCode.CREATED).json({message: "album updated successfully."})
         } catch (error) {
@@ -422,7 +422,7 @@ export class ArtistController {
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result = await this.artistDeleteSongUsecase.execute(songId, artistId)
+            const result = await this._artistDeleteSongUsecase.execute(songId, artistId)
             return res.status(StatusCode.OK).json(result)
         } catch (error) {
             next(error)
@@ -438,7 +438,7 @@ export class ArtistController {
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result = await this.artistDeleteAlbumUsecase.execute(albumId, artistId)
+            const result = await this._artistDeleteAlbumUsecase.execute(albumId, artistId)
             return res.status(StatusCode.OK).json(result)
         } catch (error) {
             next(error)

@@ -5,7 +5,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import logger from "../../../infrastructure/utils/logger/logger";
 
 export interface AuthRequest extends Request{
-  user?: {id: string, email: string}
+  user?: {id: string, email: string, role: string}
 }
 
 
@@ -22,7 +22,7 @@ export const authMiddleware: RequestHandler = (req: AuthRequest, res: Response, 
     const decoded = jwt.verify(token, process.env.JWT_TOKEN_SECRET as string) as JwtPayload
     //logger.info("token verify complete ✅");
 
-    req.user = {id : decoded.id, email: decoded.email}
+    req.user = {id : decoded.id, email: decoded.email, role: decoded.role}
     next();
   } catch (error) {
     console.error("error in authorization middleware ❌", error);

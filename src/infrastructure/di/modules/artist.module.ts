@@ -43,31 +43,31 @@ export const artistModule = {
     _playListRepository: asClass<IPlayListRepository>(MongoosePlayListRepository).scoped(),
 
     // usecases
-    artistSignupUsecase: asClass(ArtistSignupUsecase).scoped(),
-    artistVerifyOTPusecase: asClass(ArtistVerifyOTPuseCase).scoped(),
-    artistResendOtpUsecase: asClass(ArtistResendOtpUseCase).scoped(),
-    artistLoginUsecase: asClass(ArtistLoginUsecase).scoped(),
-    artistEditProfileUsecase: asClass(ArtistEditProfileUsecase).scoped(),
-    artistGoogleLoginUsecase: asClass(ArtistGoogleLoginUseCase).scoped(),
-    artistVerifyEmailUsecase: asClass(ArtistVerifyEmailUsecase).scoped(),
-    artistResetPasswordUsecase: asClass(ArtistResetPasswordUsecase).scoped(),
-    artistChangePasswordUsecase: asClass(ArtistChangePasswordUsecase).scoped(),
-    getArtistDetailsUsecase: asClass(GetArtistByIdUseCase).scoped(),
+    _artistSignupUsecase: asClass(ArtistSignupUsecase).scoped(),
+    _artistVerifyOTPusecase: asClass(ArtistVerifyOTPuseCase).scoped(),
+    _artistResendOtpUsecase: asClass(ArtistResendOtpUseCase).scoped(),
+    _artistLoginUsecase: asClass(ArtistLoginUsecase).scoped(),
+    _artistEditProfileUsecase: asClass(ArtistEditProfileUsecase).scoped(),
+    _artistGoogleLoginUsecase: asClass(ArtistGoogleLoginUseCase).scoped(),
+    _artistVerifyEmailUsecase: asClass(ArtistVerifyEmailUsecase).scoped(),
+    _artistResetPasswordUsecase: asClass(ArtistResetPasswordUsecase).scoped(),
+    _artistChangePasswordUsecase: asClass(ArtistChangePasswordUsecase).scoped(),
+    _getArtistDetailsUsecase: asClass(GetArtistByIdUseCase).scoped(),
 
     // song usecases
-    artistUploadSongUsecase: asClass(UploadSongUseCase).scoped(),
-    artistGetSongsUsecase: asClass(GetSongsUseCase).scoped(),
-    artistsongDetailsUsecase: asClass(GetSongDetailsByIdUseCase).scoped(),
-    editSongUsecase: asClass(EditSongUseCase).scoped(),
-    artistDeleteSongUsecase: asClass(DeleteSongUseCase).scoped(),
+    _artistUploadSongUsecase: asClass(UploadSongUseCase).scoped(),
+    _artistGetSongsUsecase: asClass(GetSongsUseCase).scoped(),
+    _artistsongDetailsUsecase: asClass(GetSongDetailsByIdUseCase).scoped(),
+    _editSongUsecase: asClass(EditSongUseCase).scoped(),
+    _artistDeleteSongUsecase: asClass(DeleteSongUseCase).scoped(),
 
     // albums usecase
-    artistCreateAlbumUsecase: asClass(ArtistCreateAlbumUseCase).scoped(),
-    artistGetAlbumsUsecase: asClass(artistGetAlbumsUseCase).scoped(),
-    artistAlbumDetailsUsecase: asClass(GetAlbumDetailsByIdUseCase).scoped(),
-    artistEditAlbumUsecase: asClass(EditAlbumUseCase).scoped(),
-    artistDeleteAlbumUsecase: asClass(DeleteAlbumUsecase).scoped(),
-    getAlbumDetailsUsecase: asClass(AlbumDetailsUseCase).scoped(),
+    _artistCreateAlbumUsecase: asClass(ArtistCreateAlbumUseCase).scoped(),
+    _artistGetAlbumsUsecase: asClass(artistGetAlbumsUseCase).scoped(),
+    _artistAlbumDetailsUsecase: asClass(GetAlbumDetailsByIdUseCase).scoped(),
+    _artistEditAlbumUsecase: asClass(EditAlbumUseCase).scoped(),
+    _artistDeleteAlbumUsecase: asClass(DeleteAlbumUsecase).scoped(),
+    _getAlbumDetailsUsecase: asClass(AlbumDetailsUseCase).scoped(),
     
 
     // controller

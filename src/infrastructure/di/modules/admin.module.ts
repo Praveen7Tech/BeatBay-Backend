@@ -16,18 +16,18 @@ import { GetAdminDashBoardData } from "../../../usecases/admin/dashboard/adminGe
 export const adminModule ={
 
     // use cases
-    adminLoginUsecase: asClass(AdminLoginUsecase).scoped(),
-    adminFetchAllUsers: asClass(FetchAllUsersUseCase).scoped(),
-    adminGetUserByIdUsecase: asClass(GetUserByIdUseCase).scoped(),
-    adminBlockUserUsecase: asClass(BlockUserUseCase).scoped(),
-    adminUnBlockUserUsecase: asClass(UnBlockUserUseCase).scoped(),
+    _adminLoginUsecase: asClass(AdminLoginUsecase).scoped(),
+    _adminFetchAllUsers: asClass(FetchAllUsersUseCase).scoped(),
+    _adminGetUserByIdUsecase: asClass(GetUserByIdUseCase).scoped(),
+    _adminBlockUserUsecase: asClass(BlockUserUseCase).scoped(),
+    _adminUnBlockUserUsecase: asClass(UnBlockUserUseCase).scoped(),
 
-    adminFetchAllArtists: asClass(FetchAllArtistsUseCase).scoped(),
-    adminGetArtistByIdUsecase: asClass(GetArtistByIdUseCase).scoped(),
-    adminBlockArtistUsecase: asClass(BlockArtistUseCase).scoped(),
-    adminUnBlockArtistUsecase: asClass(UnBlockUArtistUseCase).scoped(),
+    _adminFetchAllArtists: asClass(FetchAllArtistsUseCase).scoped(),
+    _adminGetArtistByIdUsecase: asClass(GetArtistByIdUseCase).scoped(),
+    _adminBlockArtistUsecase: asClass(BlockArtistUseCase).scoped(),
+    _adminUnBlockArtistUsecase: asClass(UnBlockUArtistUseCase).scoped(),
 
-    adminGetDashBoardData: asClass(GetAdminDashBoardData).scoped(),
+    _adminGetDashBoardData: asClass(GetAdminDashBoardData).scoped(),
 
     // controllers
     adminAuthController: asClass(AdminAuthController).scoped(),

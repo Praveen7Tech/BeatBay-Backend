@@ -14,15 +14,15 @@ import { GetAdminDashBoardData } from "../../../../usecases/admin/dashboard/admi
 
 export class AdminFeaturesController{
     constructor(
-        private readonly adminFetchAllUsers:FetchAllUsersUseCase,
-        private readonly adminGetUserByIdUsecase: GetUserByIdUseCase,
-        private readonly adminBlockUserUsecase: BlockUserUseCase,
-        private readonly adminUnBlockUserUsecase: UnBlockUserUseCase,
-        private readonly adminFetchAllArtists: FetchAllArtistsUseCase,
-        private readonly adminGetArtistByIdUsecase: GetArtistByIdUseCase,
-        private readonly adminBlockArtistUsecase: BlockArtistUseCase,
-        private readonly adminUnBlockArtistUsecase: UnBlockUArtistUseCase,
-        private readonly adminGetDashBoardData: GetAdminDashBoardData
+        private readonly _adminFetchAllUsers:FetchAllUsersUseCase,
+        private readonly _adminGetUserByIdUsecase: GetUserByIdUseCase,
+        private readonly _adminBlockUserUsecase: BlockUserUseCase,
+        private readonly _adminUnBlockUserUsecase: UnBlockUserUseCase,
+        private readonly _adminFetchAllArtists: FetchAllArtistsUseCase,
+        private readonly _adminGetArtistByIdUsecase: GetArtistByIdUseCase,
+        private readonly _adminBlockArtistUsecase: BlockArtistUseCase,
+        private readonly _adminUnBlockArtistUsecase: UnBlockUArtistUseCase,
+        private readonly _adminGetDashBoardData: GetAdminDashBoardData
     ){}
 
     getAllUser = async(req: AuthRequest, res: Response, next: NextFunction)=>{
@@ -31,7 +31,7 @@ export class AdminFeaturesController{
             const limit = Number(req.query.limit) || 5
             const search = String(req.query.search) || ""
 
-            const users = await this.adminFetchAllUsers.execute(page, limit, search)
+            const users = await this._adminFetchAllUsers.execute(page, limit, search)
             return res.status(StatusCode.OK).json(users)
         } catch (error) {
             next(error)
@@ -45,7 +45,7 @@ export class AdminFeaturesController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const user = await this.adminGetUserByIdUsecase.execute(userId)
+            const user = await this._adminGetUserByIdUsecase.execute(userId)
 
             return res.status(StatusCode.OK).json(user)
         } catch (error) {
@@ -60,7 +60,7 @@ export class AdminFeaturesController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result = await this.adminBlockUserUsecase.execute(userId)
+            const result = await this._adminBlockUserUsecase.execute(userId)
 
             return res.status(StatusCode.OK).json(result)
         } catch (error) {
@@ -75,7 +75,7 @@ export class AdminFeaturesController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result = await this.adminUnBlockUserUsecase.execute(userId)
+            const result = await this._adminUnBlockUserUsecase.execute(userId)
             return res.status(StatusCode.OK).json(result)
         } catch (error) {
             next(error)
@@ -88,7 +88,7 @@ export class AdminFeaturesController{
             const limit = Number(req.query.limit) || 5
             const search = String(req.query.search) || ""
 
-            const users = await this.adminFetchAllArtists.execute(page, limit, search)
+            const users = await this._adminFetchAllArtists.execute(page, limit, search)
             return res.status(StatusCode.OK).json(users)
         } catch (error) {
             next(error)
@@ -102,7 +102,7 @@ export class AdminFeaturesController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const user = await this.adminGetArtistByIdUsecase.execute(artistId)
+            const user = await this._adminGetArtistByIdUsecase.execute(artistId)
 
             return res.status(StatusCode.OK).json(user)
         } catch (error) {
@@ -117,7 +117,7 @@ export class AdminFeaturesController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result = await this.adminBlockArtistUsecase.execute(artistId)
+            const result = await this._adminBlockArtistUsecase.execute(artistId)
 
             return res.status(StatusCode.OK).json(result)
         } catch (error) {
@@ -132,7 +132,7 @@ export class AdminFeaturesController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result = await this.adminUnBlockArtistUsecase.execute(artistId)
+            const result = await this._adminUnBlockArtistUsecase.execute(artistId)
             return res.status(StatusCode.OK).json(result)
         } catch (error) {
             next(error)
@@ -146,7 +146,7 @@ export class AdminFeaturesController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const data  =  await this.adminGetDashBoardData.execute()
+            const data  =  await this._adminGetDashBoardData.execute()
             return res.status(StatusCode.OK).json(data)
         } catch (error) {
             next(error)

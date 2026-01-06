@@ -40,14 +40,14 @@ export const authModule = {
       _cacheRoomService: asClass<ISocketCacheService>(SocketCacheService).singleton(),
     
       // Use cases
-      signupUsecase: asClass(SignupUsecase).scoped(),
-      verifyOtpUsecase: asClass(VerifyOtpUsecase).scoped(),
-      resendOtpUsecase: asClass(ResendOtpUseCase).scoped(),
-      loginUsecase: asClass(LoginUsecase).scoped(),
-      authStatusUsecase: asClass(AuthStatusUsecase).scoped(),
-      verifyEmailUsecase: asClass(VerifyEmailUsecase).scoped(),
-      resetPasswordUsecase:asClass(ResetPasswordUsecase).scoped(),
-      googleLoginUsecase: asClass(GoogleLoginUsecase).scoped(),
+      _signupUsecase: asClass(SignupUsecase).scoped(),
+      _verifyOtpUsecase: asClass(VerifyOtpUsecase).scoped(),
+      _resendOtpUsecase: asClass(ResendOtpUseCase).scoped(),
+      _loginUsecase: asClass(LoginUsecase).scoped(),
+      _authStatusUsecase: asClass(AuthStatusUsecase).scoped(),
+      _verifyEmailUsecase: asClass(VerifyEmailUsecase).scoped(),
+      _resetPasswordUsecase:asClass(ResetPasswordUsecase).scoped(),
+      _googleLoginUsecase: asClass(GoogleLoginUsecase).scoped(),
     
       // Controllers
       authController: asClass(AuthController).scoped(),

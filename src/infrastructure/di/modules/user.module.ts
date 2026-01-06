@@ -51,40 +51,40 @@ export const userModule = {
     _searchService: asClass<ISearchService>(SearchResponseService).singleton(),
 
     //useCases
-    editProfileUserUsecase: asClass(editProfileUsecase).scoped(),
-    changePasswordUsecase: asClass(ChangePasswordUsecase).scoped(),
-    fetchSongsUsecase: asClass(FetchSongsUsecase).scoped(),
-    fetchAlbumsUsecase: asClass(FetchAlbumsUsecase).scoped(),
-    getUserDetailsUsecase: asClass(GetUserByIdUseCase).scoped(),
+    _editProfileUserUsecase: asClass(editProfileUsecase).scoped(),
+    _changePasswordUsecase: asClass(ChangePasswordUsecase).scoped(),
+    _fetchSongsUsecase: asClass(FetchSongsUsecase).scoped(),
+    _fetchAlbumsUsecase: asClass(FetchAlbumsUsecase).scoped(),
+    _getUserDetailsUsecase: asClass(GetUserByIdUseCase).scoped(),
 
-    fetchAllSongsUsecase:asClass(FetchAllSongsUsecase).scoped(),
-    fetchallAlbumsUsecase:asClass(FetchAllAlbumsUsecase).scoped(),
+    _fetchAllSongsUsecase:asClass(FetchAllSongsUsecase).scoped(),
+    _fetchallAlbumsUsecase:asClass(FetchAllAlbumsUsecase).scoped(),
 
     // song usecases
-    songDetailsUsecase: asClass(SongDetailsUseCase).scoped(),
-    albumDetailsUsecase: asClass(AlbumDetailsUseCase).scoped(),
-    artistDetailsUsecase: asClass(ArtistDetailsUseCase).scoped(),
+    _songDetailsUsecase: asClass(SongDetailsUseCase).scoped(),
+    _albumDetailsUsecase: asClass(AlbumDetailsUseCase).scoped(),
+    _artistDetailsUsecase: asClass(ArtistDetailsUseCase).scoped(),
 
     // follow/unfollow
-    checkFollowStatusUsecase: asClass(CheckFollowStatusUseCase).scoped(),
-    followHandleUsecase: asClass(FollowingHandleUseCase).scoped(),
-    followingUsecase: asClass(GetFollowingListUseCase).scoped(),
-    followersUsecase:asClass(GetProfileFollowersPreviewUseCase).scoped(),
+    _checkFollowStatusUsecase: asClass(CheckFollowStatusUseCase).scoped(),
+    _followHandleUsecase: asClass(FollowingHandleUseCase).scoped(),
+    _followingUsecase: asClass(GetFollowingListUseCase).scoped(),
+    _followersUsecase:asClass(GetProfileFollowersPreviewUseCase).scoped(),
 
     //playList
-    createPlayListUsecase: asClass(CreatePlayListUseCase).scoped(),
-    getPlayListUsecase: asClass(GetPlayListUseCase).scoped(),
-    getAllPlayListUsecase: asClass(GetAllPlaylistUseCase).scoped(),
-    addToPlayListUsecase: asClass(AddToPlayListUseCase).scoped(),
-    searchSongsUseCase: asClass(SearchSongsUseCase).scoped(),
-    editPlauListUsecase: asClass(EditPlayListUseCase).scoped(),
+    _createPlayListUsecase: asClass(CreatePlayListUseCase).scoped(),
+    _getPlayListUsecase: asClass(GetPlayListUseCase).scoped(),
+    _getAllPlayListUsecase: asClass(GetAllPlaylistUseCase).scoped(),
+    _addToPlayListUsecase: asClass(AddToPlayListUseCase).scoped(),
+    _searchSongsUseCase: asClass(SearchSongsUseCase).scoped(),
+    _editPlauListUsecase: asClass(EditPlayListUseCase).scoped(),
 
     //search(discover)
-    userSearchDataUsecase: asClass(UserGetSearchDataUseCase).scoped(),
-    getUserProfileDetailsUsecase: asClass(GetUserProfileUseCase).scoped(),
+    _userSearchDataUsecase: asClass(UserGetSearchDataUseCase).scoped(),
+    _getUserProfileDetailsUsecase: asClass(GetUserProfileUseCase).scoped(),
 
     //friends
-    userFriendsListsUseCase: asClass(GetUserFriendsUseCase).scoped(),
+    _userFriendsListsUseCase: asClass(GetUserFriendsUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

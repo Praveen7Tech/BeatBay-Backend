@@ -1,6 +1,7 @@
 
 import { ClientSession } from "mongoose";
 import { Song } from "../entities/song.entity";
+import { GetAllSongsRequest } from "../interfaces/songRequest";
 
 export type CreateSongData = Omit<Song, '_id' | 'createdAt' | 'updatedAt' | 'playCount' | 'likesCount'>;
 
@@ -14,4 +15,7 @@ export interface ISongRepository{
     countDocuments(): Promise<number>
     findSongsByIds(ids: string[]): Promise<Song[]>;
     getAllSongs(page: number, limit: number, query?: string): Promise<{songs: Song[], total: number}>
+    adminfindById(id: string): Promise<Song | null>
+    admingetAllSongs(params: GetAllSongsRequest): Promise<{ songs: Song[], total: number }>;
+    updateStatus(id: string, status: boolean): Promise<Song | null>;
 }

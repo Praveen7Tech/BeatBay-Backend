@@ -11,6 +11,10 @@ import { GetArtistByIdUseCase } from "../../../usecases/admin/artists/adminGetAr
 import { BlockArtistUseCase } from "../../../usecases/admin/artists/adminBlockArtist.useCase";
 import { UnBlockUArtistUseCase } from "../../../usecases/admin/artists/adminUnBlockArtist.useCase";
 import { GetAdminDashBoardData } from "../../../usecases/admin/dashboard/adminGetDashboardData";
+import { GetAllSongsUseCase } from "../../../usecases/admin/songs/adminGetAllSong.Usecase";
+import { GetSongDetailsByIdUseCase } from "../../../usecases/artist/song/getSongById.useCase";
+import { ToggleSongStatusUseCase } from "../../../usecases/admin/songs/adminUpdateSongStatus.UseCase";
+import { AdminGetSongDetailsByIdUseCase } from "../../../usecases/admin/songs/adminGetSongDetails.UseCase";
 
 
 export const adminModule ={
@@ -28,6 +32,9 @@ export const adminModule ={
     _adminUnBlockArtistUsecase: asClass(UnBlockUArtistUseCase).scoped(),
 
     _adminGetDashBoardData: asClass(GetAdminDashBoardData).scoped(),
+    _adminGetAllSongsUsecase: asClass(GetAllSongsUseCase).scoped(),
+    _getSongDetailsUseCase: asClass(AdminGetSongDetailsByIdUseCase).scoped(),
+    _toggleBlockStatusUseCase: asClass(ToggleSongStatusUseCase).scoped(),
 
     // controllers
     adminAuthController: asClass(AdminAuthController).scoped(),

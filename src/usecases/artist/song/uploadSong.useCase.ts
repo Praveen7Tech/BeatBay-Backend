@@ -32,6 +32,7 @@ export class UploadSongUseCase {
                 lyricsPublicId: request.lyricsPublicId,
                 artistId:artistId,
                 artistName: artist?.name,
+                status: true,
                 coverImageUrl:request.coverImagePath,
                 coverImagePublicId: request.coverImagePublicId,
                 duration: request.duration

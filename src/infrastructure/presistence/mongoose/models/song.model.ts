@@ -1,5 +1,6 @@
 import mongoose, { HydratedDocument, Model, Schema } from "mongoose";
 import { Song } from "../../../../domain/entities/song.entity";
+import { boolean } from "zod";
 
 export type SongDocument = HydratedDocument<Song>;
 
@@ -15,6 +16,7 @@ const songSchema = new Schema({
     lyricsPublicId: { type: String, required: true },
     coverImageUrl: { type: String, required: true },
     coverImagePublicId: { type: String, required: true },
+    status: { type: Boolean, default: true},
     tags: { type: [String] },
     duration: { type: Number, required: true },
     playCount: { type: Number, default: 0 },

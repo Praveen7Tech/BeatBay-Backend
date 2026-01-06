@@ -11,6 +11,9 @@ import { GetArtistByIdUseCase } from "../../../../usecases/admin/artists/adminGe
 import { BlockArtistUseCase } from "../../../../usecases/admin/artists/adminBlockArtist.useCase";
 import { UnBlockUArtistUseCase } from "../../../../usecases/admin/artists/adminUnBlockArtist.useCase";
 import { GetAdminDashBoardData } from "../../../../usecases/admin/dashboard/adminGetDashboardData";
+import { GetAllSongsUseCase } from "../../../../usecases/admin/songs/adminGetAllSong.Usecase";
+import { ToggleSongStatusUseCase } from "../../../../usecases/admin/songs/adminUpdateSongStatus.UseCase";
+import { AdminGetSongDetailsByIdUseCase } from "../../../../usecases/admin/songs/adminGetSongDetails.UseCase";
 
 export class AdminFeaturesController{
     constructor(
@@ -22,7 +25,10 @@ export class AdminFeaturesController{
         private readonly _adminGetArtistByIdUsecase: GetArtistByIdUseCase,
         private readonly _adminBlockArtistUsecase: BlockArtistUseCase,
         private readonly _adminUnBlockArtistUsecase: UnBlockUArtistUseCase,
-        private readonly _adminGetDashBoardData: GetAdminDashBoardData
+        private readonly _adminGetDashBoardData: GetAdminDashBoardData,
+        private readonly _adminGetAllSongsUsecase:GetAllSongsUseCase,
+        private readonly _getSongDetailsUseCase: AdminGetSongDetailsByIdUseCase,
+        private readonly _toggleBlockStatusUseCase:ToggleSongStatusUseCase
     ){}
 
     getAllUser = async(req: AuthRequest, res: Response, next: NextFunction)=>{
@@ -150,6 +156,62 @@ export class AdminFeaturesController{
             return res.status(StatusCode.OK).json(data)
         } catch (error) {
             next(error)
+        }
+    }
+
+    getAllSongs = async (req: AuthRequest, res: Response, next: NextFunction) => {
+        try {
+            const adminId = req.user?.id;
+            if (!adminId) {
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            // Extract query params from the URL
+            const { page, limit, search, status, genre, sort } = req.query;
+
+            const result = await this._adminGetAllSongsUsecase.execute({
+                page: Number(page) || 1,
+                limit: Number(limit) || 10,
+                search: search as string,
+                status: status as string,
+                genre: genre as string,
+                sort: sort as any
+            });
+
+            return res.status(200).json(result);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    getSongDetails = async (req: AuthRequest, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.params;
+            if (!id) {
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+            const song = await this._getSongDetailsUseCase.execute(id);
+            
+            return res.status(200).json({ success: true, data: song });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    toggleSongBlockStatus = async (req: AuthRequest, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.params;
+            const { isBlocked } = req.body; // Pass the target state
+
+            const updatedSong = await this._toggleBlockStatusUseCase.execute(id, isBlocked);
+            
+            return res.status(200).json({
+            success: true,
+            message: `Song successfully ${isBlocked ? 'blocked' : 'unblocked'}`,
+            data: updatedSong
+            });
+        } catch (error) {
+            next(error);
         }
     }
 }

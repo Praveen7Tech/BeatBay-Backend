@@ -29,6 +29,7 @@ import { GetUserFriendsUseCase } from "../../../../usecases/user/friends/getFrie
 import { FetchAllSongsUsecase } from "../../../../usecases/user/song/allSongs.UseCase"
 import { FetchAllAlbumsUsecase } from "../../../../usecases/user/album/allAlbums.UseCase"
 import { GetProfileFollowersPreviewUseCase } from "../../../../usecases/user/followers/getUserFollowers.UseCase"
+import { SongHydrationUseCase } from "../../../../usecases/user/song/songHydration.UseCase"
 
 export class UserController{
     constructor(
@@ -54,7 +55,8 @@ export class UserController{
         private readonly _userFriendsListsUseCase: GetUserFriendsUseCase,
         private readonly _fetchAllSongsUsecase: FetchAllSongsUsecase,
         private readonly _fetchallAlbumsUsecase: FetchAllAlbumsUsecase,
-        private readonly _followersUsecase:GetProfileFollowersPreviewUseCase
+        private readonly _followersUsecase:GetProfileFollowersPreviewUseCase,
+        private readonly _songHydrationUsecase: SongHydrationUseCase
         
     ){}
 
@@ -152,6 +154,22 @@ export class UserController{
             const result =  await this._songDetailsUsecase.execute(songId)
 
             return res.status(StatusCode.OK).json({songs:result.songs, recomentations:result.recomentations})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+     songHydration = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            const songId = req.params.id
+            if(!userId || !songId){
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const result =  await this._songHydrationUsecase.execute(songId)
+
+            return res.status(StatusCode.OK).json({songs:result})
         } catch (error) {
             next(error)
         }

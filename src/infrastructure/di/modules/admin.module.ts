@@ -15,6 +15,9 @@ import { GetAllSongsUseCase } from "../../../usecases/admin/songs/adminGetAllSon
 import { GetSongDetailsByIdUseCase } from "../../../usecases/artist/song/getSongById.useCase";
 import { ToggleSongStatusUseCase } from "../../../usecases/admin/songs/adminUpdateSongStatus.UseCase";
 import { AdminGetSongDetailsByIdUseCase } from "../../../usecases/admin/songs/adminGetSongDetails.UseCase";
+import { AdminGetAllAlbumsUseCase } from "../../../usecases/admin/album/adminGetAllAlbums.Usecase";
+import { AdminGetAlbumDetailsByIdUseCase } from "../../../usecases/admin/album/adminGetAlbumDetails.UseCase";
+import { ToggleAlbumStatusUseCase } from "../../../usecases/admin/album/adminUpdateAlbumStatus.UseCase";
 
 
 export const adminModule ={
@@ -35,6 +38,10 @@ export const adminModule ={
     _adminGetAllSongsUsecase: asClass(GetAllSongsUseCase).scoped(),
     _getSongDetailsUseCase: asClass(AdminGetSongDetailsByIdUseCase).scoped(),
     _toggleBlockStatusUseCase: asClass(ToggleSongStatusUseCase).scoped(),
+
+    _adminGetAllAlbumsUsecase: asClass(AdminGetAllAlbumsUseCase).scoped(),
+    _getAlbumDetailsUseCase: asClass(AdminGetAlbumDetailsByIdUseCase).scoped(),
+    _toggleAlbumStatusUseCase: asClass(ToggleAlbumStatusUseCase).scoped(),
 
     // controllers
     adminAuthController: asClass(AdminAuthController).scoped(),

@@ -14,6 +14,9 @@ import { GetAdminDashBoardData } from "../../../../usecases/admin/dashboard/admi
 import { GetAllSongsUseCase } from "../../../../usecases/admin/songs/adminGetAllSong.Usecase";
 import { ToggleSongStatusUseCase } from "../../../../usecases/admin/songs/adminUpdateSongStatus.UseCase";
 import { AdminGetSongDetailsByIdUseCase } from "../../../../usecases/admin/songs/adminGetSongDetails.UseCase";
+import { AdminGetAllAlbumsUseCase } from "../../../../usecases/admin/album/adminGetAllAlbums.Usecase";
+import { AdminGetAlbumDetailsByIdUseCase } from "../../../../usecases/admin/album/adminGetAlbumDetails.UseCase";
+import { ToggleAlbumStatusUseCase } from "../../../../usecases/admin/album/adminUpdateAlbumStatus.UseCase";
 
 export class AdminFeaturesController{
     constructor(
@@ -28,7 +31,10 @@ export class AdminFeaturesController{
         private readonly _adminGetDashBoardData: GetAdminDashBoardData,
         private readonly _adminGetAllSongsUsecase:GetAllSongsUseCase,
         private readonly _getSongDetailsUseCase: AdminGetSongDetailsByIdUseCase,
-        private readonly _toggleBlockStatusUseCase:ToggleSongStatusUseCase
+        private readonly _toggleBlockStatusUseCase:ToggleSongStatusUseCase,
+        private readonly _adminGetAllAlbumsUsecase: AdminGetAllAlbumsUseCase,
+        private readonly _getAlbumDetailsUseCase: AdminGetAlbumDetailsByIdUseCase,
+        private readonly _toggleAlbumStatusUseCase: ToggleAlbumStatusUseCase
     ){}
 
     getAllUser = async(req: AuthRequest, res: Response, next: NextFunction)=>{
@@ -178,7 +184,7 @@ export class AdminFeaturesController{
                 sort: sort as any
             });
 
-            return res.status(200).json(result);
+            return res.status(StatusCode.OK).json(result);
         } catch (error) {
             next(error);
         }
@@ -192,7 +198,7 @@ export class AdminFeaturesController{
             }
             const song = await this._getSongDetailsUseCase.execute(id);
             
-            return res.status(200).json({ success: true, data: song });
+            return res.status(StatusCode.OK).json({ success: true, data: song });
         } catch (error) {
             next(error);
         }
@@ -205,10 +211,64 @@ export class AdminFeaturesController{
 
             const updatedSong = await this._toggleBlockStatusUseCase.execute(id, isBlocked);
             
-            return res.status(200).json({
+            return res.status(StatusCode.OK).json({
             success: true,
             message: `Song successfully ${isBlocked ? 'blocked' : 'unblocked'}`,
             data: updatedSong
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    getAllAlbums = async (req: AuthRequest, res: Response, next: NextFunction) => {
+        try {
+            const adminId = req.user?.id;
+            if (!adminId) {
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const { page, limit, search, status, sort } = req.query;
+
+            const result = await this._adminGetAllAlbumsUsecase.execute({
+                page: Number(page) || 1,
+                limit: Number(limit) || 10,
+                search: search as string,
+                status: status as string,
+                sort: sort as any
+            });
+
+            return res.status(StatusCode.OK).json(result);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    getAlbumDetails = async (req: AuthRequest, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.params;
+            if (!id) {
+                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+            const album = await this._getAlbumDetailsUseCase.execute(id);
+            
+            return res.status(StatusCode.OK).json({ success: true, data: album });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    toggleAlbumBlockStatus = async (req: AuthRequest, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.params;
+            const { status } = req.body; 
+            console.log("here we ", id, status)
+
+            const updatedSong = await this._toggleAlbumStatusUseCase.execute(id, status);
+            
+            return res.status(StatusCode.OK).json({
+            success: true,
+            message: `Song successfully ${!status ? 'blocked' : 'unblocked'}`,
             });
         } catch (error) {
             next(error);

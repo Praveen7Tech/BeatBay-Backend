@@ -10,7 +10,8 @@ export class SongRecommentationService implements IRecomentationService{
 
         const artistSongs = await SongModel.find({
             artistId: artistId,
-            _id:{$ne: songId}
+            _id:{$ne: songId},
+            status: true
         })
         .populate({
             path:'artistId',
@@ -25,7 +26,8 @@ export class SongRecommentationService implements IRecomentationService{
 
         const genreSongs = await SongModel.find({
              genre: genre,
-            _id:{$nin: playedSongIds}
+            _id:{$nin: playedSongIds},
+            status: true
         })
         .populate({
             path:'artistId',

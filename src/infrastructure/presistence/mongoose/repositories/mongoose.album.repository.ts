@@ -14,12 +14,16 @@ export class MongooseAlbumRepository implements IAlbumRepository {
     }
 
     async getAll(): Promise<Album[]> {
-           const songs = await AlbumModel.find()
+           const songs = await AlbumModel.find({isActive: true})
            return songs
     }
 
     async findById(id: string): Promise<Album | null> {
-        return await AlbumModel.findById(id)
+        const filter: FilterQuery<Album> = { 
+                    _id: id, 
+                    isActive: true 
+                };
+        return await AlbumModel.findOne(filter)
         .populate({
             path:'artistId',
             select: 'name profilePicture',

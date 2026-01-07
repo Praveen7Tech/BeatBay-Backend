@@ -3,6 +3,7 @@ import { Song } from "../../../../domain/entities/song.entity";
 import { CreateSongData, ISongRepository } from "../../../../domain/repositories/song.repository";
 import { SongModel } from "../models/song.model";
 import { GetAllSongsRequest } from "../../../../domain/interfaces/songRequest";
+import { AlbumModel } from "../models/album.model";
 
 export class MongooseSongRepository implements ISongRepository{
     async create(songData: CreateSongData, session?:ClientSession): Promise<Song> {
@@ -20,10 +21,9 @@ export class MongooseSongRepository implements ISongRepository{
     async findById(id: string): Promise<Song | null> {
         const filter: FilterQuery<Song> = { 
             _id: id, 
-            status: true // This will now be strictly enforced
+            status: true 
         };
         
-        // CHANGE: Use findOne instead of findById to support multiple filters
         return SongModel.findOne(filter)
             .populate({
                 path: 'artistId',
@@ -32,6 +32,32 @@ export class MongooseSongRepository implements ISongRepository{
             })
             .lean<Song>() 
             .exec();
+    }
+
+    async songHydration(id: string): Promise<Song | null> {
+        // 1. Check if the song exists and is active
+        const song = await SongModel.findOne({ _id: id, status: true })
+            .populate({
+                path: 'artistId',
+                select: 'name profilePicture',
+                model: 'Artist'
+            })
+            .lean<Song>()
+            .exec();
+
+        if (!song) return null;
+
+        const blockedAlbum = await AlbumModel.findOne({
+            songs: id,         // check if song ID is in the 'songs' array
+            isActive: false    // The album is blocked
+        }).select('_id').lean();
+
+        if (blockedAlbum) {
+            console.log(`Access Denied: Song ${id} belongs to Blocked Album ${blockedAlbum._id}`);
+            return null; // Return null so the player removes the song
+        }
+
+        return song;
     }
 
     async searchByQuery(query: string, options?: { limit?: number; offset?: number; }): Promise<Song[]> {

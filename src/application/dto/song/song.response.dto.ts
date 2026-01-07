@@ -4,3 +4,5 @@ export interface SongResponseDTO{
     songs: Song | null
     recomentations: Song[] | []
 }
+
+export type SongHydrationResponseDTO = Song[];

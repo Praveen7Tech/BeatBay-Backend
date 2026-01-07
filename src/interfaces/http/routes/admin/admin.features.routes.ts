@@ -28,5 +28,9 @@ export default (container: AwilixContainer): Router=>{
     router.get('/get-songbyid/:id', adminFeaturesController.getSongDetails)
     router.put('/song/:id/status', adminFeaturesController.toggleSongBlockStatus);
 
+    router.get('/get-allalbums', adminFeaturesController.getAllAlbums)
+    router.get('/get-albumbyid/:id', adminFeaturesController.getAlbumDetails)
+    router.put('/album/:id/status', adminFeaturesController.toggleAlbumBlockStatus)
+
     return router
 }

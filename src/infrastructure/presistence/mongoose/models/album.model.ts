@@ -35,6 +35,10 @@ const AlbumSchema = new Schema({
     songTitles: [{ 
         type: String,
     }],
+    isActive: {
+        type: Boolean,
+        default: true
+    }
 
 }, {timestamps:true})
 

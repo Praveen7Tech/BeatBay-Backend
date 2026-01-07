@@ -9,6 +9,7 @@ export interface Album{
     coverImagePublicId: string
     songs: string[]
     songTitles: string[]
+    isActive: boolean
     createdAt: Date;
     updatedAt: Date;
 }

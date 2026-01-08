@@ -40,7 +40,7 @@ export class artistAuthController {
             const dto: VerifyOtpRequestDTO = VerifyOtpRequestSchema.parse(req.body)
     
             await this._artistVerifyOTPusecase.execute(dto);
-            return res.status(200).json(MESSAGES.OTP_VERIFIED);
+            return res.status(StatusCode.OK).json(MESSAGES.OTP_VERIFIED);
         } catch (error) {
             next(error);
        }
@@ -75,7 +75,7 @@ export class artistAuthController {
     logOut = async(req: Request, res: Response, next:NextFunction) =>{
       try {
         res.clearCookie('refreshToken', COOKIE_OPTIONS);
-        return res.status(200).json({message:MESSAGES.LOGIN_SUCCESSFULL});
+        return res.status(StatusCode.OK).json({message:MESSAGES.LOGIN_SUCCESSFULL});
       } catch (error) {
         next(error)
       }

@@ -2,7 +2,6 @@ import { Request, Response, NextFunction, RequestHandler } from "express";
 import { StatusCode } from "../../../common/constants/status.enum";
 import { MESSAGES } from "../../../common/constants/constants.message";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import logger from "../../../infrastructure/utils/logger/logger";
 
 export interface AuthRequest extends Request{
   user?: {id: string, email: string, role: string}

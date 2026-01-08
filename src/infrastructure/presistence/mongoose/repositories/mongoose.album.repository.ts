@@ -139,7 +139,7 @@ export class MongooseAlbumRepository implements IAlbumRepository {
             .populate({
                 path: 'songs',
                 model: 'Song',
-                select: '_id title coverImageUrl status' 
+                select: 'title coverImageUrl status' 
             })
             .lean()
             .exec();

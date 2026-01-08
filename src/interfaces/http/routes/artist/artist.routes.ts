@@ -3,7 +3,6 @@ import { Router } from "express";
 import { ArtistController } from "../../controllers/artist/artist.controller";
 import { authMiddleware } from "../../../middleware/auth/authMiddleware";
 import { uploadSongMiddleware } from "../../../middleware/song/uploadSondMiddleware";
-import { CreateAlbumMiddleware } from "../../../middleware/album/createAlbum.Middleware";
 import { ArtistStatusCheckMiddleware } from "../../../middleware/status/artsitStatusCheckMiddleware"; 
 import { uploadImage } from "../../../middleware/uploads/uploadImage";
 import { authorizeRoles } from "../../../middleware/auth/autharizeRole.middleware";

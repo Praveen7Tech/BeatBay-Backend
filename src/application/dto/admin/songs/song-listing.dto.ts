@@ -3,6 +3,7 @@ export interface AdminSongListItemDTO {
     title: string;
     genre: string;
     coverImageUrl: string;
+    status: boolean
     duration: number;
     likesCount: number;
     uploadDate: Date; 

@@ -1,5 +1,5 @@
-import { AdminAlbumListItemDTO, PaginatedAlbumResponse } from "../../../application/dto/admin/album/album-listing-dto";
-import { Album } from "../../../domain/entities/album.entity";
+import { PaginatedAlbumResponse } from "../../../application/dto/admin/album/album-listing-dto";
+import { AdminAlbumMapper } from "../../../application/mappers/admin/album/album.mapper";
 import { GetAllAlbumsRequest } from "../../../domain/interfaces/albumRequest";
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
 
@@ -11,21 +11,11 @@ export class AdminGetAllAlbumsUseCase {
         const { albums, total } = await this._albumRepository.admingetAllAlbums(request);
 
 
-        const mappedAlbums: AdminAlbumListItemDTO[] = albums.map((album: Album) => ({
-            id: album._id.toString(),
-            title: album.title,
-            artistName: album.artistName,
-            coverImageUrl: album.coverImageUrl,
-            trackCount: (album.songs || []).length,
-            isActive: album.isActive,
-            createdAt: album.createdAt
-        }));
-
         return {
-            albums: mappedAlbums,
-            totalCount: total,
-            totalPages: Math.ceil(total / limit),
-            currentPage: page
+        albums: AdminAlbumMapper.toListItemDTOs(albums),
+        totalCount: total,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page
         };
     }
 }

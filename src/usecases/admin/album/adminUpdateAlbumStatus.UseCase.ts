@@ -1,4 +1,4 @@
-import { Song } from "../../../domain/entities/song.entity";
+
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
 
 export class ToggleAlbumStatusUseCase {

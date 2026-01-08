@@ -51,7 +51,7 @@ export class AuthController {
       const dto: SignupRequestDTO= SignupRequestSchema.parse(req.body)
 
       const result = await this._signupUsecase.execute(dto);
-      return res.status(201).json({message:MESSAGES.OTP_SEND});
+      return res.status(StatusCode.CREATED).json({message:MESSAGES.OTP_SEND});
     } catch (error) {
       next(error); 
     }
@@ -62,7 +62,7 @@ export class AuthController {
       const dto: VerifyOtpRequestDTO = VerifyOtpRequestSchema.parse(req.body)
 
       await this._verifyOtpUsecase.execute(dto);
-      return res.status(200).json({message:MESSAGES.OTP_VERIFIED});
+      return res.status(StatusCode.OK).json({message:MESSAGES.OTP_VERIFIED});
     } catch (error) {
       next(error);
     }
@@ -119,7 +119,7 @@ export class AuthController {
   async logout(req: Request, res: Response, next:NextFunction) {
       try {
         res.clearCookie('refreshToken', COOKIE_OPTIONS);
-      return res.status(200).json({message:MESSAGES.LOGOUT_SUCCESSFUL});
+      return res.status(StatusCode.OK).json({message:MESSAGES.LOGOUT_SUCCESSFUL});
       } catch (error) {
         next(error)
       }

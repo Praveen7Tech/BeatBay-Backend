@@ -1,4 +1,5 @@
-import { AdminSongListItemDTO, PaginatedSongResponse } from "../../../application/dto/admin/songs/song-listing.dto";
+import { PaginatedSongResponse } from "../../../application/dto/admin/songs/song-listing.dto";
+import { AdminSongMapper } from "../../../application/mappers/admin/song/song.mapper";
 import { GetAllSongsRequest } from "../../../domain/interfaces/songRequest";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 
@@ -11,19 +12,8 @@ export class GetAllSongsUseCase {
         const { songs, total } = await this._songRepository.admingetAllSongs(request);
 
         // Map to DTO
-        const mappedSongs: AdminSongListItemDTO[] = songs.map(song => ({
-            id: song._id.toString(),
-            title: song.title,
-            genre: song.genre,
-            coverImageUrl: song.coverImageUrl,
-            duration: song.duration,
-            status: song.status,
-            likesCount: song.likesCount,
-            uploadDate: song.createdAt
-        }));
-
-        return {
-            songs: mappedSongs,
+         return {
+            songs: AdminSongMapper.toListItemDTOs(songs),
             totalCount: total,
             totalPages: Math.ceil(total / limit),
             currentPage: page

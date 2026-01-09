@@ -140,7 +140,6 @@ export class MongooseSongRepository implements ISongRepository{
 
         const filter: any = {};
 
-        // 1. Handle Search
         if (search) {
             filter.$or = [
                 { title: { $regex: search, $options: 'i' } },
@@ -148,9 +147,9 @@ export class MongooseSongRepository implements ISongRepository{
             ];
         }
 
-        // 2. Handle Status (Crucial Fix: Convert string from frontend to boolean)
+        //  handle Status  Convert string from frontend to boolean
         if (status && status !== 'all') {
-            // Map frontend strings to your boolean schema
+            // map frontend strings to boolean schema
             if (status === 'active' || status === 'published') {
                 filter.status = true;
             } else if (status === 'blocked' || status === 'draft') {

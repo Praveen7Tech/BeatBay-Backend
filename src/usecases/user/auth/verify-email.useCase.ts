@@ -6,9 +6,10 @@ import { IEmailService } from "../../../domain/services/mail.service";
 import { ITokenService } from "../../../domain/services/token.service";
 import { passwordResetFormat } from "../../../infrastructure/services/email/email-format";
 import { VerifyEmailRequestDTO } from "../../../application/dto/auth/request.dto";
+import { IVerifyEmailUsecase } from "../../../application/interfaces/usecase/user-auth/verify-email-usecase.interface";
 
 
-export class VerifyEmailUsecase {
+export class VerifyEmailUsecase implements IVerifyEmailUsecase {
     constructor(
         private readonly _userRepository: IUserRepository,
         private readonly _emailService: IEmailService,

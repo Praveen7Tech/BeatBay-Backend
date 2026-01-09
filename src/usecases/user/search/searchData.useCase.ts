@@ -2,8 +2,9 @@ import { ISearchService } from "../../../domain/services/search.service";
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { SearchResponseDTO } from "../../../application/dto/search/search.response.dto";
 import { SearchMapper } from "../../../application/mappers/user/search/search.mapper";
+import { IUserGetSearchDataUseCase } from "../../../application/interfaces/usecase/search/user-get-search-data-usecase.interface";
 
-export class UserGetSearchDataUseCase {
+export class UserGetSearchDataUseCase implements IUserGetSearchDataUseCase{
   constructor(
     private readonly _searchService: ISearchService,
     private readonly _userRepository: IUserRepository

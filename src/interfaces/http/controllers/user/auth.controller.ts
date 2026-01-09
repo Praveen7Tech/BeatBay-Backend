@@ -1,49 +1,30 @@
 import { Request, Response, NextFunction } from 'express';
-import { SignupUsecase } from '../../../../usecases/user/auth/signup.useCase';
-import { VerifyOtpUsecase } from '../../../../usecases/user/auth/verify-otp.useCase';
 import { StatusCode } from '../../../../common/constants/status.enum';
-import logger from '../../../../infrastructure/utils/logger/DevLogger';
-import { ResendOtpUseCase } from '../../../../usecases/user/auth/resend-otp.useCase';
-import { LoginUsecase } from '../../../../usecases/user/auth/login.useCase';
 import { MESSAGES } from '../../../../common/constants/constants.message';
-import { AuthStatusUsecase } from '../../../../usecases/user/auth/authStatus.useCase';
 import { COOKIE_OPTIONS } from '../../../../common/cookie/cookieOptions';
-import { VerifyEmailUsecase } from '../../../../usecases/user/auth/verify-email.useCase';
-import { ResetPasswordUsecase } from '../../../../usecases/user/auth/reset-password.useCase';
-import { GoogleLoginUsecase } from '../../../../usecases/user/auth/googleLogin.useCase';
-
-
-import {
-  SignupRequestDTO,
-  VerifyOtpRequestDTO,
-  ResendOtpRequestDTO,
-  LoginRequestDTO,
-  VerifyEmailRequestDTO,
-  ResetPasswordDTO,
-  GoogleLoginRequestDTO
-} from "../../../../application/dto/auth/request.dto";
-
-import {
-  SignupRequestSchema,
-  VerifyOtpRequestSchema,
-  ResendOtpRequestSchema,
-  LoginRequestSchema,
-  VerifyEmailRequestSchema,
-  ResetPassRequestSchema,
-  GoogleLoginRequestSchema
-} from "../../validators/auth/auth.validator";
+import { SignupRequestDTO,VerifyOtpRequestDTO,ResendOtpRequestDTO, LoginRequestDTO,VerifyEmailRequestDTO,
+  ResetPasswordDTO, GoogleLoginRequestDTO} from "../../../../application/dto/auth/request.dto";
+import { SignupRequestSchema,VerifyOtpRequestSchema,ResendOtpRequestSchema, LoginRequestSchema,VerifyEmailRequestSchema, ResetPassRequestSchema, GoogleLoginRequestSchema} from "../../validators/auth/auth.validator";
+import { ISignupUsecase } from '../../../../application/interfaces/usecase/user-auth/signup-usecase.interface';
+import { IVerifyOtpUsecase } from '../../../../application/interfaces/usecase/user-auth/verify-otp-usecase.interface';
+import { IResendOtpUseCase } from '../../../../application/interfaces/usecase/user-auth/resend-otp.-usecase.interface';
+import { ILoginUsecase } from '../../../../application/interfaces/usecase/user-auth/login-usecase.interface';
+import { IAuthStatusUsecase } from '../../../../application/interfaces/usecase/user-auth/auth-status-usecase.interface';
+import { IVerifyEmailUsecase } from '../../../../application/interfaces/usecase/user-auth/verify-email-usecase.interface';
+import { IResetPasswordUsecase } from '../../../../application/interfaces/usecase/user-auth/reset-password-usecase.terface';
+import { IGoogleLoginUsecase } from '../../../../application/interfaces/usecase/user-auth/goggle-login-usecase.interface';
 
 
 export class AuthController {
   constructor(
-    private readonly _signupUsecase: SignupUsecase,
-    private readonly _verifyOtpUsecase: VerifyOtpUsecase,
-    private readonly _resendOtpUsecase: ResendOtpUseCase,
-    private readonly _loginUsecase: LoginUsecase,
-    private readonly _authStatusUsecase: AuthStatusUsecase,
-    private readonly _verifyEmailUsecase: VerifyEmailUsecase,
-    private readonly _resetPasswordUsecase: ResetPasswordUsecase,
-    private readonly _googleLoginUsecase: GoogleLoginUsecase
+    private readonly _signupUsecase: ISignupUsecase,
+    private readonly _verifyOtpUsecase: IVerifyOtpUsecase,
+    private readonly _resendOtpUsecase: IResendOtpUseCase,
+    private readonly _loginUsecase: ILoginUsecase,
+    private readonly _authStatusUsecase: IAuthStatusUsecase,
+    private readonly _verifyEmailUsecase: IVerifyEmailUsecase,
+    private readonly _resetPasswordUsecase: IResetPasswordUsecase,
+    private readonly _googleLoginUsecase: IGoogleLoginUsecase
   ) {}
 
   async signup(req: Request, res: Response, next: NextFunction) {

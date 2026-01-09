@@ -4,9 +4,10 @@ import { ICacheService } from "../../../domain/services/cache.service";
 import { IPasswordService } from "../../../domain/services/password.service";
 import { ITokenService } from "../../../domain/services/token.service";
 import { ResetPasswordDTO } from "../../../application/dto/auth/request.dto";
+import { IResetPasswordUsecase } from "../../../application/interfaces/usecase/user-auth/reset-password-usecase.terface";
 
 
-export class ResetPasswordUsecase{
+export class ResetPasswordUsecase implements IResetPasswordUsecase{
     constructor(
         private readonly _userRepository:IUserRepository,
         private readonly _tokenService: ITokenService,

@@ -3,15 +3,18 @@ import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { IGoogleAuthService } from "../../../domain/services/google-auth.service";
 import { ITokenService } from "../../../domain/services/token.service";
 import { GoogleLoginRequestDTO } from "../../../application/dto/auth/request.dto";
+import {  GoogleAuthResponseDTO } from "../../../application/dto/auth/response.dto";
+import { AuthMapper } from "../../../application/mappers/user/auth/auth.mapper";
+import { IGoogleLoginUsecase } from "../../../application/interfaces/usecase/user-auth/goggle-login-usecase.interface";
 
-export class GoogleLoginUsecase {
+export class GoogleLoginUsecase implements IGoogleLoginUsecase{
   constructor(
     private readonly _googleAuthService: IGoogleAuthService,
     private readonly _userRepository: IUserRepository,
     private readonly _tokenService: ITokenService,
   ) {}
 
-  async execute(request: GoogleLoginRequestDTO) {
+  async execute(request: GoogleLoginRequestDTO):Promise<GoogleAuthResponseDTO> {
     const payload = await this._googleAuthService.verifyToken(request.token);
     const { name, email, picture, sub } = payload;
 
@@ -44,7 +47,7 @@ export class GoogleLoginUsecase {
     const refreshToken = await this._tokenService.generateRefressToken(payloadt);
 
     return {
-      user,
+      user: AuthMapper.toAuthUserDTO(user),
       accessToken,
       refreshToken,
     };

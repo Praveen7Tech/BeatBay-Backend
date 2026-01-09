@@ -1,62 +1,62 @@
-import { NextFunction, Request, response, Response } from "express"
+import { NextFunction, Request, Response } from "express"
 import { StatusCode } from "../../../../common/constants/status.enum"
 import { MESSAGES } from "../../../../common/constants/constants.message"
-import { editProfileUsecase } from "../../../../usecases/user/profile/editProfile.useCase" 
 import { AuthRequest } from "../../../middleware/auth/authMiddleware"
 import { ChangePasswordRequestDTO, EditProfileRequestDTO } from "../../../../application/dto/profile/profile.dto"
 import { ChangePasswordSchema, EditProfileSchema } from "../../validators/profile/profile.validators"
-import { ChangePasswordUsecase } from "../../../../usecases/user/profile/changePassword.useCase"
-import { FetchSongsUsecase } from "../../../../usecases/user/song/fetchSongs.useCase"
-import { FetchAlbumsUsecase } from "../../../../usecases/user/album/fetchAlbums.useCase"
-import { SongDetailsUseCase } from "../../../../usecases/user/song/songDetails.useCase"
-import { AlbumDetailsUseCase } from "../../../../usecases/user/album/albumDetails.useCase"
-import { ArtistDetailsUseCase } from "../../../../usecases/user/artist/artistDeatils.useCase"
-import { CheckFollowStatusUseCase } from "../../../../usecases/user/follow/checkFollowStatus.useCase"
-import { GetFollowingListUseCase } from "../../../../usecases/user/follow/following.useCase"
-import { CreatePlayListUseCase } from "../../../../usecases/user/playList/createPlayList.useCase"
-import { GetPlayListUseCase } from "../../../../usecases/user/playList/getPlayList.useCase"
-import { GetAllPlaylistUseCase } from "../../../../usecases/user/playList/getAllPlaylist.useCase"
-import { AddToPlayListUseCase } from "../../../../usecases/user/playList/addToPlayList.useCase"
-import { SearchSongsUseCase } from "../../../../usecases/user/song/searchSong.useCase"
-import { EditPlayListUseCase } from "../../../../usecases/user/playList/editPlayList.useCase"
 import cloudinary from "../../../../infrastructure/config/cloudinary"
-import { GetUserByIdUseCase } from "../../../../usecases/admin/users/adminGetUserById.useCase"
 import { uploadOptionsType } from "../../../../infrastructure/config/cloudinary"
-import { UserGetSearchDataUseCase } from "../../../../usecases/user/search/searchData.useCase"
-import { GetUserProfileUseCase } from "../../../../usecases/user/profile/getUserProfile.useCase"
-import { FollowingHandleUseCase } from "../../../../usecases/user/follow/followArtist.useCase"
-import { GetUserFriendsUseCase } from "../../../../usecases/user/friends/getFriends.useCase"
-import { FetchAllSongsUsecase } from "../../../../usecases/user/song/allSongs.UseCase"
-import { FetchAllAlbumsUsecase } from "../../../../usecases/user/album/allAlbums.UseCase"
-import { GetProfileFollowersPreviewUseCase } from "../../../../usecases/user/followers/getUserFollowers.UseCase"
-import { SongHydrationUseCase } from "../../../../usecases/user/song/songHydration.UseCase"
+import { IGetUserByIdUseCase } from "../../../../application/interfaces/usecase/user-features/get-userbyid-usecase.interface"
+import { IEditProfileUseCase } from "../../../../application/interfaces/usecase/user-features/edit-profile-usecase.interface"
+import { IChangePasswordUsecase } from "../../../../application/interfaces/usecase/user-features/change-password-usecase.interface"
+import { IFetchSongsUsecase } from "../../../../application/interfaces/usecase/song/fetch-songs-usecase.interface"
+import { IFetchAlbumsUsecase } from "../../../../application/interfaces/usecase/album/fetch-albums-usecase.interface"
+import { ISongDetailsUseCase } from "../../../../application/interfaces/usecase/song/song-details-usecaase.interface"
+import { ISongHydrationUseCase } from "../../../../application/interfaces/usecase/song/song-hydration-useace.interface"
+import { IAlbumDetailsUseCase } from "../../../../application/interfaces/usecase/album/album-details-usecase.interface"
+import { IArtistDetailsUseCase } from "../../../../application/interfaces/usecase/artist/artist-details-usecase.interface"
+import { ICheckFollowStatusUseCase } from "../../../../application/interfaces/usecase/following/check-follow-status-usecase.interface"
+import { IFollowingHandleUseCase } from "../../../../application/interfaces/usecase/following/following-handle-usecase.interface"
+import { IGetFollowingListUseCase } from "../../../../application/interfaces/usecase/following/getfollowing-list-usecase.interface"
+import { IGetProfileFollowersPreviewUseCase } from "../../../../application/interfaces/usecase/following/get-profile-followers-prview-usecase.interface"
+import { ICreatePlayListUseCase } from "../../../../application/interfaces/usecase/playlist/create-playlist-usecase.interface"
+import { IGetPlayListUseCase } from "../../../../application/interfaces/usecase/playlist/get-playlist-usecase.interface"
+import { IAddToPlayListUseCase } from "../../../../application/interfaces/usecase/playlist/add-to-playlist-usecase.interface"
+import { ISearchSongsUseCase } from "../../../../application/interfaces/usecase/song/search-songs-usecaseinterface"
+import { IEditPlayListUseCase } from "../../../../application/interfaces/usecase/playlist/edit-playlist-usecase.interface"
+import { IUserGetSearchDataUseCase } from "../../../../application/interfaces/usecase/search/user-get-search-data-usecase.interface"
+import { IGetUserProfileUseCase } from "../../../../application/interfaces/usecase/user-features/get-user-profile-usecase.interface"
+import { IGetUserFriendsUseCase } from "../../../../application/interfaces/usecase/user-features/get-user-friends-uscase.interface"
+import { IFetchAllSongsUsecase } from "../../../../application/interfaces/usecase/song/fetch-all-songs-usecase.interface"
+import { IFetchAllAlbumsUsecase } from "../../../../application/interfaces/usecase/album/fetch-all-albums-usecase.interface"
+import { IGetAllPlaylistUseCase } from "../../../../application/interfaces/usecase/playlist/get-all-playlist-usecase.interface"
 
 export class UserController{
     constructor(
-        private readonly _editProfileUserUsecase: editProfileUsecase,
-        private readonly _changePasswordUsecase: ChangePasswordUsecase,
-        private readonly _fetchSongsUsecase: FetchSongsUsecase,
-        private readonly _fetchAlbumsUsecase: FetchAlbumsUsecase,
-        private readonly _songDetailsUsecase: SongDetailsUseCase,
-        private readonly _albumDetailsUsecase: AlbumDetailsUseCase,
-        private readonly _artistDetailsUsecase: ArtistDetailsUseCase,
-        private readonly _checkFollowStatusUsecase:CheckFollowStatusUseCase,
-        private readonly _followHandleUsecase:FollowingHandleUseCase,
-        private readonly _followingUsecase: GetFollowingListUseCase,
-        private readonly _createPlayListUsecase: CreatePlayListUseCase,
-        private readonly _getPlayListUsecase: GetPlayListUseCase,
-        private readonly _getAllPlayListUsecase: GetAllPlaylistUseCase,
-        private readonly _addToPlayListUsecase: AddToPlayListUseCase,
-        private readonly _searchSongsUseCase: SearchSongsUseCase,
-        private readonly _editPlauListUsecase: EditPlayListUseCase,
-        private readonly _getUserDetailsUsecase: GetUserByIdUseCase,
-        private readonly _userSearchDataUsecase: UserGetSearchDataUseCase,
-        private readonly _getUserProfileDetailsUsecase: GetUserProfileUseCase,
-        private readonly _userFriendsListsUseCase: GetUserFriendsUseCase,
-        private readonly _fetchAllSongsUsecase: FetchAllSongsUsecase,
-        private readonly _fetchallAlbumsUsecase: FetchAllAlbumsUsecase,
-        private readonly _followersUsecase:GetProfileFollowersPreviewUseCase,
-        private readonly _songHydrationUsecase: SongHydrationUseCase
+        private readonly _editProfileUserUsecase: IEditProfileUseCase,
+        private readonly _changePasswordUsecase: IChangePasswordUsecase,
+        private readonly _fetchSongsUsecase: IFetchSongsUsecase,
+        private readonly _fetchAlbumsUsecase: IFetchAlbumsUsecase,
+        private readonly _songDetailsUsecase: ISongDetailsUseCase,
+        private readonly _albumDetailsUsecase: IAlbumDetailsUseCase,
+        private readonly _artistDetailsUsecase: IArtistDetailsUseCase,
+        private readonly _checkFollowStatusUsecase: ICheckFollowStatusUseCase,
+        private readonly _followHandleUsecase: IFollowingHandleUseCase,
+        private readonly _followingUsecase: IGetFollowingListUseCase,
+        private readonly _createPlayListUsecase: ICreatePlayListUseCase,
+        private readonly _getPlayListUsecase: IGetPlayListUseCase,
+        private readonly _getAllPlayListUsecase: IGetAllPlaylistUseCase,
+        private readonly _addToPlayListUsecase: IAddToPlayListUseCase,
+        private readonly _searchSongsUseCase: ISearchSongsUseCase,
+        private readonly _editPlauListUsecase: IEditPlayListUseCase,
+        private readonly _getUserDetailsUsecase: IGetUserByIdUseCase,
+        private readonly _userSearchDataUsecase: IUserGetSearchDataUseCase,
+        private readonly _getUserProfileDetailsUsecase: IGetUserProfileUseCase,
+        private readonly _userFriendsListsUseCase: IGetUserFriendsUseCase,
+        private readonly _fetchAllSongsUsecase: IFetchAllSongsUsecase,
+        private readonly _fetchallAlbumsUsecase: IFetchAllAlbumsUsecase,
+        private readonly _followersUsecase: IGetProfileFollowersPreviewUseCase,
+        private readonly _songHydrationUsecase: ISongHydrationUseCase
         
     ){}
 
@@ -341,22 +341,22 @@ export class UserController{
     }
 
     searchSongs = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const query = String(req.query.q || "");
-      const limit = req.query.limit ? Number(req.query.limit) : undefined;
-      const offset = req.query.offset ? Number(req.query.offset) : undefined;
+        try {
+        const query = String(req.query.q || "");
+        const limit = req.query.limit ? Number(req.query.limit) : undefined;
+        const offset = req.query.offset ? Number(req.query.offset) : undefined;
 
-      const songs = await this._searchSongsUseCase.execute({
-        query,
-        limit,
-        offset,
-      });
+        const songs = await this._searchSongsUseCase.execute({
+            query,
+            limit,
+            offset,
+        });
 
 
-      res.status(StatusCode.OK).json(songs);
-    } catch (error) {
-      next(error)
-    }
+        res.status(StatusCode.OK).json(songs);
+        } catch (error) {
+        next(error)
+        }
     };
 
     editPlayList = async(req: AuthRequest, res: Response, next: NextFunction)=>{

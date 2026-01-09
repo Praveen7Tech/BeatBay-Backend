@@ -3,7 +3,7 @@ import { Album } from "../../../../domain/entities/album.entity";
 import { IAlbumRepository } from "../../../../domain/repositories/album.repository";
 import { AlbumModel } from "../models/album.model";
 import { GetAllAlbumsRequest } from "../../../../domain/interfaces/albumRequest";
-import { AdminAlbumDetailsDTO } from "../../../../application/dto/admin/album/album-details";
+import { title } from "process";
 
 export class MongooseAlbumRepository implements IAlbumRepository {
     async create(albumData: Album, session: ClientSession): Promise<Album> {
@@ -117,6 +117,7 @@ export class MongooseAlbumRepository implements IAlbumRepository {
         let sortOption: any = {};
         if (sort === 'newest') sortOption = { createdAt: -1 };
         else if (sort === 'az') sortOption = { title: 1 };
+        else if (sort === 'za')sortOption = {title: -1};
         else if (sort === 'popularity') sortOption = { totalStreams: -1 };
         else sortOption = { createdAt: -1 }; 
 

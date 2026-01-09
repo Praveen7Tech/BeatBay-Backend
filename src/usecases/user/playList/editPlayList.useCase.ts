@@ -2,8 +2,9 @@ import { NotFoundError } from "../../../common/errors/common/common.errors";
 import { PlayList } from "../../../domain/entities/playList.entiy";
 import { IPlayListRepository } from "../../../domain/repositories/playList.repository";
 import { PlayListEditRequestDTO } from "../../../application/dto/playList/request.dto";
+import { IEditPlayListUseCase } from "../../../application/interfaces/usecase/playlist/edit-playlist-usecase.interface";
 
-export class EditPlayListUseCase{
+export class EditPlayListUseCase implements IEditPlayListUseCase{
     constructor(
         private readonly _mongoosePlayListRepository: IPlayListRepository
     ){}

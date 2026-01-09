@@ -1,7 +1,8 @@
+import { IGetPlayListUseCase } from "../../../application/interfaces/usecase/playlist/get-playlist-usecase.interface";
 import { PlayList } from "../../../domain/entities/playList.entiy";
 import { IPlayListRepository } from "../../../domain/repositories/playList.repository";
 
- export class GetPlayListUseCase{
+ export class GetPlayListUseCase implements IGetPlayListUseCase{
     constructor(
         private readonly _mongoosePlayListRepository: IPlayListRepository
     ){}

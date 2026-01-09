@@ -6,9 +6,10 @@ import { LoginRequestDTO } from "../../../application/dto/auth/request.dto";
 import { LoginResponseDTO } from "../../../application/dto/auth/response.dto";
 import { BadRequestError, NotFoundError } from "../../../common/errors/common/common.errors";
 import { AuthMapper } from "../../../application/mappers/user/auth/auth.mapper";
+import { IAdminLoginUsecase } from "../../../application/interfaces/usecase/admin/admin-login-usecase.interface";
 
 
-export class AdminLoginUsecase {
+export class AdminLoginUsecase implements IAdminLoginUsecase{
     constructor(
         private readonly _userRepository: IUserRepository,
         private readonly _passwordService: IPasswordService,

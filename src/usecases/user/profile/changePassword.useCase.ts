@@ -3,8 +3,9 @@ import { IPasswordService } from "../../../domain/services/password.service";
 import { IUserRepository } from "../../../domain/repositories/user.repository"; 
 import { ChangePasswordRequestDTO } from "../../../application/dto/profile/profile.dto"; 
 import { IncorrectPasswordError, NotFoundError } from "../../../common/errors/common/common.errors";
+import { IChangePasswordUsecase } from "../../../application/interfaces/usecase/user-features/change-password-usecase.interface";
 
-export class ChangePasswordUsecase {
+export class ChangePasswordUsecase implements IChangePasswordUsecase{
     constructor(
         private readonly _passwordService: IPasswordService,
         private readonly _userRepository: IUserRepository,

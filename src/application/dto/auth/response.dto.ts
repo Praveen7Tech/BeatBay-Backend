@@ -33,3 +33,9 @@ export interface LoginResponseDTO {
   refreshToken: string;
 }
 
+export interface GoogleAuthResponseDTO {
+  user: AuthUserDTO;
+  accessToken: string;
+  refreshToken: string; 
+}
+

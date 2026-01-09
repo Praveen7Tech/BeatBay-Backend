@@ -1,7 +1,8 @@
+import { IFetchSongsUsecase } from "../../../application/interfaces/usecase/song/fetch-songs-usecase.interface";
 import { Song } from "../../../domain/entities/song.entity";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 
-export class FetchSongsUsecase {
+export class FetchSongsUsecase implements IFetchSongsUsecase {
     constructor(
         private readonly _mongooseSongRepository: ISongRepository
     ){}

@@ -1,8 +1,9 @@
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { ProfileMapper } from "../../../application/mappers/user/profile/profile.mapper";
 import { UserProfileResponseDTO } from "../../../application/dto/profile/profile.dto";
+import { IGetUserProfileUseCase } from "../../../application/interfaces/usecase/user-features/get-user-profile-usecase.interface";
 
-export class GetUserProfileUseCase{
+export class GetUserProfileUseCase implements IGetUserProfileUseCase{
     constructor(
         private readonly _userRepository: IUserRepository
     ){}

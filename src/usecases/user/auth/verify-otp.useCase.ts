@@ -2,20 +2,18 @@ import { IUserRepository } from '../../../domain/repositories/user.repository';
 import { ICacheService } from '../../../domain/services/cache.service';
 import { IPasswordService } from '../../../domain/services/password.service';
 import { InvalidOtpError, OtpExpiredError } from '../../../common/errors/common/common.errors';
+import { VerifyOtpRequestDTO } from '../../../application/dto/auth/request.dto';
+import { IVerifyOtpUsecase } from '../../../application/interfaces/usecase/user-auth/verify-otp-usecase.interface';
 
-interface VerifyOtpRequest {
-  email: string;
-  otp: string;
-}
 
-export class VerifyOtpUsecase {
+export class VerifyOtpUsecase implements IVerifyOtpUsecase {
   constructor(
     private readonly _cacheService: ICacheService,
     private readonly _userRepository: IUserRepository,
     private readonly _passwordService: IPasswordService,
   ) {}
 
-  async execute(request: VerifyOtpRequest): Promise<void> {
+  async execute(request: VerifyOtpRequestDTO): Promise<void> {
     const cacheKey = `otp:${request.email}`;
     const cachedData = await this._cacheService.get(cacheKey);
     

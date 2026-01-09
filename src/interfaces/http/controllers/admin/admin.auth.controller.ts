@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
-import { AdminLoginUsecase } from "../../../../usecases/admin/auth/adminLogin.useCase";
 import { LoginRequestDTO } from "../../../../application/dto/auth/request.dto";
 import { COOKIE_OPTIONS } from "../../../../common/cookie/cookieOptions";
 import { StatusCode } from "../../../../common/constants/status.enum";
 import { LoginRequestSchema } from "../../validators/auth/auth.validator";
 import { MESSAGES } from "../../../../common/constants/constants.message";
+import { IAdminLoginUsecase } from "../../../../application/interfaces/usecase/admin/admin-login-usecase.interface";
 
 
 export class AdminAuthController {
     constructor(
-        private readonly _adminLoginUsecase: AdminLoginUsecase
+        private readonly _adminLoginUsecase: IAdminLoginUsecase
     ){}
 
     async login(req: Request, res:Response, next: NextFunction) {

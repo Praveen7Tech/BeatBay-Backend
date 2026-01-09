@@ -207,7 +207,7 @@ export class AdminFeaturesController{
     toggleSongBlockStatus = async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
             const { id } = req.params;
-            const { isBlocked } = req.body; // Pass the target state
+            const { isBlocked } = req.body; 
 
             const updatedSong = await this._toggleBlockStatusUseCase.execute(id, isBlocked);
             

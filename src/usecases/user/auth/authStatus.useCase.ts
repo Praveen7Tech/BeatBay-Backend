@@ -7,9 +7,10 @@ import { LoginResponseDTO } from "../../../application/dto/auth/response.dto";
 import { AuthMapper } from "../../../application/mappers/user/auth/auth.mapper";
 import { Artist } from "../../../domain/entities/arist.entity";
 import { User } from "../../../domain/entities/user.entity";
+import { IAuthStatusUsecase } from "../../../application/interfaces/usecase/user-auth/auth-status-usecase.interface";
 
 
-export class AuthStatusUsecase {
+export class AuthStatusUsecase implements IAuthStatusUsecase{
   constructor(
     private readonly _tokenService: ITokenService,
     private readonly _userRepository: IUserRepository,

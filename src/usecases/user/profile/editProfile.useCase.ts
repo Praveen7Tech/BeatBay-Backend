@@ -3,8 +3,9 @@ import { User } from "../../../domain/entities/user.entity"
 import { IUserRepository } from "../../../domain/repositories/user.repository" 
 import { NotFoundError } from "../../../common/errors/common/common.errors" 
 import { EditProfileRequestDTO, EditProfileResponseDTO } from "../../../application/dto/profile/profile.dto"
+import { IEditProfileUseCase } from "../../../application/interfaces/usecase/user-features/edit-profile-usecase.interface"
 
-export class editProfileUsecase {
+export class editProfileUsecase implements IEditProfileUseCase{
     constructor(
         private readonly _userRepository: IUserRepository,
     ){}

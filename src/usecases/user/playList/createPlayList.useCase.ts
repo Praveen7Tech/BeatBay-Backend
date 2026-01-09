@@ -3,8 +3,9 @@ import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { ITransactionManager } from "../../../domain/services/transaction.service";
 import { CreatePlayListResponseDTO } from "../../../application/dto/playList/request.dto";
 import { PlayListMapper } from "../../../application/mappers/user/playlist/playlist.mapper";
+import { ICreatePlayListUseCase } from "../../../application/interfaces/usecase/playlist/create-playlist-usecase.interface";
 
-export class CreatePlayListUseCase{
+export class CreatePlayListUseCase implements ICreatePlayListUseCase{
     constructor(
         private readonly _mongoosePlayListRepository: IPlayListRepository,
         private readonly _transactionManager: ITransactionManager,

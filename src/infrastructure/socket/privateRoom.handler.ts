@@ -1,12 +1,12 @@
 import { Server, Socket } from "socket.io"
 import { ISocketCacheService, RoomData, RoomMember, SongData } from "../../domain/services/redis/jamCache.service"
 import logger from "../utils/logger/logger";
-import { MutualFrindsStatus } from "../../usecases/user/friends/mutalFriendsStatus.UseCase";
+import { IMutualFriendsStatusUseCase } from "../../application/interfaces/usecase/mutual-friends/mutual-friends-status-usecase.interface";
 
 export class PrivateRoomHandler {
     constructor(
         private readonly socketCacheService: ISocketCacheService,
-        private readonly mutalFrindsActivityUsecase: MutualFrindsStatus
+        private readonly mutalFrindsActivityUsecase: IMutualFriendsStatusUseCase
     ) {}
 
      private async notifyFriendsStatusChange(io: Server, userId: string, newState: "connected" | "none") {

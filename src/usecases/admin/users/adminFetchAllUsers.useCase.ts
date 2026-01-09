@@ -1,4 +1,3 @@
-import { User } from "../../../domain/entities/user.entity";
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { UsersTableResponseDTO } from "../../../application/dto/admin/admin.response.dto";
 import { UserMapper } from "../../../application/mappers/admin/user/user.mapper";

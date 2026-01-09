@@ -220,7 +220,7 @@ export class MongooseUserRepository implements IUserRepository {
   async getMutualFriends(userId: string): Promise<User[]> {
       const user = await UserModel.findById(userId).select("followingUsers").lean()
 
-      if(!user || user.followingUsers.length == 0) return []
+      if(!user || !user.followingUsers || user.followingUsers.length == 0) return []
 
       return await UserModel.find({
         _id: {$in : user.followingUsers},

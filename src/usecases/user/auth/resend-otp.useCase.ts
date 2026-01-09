@@ -5,10 +5,11 @@ import { EmailFormat } from "../../../infrastructure/services/email/email-format
 import logger from "../../../infrastructure/utils/logger/logger";
 import { ResendOtpRequestDTO } from "../../../application/dto/auth/request.dto";
 import { ResendOtpResponseDTO } from "../../../application/dto/auth/response.dto";
+import { IResendOtpUseCase } from "../../../application/interfaces/usecase/user-auth/resend-otp.-usecase.interface";
 
 
 
-export class ResendOtpUseCase {
+export class ResendOtpUseCase implements IResendOtpUseCase {
     constructor(
         private readonly _cacheService : ICacheService,
         private readonly _otpService: IOtpService,

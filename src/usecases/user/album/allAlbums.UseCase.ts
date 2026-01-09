@@ -2,8 +2,9 @@ import { AlbumListDTO } from "../../../application/dto/album/album.dto";
 import { PaginatedResponseDTO } from "../../../application/dto/song/song.dto";
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
 import { AlbumMapper } from "../../../application/mappers/user/album/album.mapper"; 
+import { IFetchAllAlbumsUsecase } from "../../../application/interfaces/usecase/album/fetch-all-albums-usecase.interface";
 
-export class FetchAllAlbumsUsecase {
+export class FetchAllAlbumsUsecase implements IFetchAllAlbumsUsecase{
     constructor(private readonly _albumRepository: IAlbumRepository) {}
 
     async execute(page: number,limit: number,query?: string): Promise<PaginatedResponseDTO<AlbumListDTO>> {

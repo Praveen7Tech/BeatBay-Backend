@@ -7,10 +7,11 @@ import { SignupRequestDTO } from '../../../application/dto/auth/request.dto';
 import { SignupResponseDTO } from '../../../application/dto/auth/response.dto';
 import { AlreadyExistError } from '../../../common/errors/common/common.errors';
 import logger from '../../../infrastructure/utils/logger/logger';
+import { ISignupUsecase } from '../../../application/interfaces/usecase/user-auth/signup-usecase.interface';
 
 
 
-export class SignupUsecase {
+export class SignupUsecase implements ISignupUsecase {
   constructor(
     private readonly _userRepository: IUserRepository,
     private readonly _cacheService: ICacheService,

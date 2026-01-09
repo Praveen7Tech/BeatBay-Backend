@@ -1,7 +1,8 @@
+import { IArtistDetailsUseCase } from "../../../application/interfaces/usecase/artist/artist-details-usecase.interface";
 import { Artist } from "../../../domain/entities/arist.entity";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 
-export class ArtistDetailsUseCase{
+export class ArtistDetailsUseCase implements IArtistDetailsUseCase{
     constructor(
         private readonly _mongooseArtistRepository: IArtistRepository
     ){}

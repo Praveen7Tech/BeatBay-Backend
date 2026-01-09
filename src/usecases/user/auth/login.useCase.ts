@@ -6,9 +6,10 @@ import { ROLES } from "../../core/types/roles"
 import { LoginRequestDTO } from "../../../application/dto/auth/request.dto"
 import { LoginResponseDTO } from "../../../application/dto/auth/response.dto"
 import { AuthMapper } from "../../../application/mappers/user/auth/auth.mapper"
+import { ILoginUsecase } from "../../../application/interfaces/usecase/user-auth/login-usecase.interface"
 
 
-export class LoginUsecase {
+export class LoginUsecase implements ILoginUsecase {
     constructor(
         private readonly _userRepository: IUserRepository,
         private readonly _passwordService: IPasswordService,

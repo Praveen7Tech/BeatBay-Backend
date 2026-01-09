@@ -42,3 +42,8 @@ export interface PaginatedResponseDTO<T> {
     totalDocs: number;
 }
 
+export interface SearchSongsDTO {
+  query: string;
+  limit?: number;
+  offset?: number;
+}

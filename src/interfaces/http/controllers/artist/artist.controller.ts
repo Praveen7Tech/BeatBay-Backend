@@ -2,46 +2,46 @@ import { NextFunction, Request, Response } from "express";
 import { AuthRequest } from "../../../middleware/auth/authMiddleware";
 import { StatusCode } from "../../../../common/constants/status.enum";
 import { MESSAGES } from "../../../../common/constants/constants.message";
-import { ArtistEditProfileUsecase } from "../../../../usecases/artist/profile/artistEditProfile.useCase";
 import { ChangePasswordRequestDTO, EditProfileRequestDTO } from "../../../../application/dto/profile/profile.dto";
 import { ChangePasswordSchema, EditProfileSchema } from "../../validators/profile/profile.validators";
-import { ArtistChangePasswordUsecase } from "../../../../usecases/artist/profile/artistChangePassword.useCase";
 import { UploadSongDTO } from "../../../../application/dto/song/song.dto";
 import { EditSongRequestSchema, UploadSongRequestSchema } from "../../validators/song/song.validator";
-import { UploadSongUseCase } from "../../../../usecases/artist/song/uploadSong.useCase";
-import { GetSongsUseCase } from "../../../../usecases/artist/song/getSongs.useCase";
-import { ArtistCreateAlbumUseCase } from "../../../../usecases/artist/album/createAlbums.useCase";
 import { CreateAlbumDTO } from "../../../../application/dto/album/album.dto";
 import { CreateAlbumRequestSchema, EditAlbumRequestSchema } from "../../validators/album/album.validator";
-import { artistGetAlbumsUseCase } from "../../../../usecases/artist/album/artistGetAlbums.useCase";
-import { GetSongDetailsByIdUseCase } from "../../../../usecases/artist/song/getSongById.useCase";
-import { EditSongUseCase } from "../../../../usecases/artist/song/editSong.useCase";
-import { GetAlbumDetailsByIdUseCase } from "../../../../usecases/artist/album/getAlbumDetailsById.useCase";
-import { EditAlbumUseCase } from "../../../../usecases/artist/album/artistEditAlbum.useCase";
-import { DeleteSongUseCase } from "../../../../usecases/artist/song/deleteSong.useCase";
-import { DeleteAlbumUsecase } from "../../../../usecases/artist/album/artistDeleteAlbum.useCase";
 import cloudinary from "../../../../infrastructure/config/cloudinary";
 import logger from "../../../../infrastructure/utils/logger/logger";
-import { AlbumDetailsUseCase } from "../../../../usecases/user/album/albumDetails.useCase";
 import { uploadOptionsType } from "../../../../infrastructure/config/cloudinary"; 
-import { GetArtistByIdUseCase } from "../../../../usecases/admin/artists/adminGetArtistById.useCase";
+import { IGetArtistByIdUseCase } from "../../../../application/interfaces/usecase/artist-features/get-artist-byid-usecase.interface";
+import { IArtistEditProfileUsecase } from "../../../../application/interfaces/usecase/artist-features/edit-profile-usecase.interface";
+import { IUploadSongUseCase } from "../../../../application/interfaces/usecase/song/artist-upload-song-usecase.interface";
+import { IGetSongsUseCase } from "../../../../application/interfaces/usecase/song/artist-get-songs-usecase.interface";
+import { IArtistCreateAlbumUseCase } from "../../../../application/interfaces/usecase/album/artist-create-album-usecase.interface";
+import { IArtistGetAlbumsUseCase } from "../../../../application/interfaces/usecase/album/artist-get-album-usecase.intrface";
+import { IGetSongDetailsByIdUseCase } from "../../../../application/interfaces/usecase/song/artist-getsong-detail-byid-usecase.interface";
+import { IEditSongUseCase } from "../../../../application/interfaces/usecase/song/artist-edit-song-usecase.interface";
+import { IGetAlbumDetailsByIdUseCase } from "../../../../application/interfaces/usecase/album/artisgetalbum-detail-byid-usecase.interface";
+import { IAlbumDetailsUseCase } from "../../../../application/interfaces/usecase/album/album-details-usecase.interface";
+import { IEditAlbumUseCase } from "../../../../application/interfaces/usecase/album/artist-edit-album-usecase.interface";
+import { IDeleteSongUseCase } from "../../../../application/interfaces/usecase/song/artist-delete-song-usecase.interface";
+import { IDeleteAlbumUsecase } from "../../../../application/interfaces/usecase/album/artist-delete-albu-usecase.interface";
+import { IArtistChangePasswordUsecase } from "../../../../application/interfaces/usecase/artist-features/change-password-usecase.interface";
 
 export class ArtistController {
     constructor(
-        private readonly _artistEditProfileUsecase:ArtistEditProfileUsecase,
-        private readonly _artistChangePasswordUsecase: ArtistChangePasswordUsecase,
-        private readonly _artistUploadSongUsecase: UploadSongUseCase,
-        private readonly _artistGetSongsUsecase :GetSongsUseCase,
-        private readonly _artistCreateAlbumUsecase: ArtistCreateAlbumUseCase,
-        private readonly _artistGetAlbumsUsecase: artistGetAlbumsUseCase,
-        private readonly _artistsongDetailsUsecase: GetSongDetailsByIdUseCase,
-        private readonly _editSongUsecase: EditSongUseCase,
-        private readonly _artistAlbumDetailsUsecase: GetAlbumDetailsByIdUseCase,
-        private readonly _artistEditAlbumUsecase: EditAlbumUseCase,
-        private readonly _artistDeleteSongUsecase: DeleteSongUseCase,
-        private readonly _artistDeleteAlbumUsecase: DeleteAlbumUsecase,
-        private readonly _getAlbumDetailsUsecase: AlbumDetailsUseCase,
-        private readonly _getArtistDetailsUsecase: GetArtistByIdUseCase
+        private readonly _artistEditProfileUsecase: IArtistEditProfileUsecase,
+        private readonly _artistChangePasswordUsecase: IArtistChangePasswordUsecase,
+        private readonly _artistUploadSongUsecase: IUploadSongUseCase,
+        private readonly _artistGetSongsUsecase : IGetSongsUseCase,
+        private readonly _artistCreateAlbumUsecase: IArtistCreateAlbumUseCase,
+        private readonly _artistGetAlbumsUsecase: IArtistGetAlbumsUseCase,
+        private readonly _artistsongDetailsUsecase: IGetSongDetailsByIdUseCase,
+        private readonly _editSongUsecase: IEditSongUseCase,
+        private readonly _artistAlbumDetailsUsecase: IGetAlbumDetailsByIdUseCase,
+        private readonly _artistEditAlbumUsecase: IEditAlbumUseCase,
+        private readonly _artistDeleteSongUsecase: IDeleteSongUseCase,
+        private readonly _artistDeleteAlbumUsecase: IDeleteAlbumUsecase,
+        private readonly _getAlbumDetailsUsecase: IAlbumDetailsUseCase,
+        private readonly _getArtistDetailsUsecase: IGetArtistByIdUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
@@ -182,7 +182,7 @@ export class ArtistController {
         } catch (error) {
             next(error);
         }
-};
+    };
 
 
     fetchSongs = async(req:AuthRequest, res: Response, next: NextFunction)=>{
@@ -349,7 +349,7 @@ export class ArtistController {
         } catch (error) {
             next(error);
         }
-};
+    };
 
 
     getAlbumById = async(req: AuthRequest, res: Response, next: NextFunction)=>{

@@ -2,8 +2,9 @@ import { IAlbumRepository } from "../../../domain/repositories/album.repository"
 import { ITransactionManager } from "../../../domain/services/transaction.service";
 import { NotFoundError } from "../../../common/errors/common/common.errors";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
+import { IDeleteAlbumUsecase } from "../../../application/interfaces/usecase/album/artist-delete-albu-usecase.interface";
 
-export class DeleteAlbumUsecase{
+export class DeleteAlbumUsecase implements IDeleteAlbumUsecase{
     constructor(
         private readonly _transactionManager: ITransactionManager,
         private readonly _albumRepository: IAlbumRepository,

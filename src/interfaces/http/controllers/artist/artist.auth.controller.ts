@@ -1,27 +1,27 @@
 import { NextFunction, Request, Response } from "express";
 import { GoogleLoginRequestDTO,  LoginRequestDTO, ResendOtpRequestDTO, ResetPasswordDTO, SignupRequestDTO,   VerifyEmailRequestDTO,   VerifyOtpRequestDTO } from "../../../../application/dto/auth/request.dto";
-import { ArtistSignupUsecase } from "../../../../usecases/artist/auth/artistSignup.useCase"; 
 import { StatusCode } from "../../../../common/constants/status.enum";
 import { MESSAGES } from "../../../../common/constants/constants.message";
-import { ArtistVerifyOTPuseCase } from "../../../../usecases/artist/auth/artistVerifyOTP.useCase";
-import { ArtistResendOtpUseCase } from "../../../../usecases/artist/auth/artistResendOTP.useCase";
 import { COOKIE_OPTIONS } from "../../../../common/cookie/cookieOptions";
-import { ArtistLoginUsecase } from "../../../../usecases/artist/auth/artistLogin.useCase";
-import { ArtistGoogleLoginUseCase } from "../../../../usecases/artist/auth/artistGoogleSignup.useCase";
 import { GoogleLoginRequestSchema, LoginRequestSchema, ResendOtpRequestSchema, ResetPassRequestSchema, SignupRequestSchema, VerifyEmailRequestSchema, VerifyOtpRequestSchema } from "../../validators/auth/auth.validator";
-import { ArtistVerifyEmailUsecase } from "../../../../usecases/artist/auth/artistVerifyEmail.useCase";
-import { ArtistResetPasswordUsecase } from "../../../../usecases/artist/auth/artistResetPassword.useCase"; 
+import { IArtistSignupUsecase } from "../../../../application/interfaces/usecase/artist/artist-signup-usecase.interface";
+import { IArtistVerifyOTPuseCase } from "../../../../application/interfaces/usecase/artist/artist-verify-otp-usecase.interface";
+import { IArtistResendOtpUseCase } from "../../../../application/interfaces/usecase/artist/artist-resend-otp-usecase.interface";
+import { IArtistLoginUsecase } from "../../../../application/interfaces/usecase/artist/artist-loin-usecase.interface";
+import { IArtistGoogleLoginUseCase } from "../../../../application/interfaces/usecase/artist/artist-google-login-usecase.interface";
+import { IArtistVerifyEmailUsecase } from "../../../../application/interfaces/usecase/artist/artist-verify-email-usecase.interface";
+import { IArtistResetPasswordUsecase } from "../../../../application/interfaces/usecase/artist/artist-reset-password-usecase.interface";
 
 
 export class artistAuthController {
     constructor(
-        private readonly _artistSignupUsecase:ArtistSignupUsecase,
-        private readonly _artistVerifyOTPusecase:ArtistVerifyOTPuseCase,
-        private readonly _artistResendOtpUsecase: ArtistResendOtpUseCase,
-        private readonly _artistLoginUsecase:ArtistLoginUsecase,
-        private readonly _artistGoogleLoginUsecase: ArtistGoogleLoginUseCase,
-        private readonly _artistVerifyEmailUsecase: ArtistVerifyEmailUsecase,
-        private readonly _artistResetPasswordUsecase: ArtistResetPasswordUsecase,
+        private readonly _artistSignupUsecase: IArtistSignupUsecase,
+        private readonly _artistVerifyOTPusecase: IArtistVerifyOTPuseCase,
+        private readonly _artistResendOtpUsecase: IArtistResendOtpUseCase,
+        private readonly _artistLoginUsecase: IArtistLoginUsecase,
+        private readonly _artistGoogleLoginUsecase: IArtistGoogleLoginUseCase,
+        private readonly _artistVerifyEmailUsecase: IArtistVerifyEmailUsecase,
+        private readonly _artistResetPasswordUsecase: IArtistResetPasswordUsecase,
     ){}
 
     signUp = async(req:Request, res:Response, next: NextFunction) =>{

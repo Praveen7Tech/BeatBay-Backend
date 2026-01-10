@@ -1,10 +1,11 @@
 import { PaginatedSongResponse } from "../../../application/dto/admin/songs/song-listing.dto";
+import { IGetAllSongsUseCase } from "../../../application/interfaces/usecase/admin/get-all-song-usecse.interface";
 import { AdminSongMapper } from "../../../application/mappers/admin/song/song.mapper";
 import { GetAllSongsRequest } from "../../../domain/interfaces/songRequest";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 
 
-export class GetAllSongsUseCase {
+export class GetAllSongsUseCase implements IGetAllSongsUseCase{
     constructor(private readonly _songRepository: ISongRepository) {}
 
     async execute(request: GetAllSongsRequest): Promise<PaginatedSongResponse> {

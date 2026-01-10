@@ -3,8 +3,9 @@ import { IArtistRepository } from "../../../domain/repositories/artist.repositor
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { DashBoardResponse } from "../../../application/dto/admin/admin.response.dto";
+import { IGetAdminDashBoardDataUseCase } from "../../../application/interfaces/usecase/admin/get-admin-dashboard-usecase.interface";
 
-export class GetAdminDashBoardData{
+export class GetAdminDashBoardData implements IGetAdminDashBoardDataUseCase{
     constructor(
         private readonly _userRepository: IUserRepository,
         private readonly _artistRepository: IArtistRepository,

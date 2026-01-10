@@ -4,8 +4,9 @@ import { ICacheService } from "../../../domain/services/cache.service"
 import { IPasswordService } from "../../../domain/services/password.service" 
 import { ITokenService } from "../../../domain/services/token.service" 
 import { ResetPasswordDTO } from "../../../application/dto/auth/request.dto" 
+import { IArtistResetPasswordUsecase } from "../../../application/interfaces/usecase/artist/artist-reset-password-usecase.interface"
 
-export class ArtistResetPasswordUsecase{
+export class ArtistResetPasswordUsecase implements IArtistResetPasswordUsecase{
     constructor(
         private readonly _tokenService: ITokenService,
         private readonly _cacheService: ICacheService,

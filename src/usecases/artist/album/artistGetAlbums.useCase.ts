@@ -2,8 +2,9 @@ import { IAlbumRepository } from "../../../domain/repositories/album.repository"
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 import {  ArtistAlbumsResponseDTO } from "../../../application/dto/album/album.response.dto";
 import { ArtistAlbumMapper } from "../../../application/mappers/artist/album/artist-album.mapper";
+import { IArtistGetAlbumsUseCase } from "../../../application/interfaces/usecase/album/artist-get-album-usecase.intrface";
 
-export class artistGetAlbumsUseCase {
+export class ArtistGetAlbumsUseCase implements IArtistGetAlbumsUseCase{
     constructor(
         private readonly _artistRepository: IArtistRepository,
         private readonly _albumRepository: IAlbumRepository

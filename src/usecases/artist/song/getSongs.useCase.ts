@@ -1,7 +1,8 @@
+import { IGetSongsUseCase } from "../../../application/interfaces/usecase/song/artist-get-songs-usecase.interface";
 import { Song } from "../../../domain/entities/song.entity";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 
-export class GetSongsUseCase {
+export class GetSongsUseCase implements IGetSongsUseCase{
     constructor(
         private readonly _artistRepository: IArtistRepository
     ){}

@@ -1,7 +1,8 @@
+import { IAdminGetSongDetailsByIdUseCase } from "../../../application/interfaces/usecase/admin/get-songdetails-byid-usecase.interface"
 import { Song } from "../../../domain/entities/song.entity"
 import { ISongRepository } from "../../../domain/repositories/song.repository"
 
-export class AdminGetSongDetailsByIdUseCase{
+export class AdminGetSongDetailsByIdUseCase implements IAdminGetSongDetailsByIdUseCase{
     constructor(
         private readonly _mongooseSongRepository: ISongRepository, 
     ){}

@@ -1,4 +1,5 @@
 
+import { IDeleteSongUseCase } from "../../../application/interfaces/usecase/song/artist-delete-song-usecase.interface";
 import { NotFoundError } from "../../../common/errors/common/common.errors";
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
@@ -6,7 +7,7 @@ import { IPlayListRepository } from "../../../domain/repositories/playList.repos
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { ITransactionManager } from "../../../domain/services/transaction.service";
 
-export class DeleteSongUseCase {
+export class DeleteSongUseCase implements IDeleteSongUseCase{
     constructor(
         private readonly _transactionManager: ITransactionManager,
         private readonly _songRepository: ISongRepository,

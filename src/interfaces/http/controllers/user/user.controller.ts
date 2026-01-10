@@ -14,7 +14,7 @@ import { IFetchAlbumsUsecase } from "../../../../application/interfaces/usecase/
 import { ISongDetailsUseCase } from "../../../../application/interfaces/usecase/song/song-details-usecaase.interface"
 import { ISongHydrationUseCase } from "../../../../application/interfaces/usecase/song/song-hydration-useace.interface"
 import { IAlbumDetailsUseCase } from "../../../../application/interfaces/usecase/album/album-details-usecase.interface"
-import { IArtistDetailsUseCase } from "../../../../application/interfaces/usecase/artist/artist-details-usecase.interface"
+import { IArtistDetailsUseCase } from "../../../../application/interfaces/usecase/artist-features/artist-details-usecase.interface"
 import { ICheckFollowStatusUseCase } from "../../../../application/interfaces/usecase/following/check-follow-status-usecase.interface"
 import { IFollowingHandleUseCase } from "../../../../application/interfaces/usecase/following/following-handle-usecase.interface"
 import { IGetFollowingListUseCase } from "../../../../application/interfaces/usecase/following/getfollowing-list-usecase.interface"

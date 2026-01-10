@@ -8,8 +8,9 @@ import { EmailFormat } from "../../../infrastructure/services/email/email-format
 import logger from "../../../infrastructure/utils/logger/logger";
 import { SignupRequestDTO } from "../../../application/dto/auth/request.dto";
 import { SignupResponseDTO } from "../../../application/dto/auth/response.dto";
+import { IArtistSignupUsecase } from "../../../application/interfaces/usecase/artist/artist-signup-usecase.interface";
 
-export class ArtistSignupUsecase {
+export class ArtistSignupUsecase implements IArtistSignupUsecase{
     constructor(
         private readonly _artistRepository: IArtistRepository,
         private readonly _cacheService: ICacheService,

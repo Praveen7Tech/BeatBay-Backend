@@ -1,40 +1,40 @@
 import { NextFunction, Response } from "express";
 import { AuthRequest } from "../../../middleware/auth/authMiddleware";
 import { StatusCode } from "../../../../common/constants/status.enum";
-import { FetchAllUsersUseCase } from "../../../../usecases/admin/users/adminFetchAllUsers.useCase";
 import { MESSAGES } from "../../../../common/constants/constants.message";
-import { GetUserByIdUseCase } from "../../../../usecases/admin/users/adminGetUserById.useCase";
-import { BlockUserUseCase } from "../../../../usecases/admin/users/adminBlockUser.useCase";
-import { UnBlockUserUseCase } from "../../../../usecases/admin/users/adminUnBlockUser.useCase";
-import { FetchAllArtistsUseCase } from "../../../../usecases/admin/artists/adminFetchAllArtists.useCase";
-import { GetArtistByIdUseCase } from "../../../../usecases/admin/artists/adminGetArtistById.useCase";
-import { BlockArtistUseCase } from "../../../../usecases/admin/artists/adminBlockArtist.useCase";
-import { UnBlockUArtistUseCase } from "../../../../usecases/admin/artists/adminUnBlockArtist.useCase";
-import { GetAdminDashBoardData } from "../../../../usecases/admin/dashboard/adminGetDashboardData";
-import { GetAllSongsUseCase } from "../../../../usecases/admin/songs/adminGetAllSong.Usecase";
-import { ToggleSongStatusUseCase } from "../../../../usecases/admin/songs/adminUpdateSongStatus.UseCase";
-import { AdminGetSongDetailsByIdUseCase } from "../../../../usecases/admin/songs/adminGetSongDetails.UseCase";
-import { AdminGetAllAlbumsUseCase } from "../../../../usecases/admin/album/adminGetAllAlbums.Usecase";
-import { AdminGetAlbumDetailsByIdUseCase } from "../../../../usecases/admin/album/adminGetAlbumDetails.UseCase";
-import { ToggleAlbumStatusUseCase } from "../../../../usecases/admin/album/adminUpdateAlbumStatus.UseCase";
+import { IFetchAllUsersUseCase } from "../../../../application/interfaces/usecase/admin/fetch-all-users-usecase.interface";
+import { IGetUserByIdUseCase } from "../../../../application/interfaces/usecase/user-features/get-userbyid-usecase.interface";
+import { IBlockUserUseCase } from "../../../../application/interfaces/usecase/admin/block-user-usecase.interface";
+import { IUnBlockUserUseCase } from "../../../../application/interfaces/usecase/admin/unblock-user-usecase.interface";
+import { IFetchAllArtistsUseCase } from "../../../../application/interfaces/usecase/admin/fetchall-artist-usecase.interface";
+import { IGetArtistByIdUseCase } from "../../../../application/interfaces/usecase/artist-features/get-artist-byid-usecase.interface";
+import { IBlockArtistUseCase } from "../../../../application/interfaces/usecase/admin/block-artist-usecase.interface";
+import { IUnBlockArtistUseCase } from "../../../../application/interfaces/usecase/admin/unblock-artist-usecase.interface";
+import { IGetAdminDashBoardDataUseCase } from "../../../../application/interfaces/usecase/admin/get-admin-dashboard-usecase.interface";
+import { IGetAllSongsUseCase } from "../../../../application/interfaces/usecase/admin/get-all-song-usecse.interface";
+import { IAdminGetSongDetailsByIdUseCase } from "../../../../application/interfaces/usecase/admin/get-songdetails-byid-usecase.interface";
+import { IToggleSongStatusUseCase } from "../../../../application/interfaces/usecase/admin/toggle-song-status-usecase.interface";
+import { IAdminGetAllAlbumsUseCase } from "../../../../application/interfaces/usecase/admin/get-all-albums-usecase.interface";
+import { IAdminGetAlbumDetailsByIdUseCase } from "../../../../application/interfaces/usecase/admin/get-album-details-byid-usecase.interface";
+import { IToggleAlbumStatusUseCase } from "../../../../application/interfaces/usecase/admin/toggle-album-status-usecase.interface";
 
 export class AdminFeaturesController{
     constructor(
-        private readonly _adminFetchAllUsers:FetchAllUsersUseCase,
-        private readonly _adminGetUserByIdUsecase: GetUserByIdUseCase,
-        private readonly _adminBlockUserUsecase: BlockUserUseCase,
-        private readonly _adminUnBlockUserUsecase: UnBlockUserUseCase,
-        private readonly _adminFetchAllArtists: FetchAllArtistsUseCase,
-        private readonly _adminGetArtistByIdUsecase: GetArtistByIdUseCase,
-        private readonly _adminBlockArtistUsecase: BlockArtistUseCase,
-        private readonly _adminUnBlockArtistUsecase: UnBlockUArtistUseCase,
-        private readonly _adminGetDashBoardData: GetAdminDashBoardData,
-        private readonly _adminGetAllSongsUsecase:GetAllSongsUseCase,
-        private readonly _getSongDetailsUseCase: AdminGetSongDetailsByIdUseCase,
-        private readonly _toggleBlockStatusUseCase:ToggleSongStatusUseCase,
-        private readonly _adminGetAllAlbumsUsecase: AdminGetAllAlbumsUseCase,
-        private readonly _getAlbumDetailsUseCase: AdminGetAlbumDetailsByIdUseCase,
-        private readonly _toggleAlbumStatusUseCase: ToggleAlbumStatusUseCase
+        private readonly _adminFetchAllUsers: IFetchAllUsersUseCase,
+        private readonly _adminGetUserByIdUsecase: IGetUserByIdUseCase,
+        private readonly _adminBlockUserUsecase: IBlockUserUseCase,
+        private readonly _adminUnBlockUserUsecase: IUnBlockUserUseCase,
+        private readonly _adminFetchAllArtists: IFetchAllArtistsUseCase,
+        private readonly _adminGetArtistByIdUsecase: IGetArtistByIdUseCase,
+        private readonly _adminBlockArtistUsecase: IBlockArtistUseCase,
+        private readonly _adminUnBlockArtistUsecase: IUnBlockArtistUseCase,
+        private readonly _adminGetDashBoardData: IGetAdminDashBoardDataUseCase,
+        private readonly _adminGetAllSongsUsecase: IGetAllSongsUseCase,
+        private readonly _getSongDetailsUseCase: IAdminGetSongDetailsByIdUseCase,
+        private readonly _toggleBlockStatusUseCase:IToggleSongStatusUseCase,
+        private readonly _adminGetAllAlbumsUsecase: IAdminGetAllAlbumsUseCase,
+        private readonly _getAlbumDetailsUseCase: IAdminGetAlbumDetailsByIdUseCase,
+        private readonly _toggleAlbumStatusUseCase: IToggleAlbumStatusUseCase
     ){}
 
     getAllUser = async(req: AuthRequest, res: Response, next: NextFunction)=>{
@@ -262,7 +262,6 @@ export class AdminFeaturesController{
         try {
             const { id } = req.params;
             const { status } = req.body; 
-            console.log("here we ", id, status)
 
             const updatedSong = await this._toggleAlbumStatusUseCase.execute(id, status);
             

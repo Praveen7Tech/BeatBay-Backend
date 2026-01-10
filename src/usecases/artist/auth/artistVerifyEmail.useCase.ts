@@ -5,8 +5,9 @@ import { IEmailService } from "../../../domain/services/mail.service"
 import { ITokenService } from "../../../domain/services/token.service"
 import { passwordResetFormat } from "../../../infrastructure/services/email/email-format"
 import { VerifyEmailRequestDTO } from "../../../application/dto/auth/request.dto"
+import { IArtistVerifyEmailUsecase } from "../../../application/interfaces/usecase/artist/artist-verify-email-usecase.interface"
 
-export class ArtistVerifyEmailUsecase {
+export class ArtistVerifyEmailUsecase implements IArtistVerifyEmailUsecase{
     constructor(
         private readonly _artistRepository: IArtistRepository,
         private readonly _tokenService: ITokenService,
@@ -23,8 +24,9 @@ export class ArtistVerifyEmailUsecase {
         const token = await this._tokenService.generateResetToken(artistId)
             
         await this._cacheService.storeResetToken(artistId,token,10*60)
-            
-        const restLink = `http://localhost:5173/artist-reset-password?token=${token}`
+        
+        const baseURL = process.env.FRONTEND_URL
+        const restLink = `${baseURL}/artist-reset-password?token=${token}`
         const restMail = passwordResetFormat.link(restLink)
             
         await this._emailService.sendMail(request.email, restMail.subject, restMail.text, restMail.html)

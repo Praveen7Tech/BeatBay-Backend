@@ -21,7 +21,7 @@ import { GetSongsUseCase } from "../../../usecases/artist/song/getSongs.useCase"
 import { ArtistCreateAlbumUseCase } from "../../../usecases/artist/album/createAlbums.useCase";
 import { MongooseAlbumRepository } from "../../presistence/mongoose/repositories/mongoose.album.repository";
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
-import { artistGetAlbumsUseCase } from "../../../usecases/artist/album/artistGetAlbums.useCase";
+import { ArtistGetAlbumsUseCase } from "../../../usecases/artist/album/artistGetAlbums.useCase";
 import { GetSongDetailsByIdUseCase } from "../../../usecases/artist/song/getSongById.useCase";
 import { EditSongUseCase } from "../../../usecases/artist/song/editSong.useCase";
 import { GetAlbumDetailsByIdUseCase } from "../../../usecases/artist/album/getAlbumDetailsById.useCase";
@@ -63,7 +63,7 @@ export const artistModule = {
 
     // albums usecase
     _artistCreateAlbumUsecase: asClass(ArtistCreateAlbumUseCase).scoped(),
-    _artistGetAlbumsUsecase: asClass(artistGetAlbumsUseCase).scoped(),
+    _artistGetAlbumsUsecase: asClass(ArtistGetAlbumsUseCase).scoped(),
     _artistAlbumDetailsUsecase: asClass(GetAlbumDetailsByIdUseCase).scoped(),
     _artistEditAlbumUsecase: asClass(EditAlbumUseCase).scoped(),
     _artistDeleteAlbumUsecase: asClass(DeleteAlbumUsecase).scoped(),

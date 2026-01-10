@@ -3,8 +3,9 @@ import { IAlbumRepository } from "../../../domain/repositories/album.repository"
 import { AlbumDetailsDTO } from "../../../application/dto/album/album.response.dto";
 import { NotFoundError } from "../../../common/errors/common/common.errors";
 import { AlbumDetailsMapper } from "../../../application/mappers/artist/album/album-details.mapper";
+import { IGetAlbumDetailsByIdUseCase } from "../../../application/interfaces/usecase/album/artisgetalbum-detail-byid-usecase.interface";
 
-export class GetAlbumDetailsByIdUseCase{
+export class GetAlbumDetailsByIdUseCase implements IGetAlbumDetailsByIdUseCase{
     constructor(
         private readonly _albumRepository: IAlbumRepository
     ){}

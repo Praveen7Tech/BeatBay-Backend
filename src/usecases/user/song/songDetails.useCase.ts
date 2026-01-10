@@ -15,9 +15,9 @@ export class SongDetailsUseCase implements ISongDetailsUseCase{
         private readonly _recomentationService: IRecomentationService
     ){}
 
-    async execute(songId: string): Promise<SongResponseDTO>{
+    async execute(songId: string, userId: string): Promise<SongResponseDTO>{
 
-       const songDetails = await this._mongooseSongRepository.findById(songId)
+        const { song: songDetails, isLiked } = await this._mongooseSongRepository.findById(songId, userId!)
        
        if(!songDetails){
           throw new NotFoundError("Song currently un available !")
@@ -40,10 +40,13 @@ export class SongDetailsUseCase implements ISongDetailsUseCase{
         }
 
         const recomentations = await this._recomentationService.getRecomentedSongs(
-            songId,artistIdString,genre
+            songId,artistIdString,genre, userId
         )
 
-
-        return {songs: songDetails, recomentations: recomentations}
+        return {
+            songs: songDetails, 
+            isLiked: isLiked,
+            recomentations: recomentations
+        }
     }
 }

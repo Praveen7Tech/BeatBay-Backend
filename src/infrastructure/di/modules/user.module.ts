@@ -38,6 +38,9 @@ import { FetchAllSongsUsecase } from "../../../usecases/user/song/allSongs.UseCa
 import { FetchAllAlbumsUsecase } from "../../../usecases/user/album/allAlbums.UseCase";
 import { GetProfileFollowersPreviewUseCase } from "../../../usecases/user/followers/getUserFollowers.UseCase";
 import { SongHydrationUseCase } from "../../../usecases/user/song/songHydration.UseCase";
+import { ToggleSongLikeStatusUseCase } from "../../../usecases/user/song/toggleSongLike.UseCase";
+import { IMongooseLikesRepository } from "../../../domain/repositories/Likes.repository";
+import { MongooseLikesRepository } from "../../presistence/mongoose/repositories/mongoose.likes.repository";
 
 export const userModule = {
     // Repository
@@ -46,6 +49,7 @@ export const userModule = {
     _mongooseAlbumRepository: asClass<IAlbumRepository>(MongooseAlbumRepository).scoped(),
     _mongooseArtistRepository: asClass<IArtistRepository>(MongooseArtistRepository).scoped(),
     _mongoosePlayListRepository: asClass<IPlayListRepository>(MongoosePlayListRepository).scoped(),
+    _mongoosesongLikesRepository: asClass<IMongooseLikesRepository>(MongooseLikesRepository).scoped(),
 
     // services
     _recomentationService: asClass<IRecomentationService>(SongRecommentationService).scoped(),
@@ -87,6 +91,9 @@ export const userModule = {
 
     //friends
     _userFriendsListsUseCase: asClass(GetUserFriendsUseCase).scoped(),
+
+    //song like
+    _toggleSongLikeUsecase: asClass(ToggleSongLikeStatusUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

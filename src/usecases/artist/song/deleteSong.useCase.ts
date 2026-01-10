@@ -20,7 +20,7 @@ export class DeleteSongUseCase implements IDeleteSongUseCase{
 
         const deleteSong =  await this._transactionManager.withTransaction(async (session) => {
 
-            const song = await this._songRepository.findById(songId)
+            const{ song} = await this._songRepository.findById(songId)
             
             const songDeleted = await this._songRepository.delete(songId, session);
             if (!songDeleted || !song) {

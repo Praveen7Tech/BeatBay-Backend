@@ -1,9 +1,10 @@
 import { Song } from "../../../domain/entities/song.entity";
 import { IRecomentationService } from "../../../domain/services/recomentation.service";
+import { LikeModel } from "../../presistence/mongoose/models/likes.model";
 import { SongModel } from "../../presistence/mongoose/models/song.model";
 
 export class SongRecommentationService implements IRecomentationService{
-    async getRecomentedSongs(songId: string, artistId: string, genre: string): Promise<Song[]> {
+    async getRecomentedSongs(songId: string, artistId: string, genre: string, userId: string): Promise<Song[]> {
         
         const limit = 10
         const currentSongId = songId
@@ -39,6 +40,27 @@ export class SongRecommentationService implements IRecomentationService{
 
         const recomentations : Song[] = [...artistSongs, ...genreSongs]
 
-        return recomentations
+        // update each song the user liked or not
+        if(userId && recomentations.length > 0){
+            const songIds = recomentations.map(song=> song._id)
+
+            const likeRecords = await LikeModel.find({
+                userId: userId,
+                songId: {$in: songIds}
+            })
+            .select("songId").lean()
+
+            const likedSet = new Set(likeRecords.map(record=> record.songId.toString()))
+
+            return recomentations.map(song =>({
+                ...song,
+                isLiked: likedSet.has(song._id.toString())
+            }))
+
+        }
+        return recomentations.map(song => ({
+            ...song,
+            isLiked: false
+        }))
     }
 }

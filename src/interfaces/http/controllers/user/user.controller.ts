@@ -30,6 +30,7 @@ import { IGetUserFriendsUseCase } from "../../../../application/interfaces/useca
 import { IFetchAllSongsUsecase } from "../../../../application/interfaces/usecase/song/fetch-all-songs-usecase.interface"
 import { IFetchAllAlbumsUsecase } from "../../../../application/interfaces/usecase/album/fetch-all-albums-usecase.interface"
 import { IGetAllPlaylistUseCase } from "../../../../application/interfaces/usecase/playlist/get-all-playlist-usecase.interface"
+import { IToggleSongLikeUseCase } from "../../../../application/interfaces/usecase/likes/toggle-song-like-usecase.interface"
 
 export class UserController{
     constructor(
@@ -56,7 +57,8 @@ export class UserController{
         private readonly _fetchAllSongsUsecase: IFetchAllSongsUsecase,
         private readonly _fetchallAlbumsUsecase: IFetchAllAlbumsUsecase,
         private readonly _followersUsecase: IGetProfileFollowersPreviewUseCase,
-        private readonly _songHydrationUsecase: ISongHydrationUseCase
+        private readonly _songHydrationUsecase: ISongHydrationUseCase,
+        private readonly _toggleSongLikeUsecase: IToggleSongLikeUseCase
         
     ){}
 
@@ -151,9 +153,9 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result =  await this._songDetailsUsecase.execute(songId)
+            const result =  await this._songDetailsUsecase.execute(songId, userId)
 
-            return res.status(StatusCode.OK).json({songs:result.songs, recomentations:result.recomentations})
+            return res.status(StatusCode.OK).json(result)
         } catch (error) {
             next(error)
         }
@@ -466,6 +468,21 @@ export class UserController{
             return res.status(StatusCode.OK).json(result);
         } catch (error) {
             next(error);
+        }
+    }
+
+    toggleLike = async(req: AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const songId = req.params.songId
+            const userId = req.user?.id
+            if (!songId || !userId) {
+                return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });
+            }
+
+            const response = await this._toggleSongLikeUsecase.execute(songId, userId)
+            return res.status(StatusCode.OK).json(response)
+        } catch (error) {
+            
         }
     }
 }

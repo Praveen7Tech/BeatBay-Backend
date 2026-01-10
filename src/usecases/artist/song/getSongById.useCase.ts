@@ -8,7 +8,7 @@ export class GetSongDetailsByIdUseCase implements IGetSongDetailsByIdUseCase{
     ){}
 
     async execute(songId: string): Promise<Song | null>{
-        const song = await this._mongooseSongRepository.findById(songId)
+        const {song} = await this._mongooseSongRepository.findById(songId)
 
         return song
     }

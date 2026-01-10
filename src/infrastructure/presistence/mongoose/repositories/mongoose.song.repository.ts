@@ -4,6 +4,7 @@ import { CreateSongData, ISongRepository } from "../../../../domain/repositories
 import { SongModel } from "../models/song.model";
 import { GetAllSongsRequest } from "../../../../domain/interfaces/songRequest";
 import { AlbumModel } from "../models/album.model";
+import { LikeModel } from "../models/likes.model";
 
 export class MongooseSongRepository implements ISongRepository{
     async create(songData: CreateSongData, session?:ClientSession): Promise<Song> {
@@ -18,13 +19,11 @@ export class MongooseSongRepository implements ISongRepository{
         return songs
     }
 
-    async findById(id: string): Promise<Song | null> {
-        const filter: FilterQuery<Song> = { 
-            _id: id, 
-            status: true 
-        };
+    async findById(id: string, userId?: string): Promise<{ song: Song | null, isLiked: boolean }> {
+        const filter = { _id: id, status: true };
         
-        return SongModel.findOne(filter)
+        // 1. Fetch the song details
+        const song = await SongModel.findOne(filter)
             .populate({
                 path: 'artistId',
                 select: 'name profilePicture',
@@ -32,6 +31,16 @@ export class MongooseSongRepository implements ISongRepository{
             })
             .lean<Song>() 
             .exec();
+
+        if (!song) return { song: null, isLiked: false };
+
+        let isLiked = false;
+        if (userId) {
+            const likeExists = await LikeModel.exists({ userId, songId: id });
+            isLiked = !!likeExists;
+        }
+
+        return { song, isLiked };
     }
 
     async songHydration(id: string): Promise<Song | null> {

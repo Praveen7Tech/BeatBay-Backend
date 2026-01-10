@@ -2,8 +2,9 @@ import { NotFoundError } from "../../../common/errors/common/common.errors";
 import { Artist } from "../../../domain/entities/arist.entity";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 import { EditProfileRequestDTO, EditProfileResponseDTO } from "../../../application/dto/profile/profile.dto";
+import { IArtistEditProfileUsecase } from "../../../application/interfaces/usecase/artist-features/edit-profile-usecase.interface";
 
-export class ArtistEditProfileUsecase{
+export class ArtistEditProfileUsecase implements IArtistEditProfileUsecase{
     constructor(
         private readonly _artistRepository: IArtistRepository,
     ){}
@@ -17,9 +18,9 @@ export class ArtistEditProfileUsecase{
         if(bio !== undefined) updateData.bio = bio
         if(profileImagePublicId) updateData.profileImagePublicId = profileImagePublicId
 
-        const updatedUser = await this._artistRepository.update(userId,updateData)
-        if(!updatedUser) throw new NotFoundError("Artist not found for edit")
+        const updatedArtist = await this._artistRepository.update(userId,updateData)
+        if(!updatedArtist) throw new NotFoundError("Artist not found for edit")
 
-        return {user:updatedUser}
+        return {user:updatedArtist}
     }        
 }

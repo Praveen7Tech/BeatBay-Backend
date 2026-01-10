@@ -1,8 +1,9 @@
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { UsersTableResponseDTO } from "../../../application/dto/admin/admin.response.dto";
 import { UserMapper } from "../../../application/mappers/admin/user/user.mapper";
+import { IFetchAllUsersUseCase } from "../../../application/interfaces/usecase/admin/fetch-all-users-usecase.interface";
 
-export class FetchAllUsersUseCase{
+export class FetchAllUsersUseCase implements IFetchAllUsersUseCase{
     constructor(
         private readonly _userRepository: IUserRepository
     ){}

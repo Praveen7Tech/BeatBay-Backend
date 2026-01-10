@@ -4,8 +4,9 @@ import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { ITransactionManager } from "../../../domain/services/transaction.service";
 import { UploadSongDTO } from "../../../application/dto/song/song.dto";
 import { NotFoundError } from "../../../common/errors/common/common.errors";
+import { IUploadSongUseCase } from "../../../application/interfaces/usecase/song/artist-upload-song-usecase.interface";
 
-export class UploadSongUseCase {
+export class UploadSongUseCase implements IUploadSongUseCase{
     constructor(
         private readonly _songRepository: ISongRepository,
         private readonly _artistRepository: IArtistRepository,

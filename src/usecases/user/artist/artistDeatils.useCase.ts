@@ -1,4 +1,4 @@
-import { IArtistDetailsUseCase } from "../../../application/interfaces/usecase/artist/artist-details-usecase.interface";
+import { IArtistDetailsUseCase } from "../../../application/interfaces/usecase/artist-features/artist-details-usecase.interface";
 import { Artist } from "../../../domain/entities/arist.entity";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 

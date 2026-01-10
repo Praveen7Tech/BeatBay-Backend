@@ -6,8 +6,9 @@ import { LoginResponseDTO } from "../../../application/dto/auth/response.dto"
 import { BadRequestError, BlockedAccountError, NotFoundError } from "../../../common/errors/common/common.errors"
 import { IArtistRepository } from "../../../domain/repositories/artist.repository"
 import { AuthMapper } from "../../../application/mappers/user/auth/auth.mapper"
+import { IArtistLoginUsecase } from "../../../application/interfaces/usecase/artist/artist-loin-usecase.interface"
 
-export class ArtistLoginUsecase {
+export class ArtistLoginUsecase implements IArtistLoginUsecase{
     constructor(
         private readonly _artistRepository: IArtistRepository,
         private readonly _passwordService: IPasswordService,

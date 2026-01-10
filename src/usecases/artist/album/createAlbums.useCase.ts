@@ -4,8 +4,9 @@ import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { ITransactionManager } from "../../../domain/services/transaction.service";
 import { CreateAlbumDTO } from "../../../application/dto/album/album.dto";
 import { ArtistCreateAlbumMapper } from "../../../application/mappers/artist/album/create-album.mapper";
+import { IArtistCreateAlbumUseCase } from "../../../application/interfaces/usecase/album/artist-create-album-usecase.interface";
 
-export class ArtistCreateAlbumUseCase {
+export class ArtistCreateAlbumUseCase implements IArtistCreateAlbumUseCase{
   constructor(
     private readonly _albumRepository: IAlbumRepository,
     private readonly _transactionManager: ITransactionManager,
@@ -13,10 +14,7 @@ export class ArtistCreateAlbumUseCase {
     private readonly _songRepository: ISongRepository
   ) {}
 
-  async execute(
-    artistId: string,
-    request: CreateAlbumDTO
-  ): Promise<{ success: boolean }> {
+  async execute(artistId: string,request: CreateAlbumDTO ): Promise<{ success: boolean }> {
 
     await this._transactionManager.withTransaction(async session => {
       const artist = await this._artistRepository.findById(artistId);

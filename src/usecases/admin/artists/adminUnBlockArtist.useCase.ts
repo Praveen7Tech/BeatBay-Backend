@@ -1,6 +1,7 @@
+import { IUnBlockArtistUseCase } from "../../../application/interfaces/usecase/admin/unblock-artist-usecase.interface";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 
-export class UnBlockUArtistUseCase{
+export class UnBlockUArtistUseCase implements IUnBlockArtistUseCase{
     constructor(
         private readonly _artistRepository: IArtistRepository
     ){}

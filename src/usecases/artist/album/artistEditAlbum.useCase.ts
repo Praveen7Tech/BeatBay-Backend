@@ -4,8 +4,9 @@ import { ForbiddenError, NotFoundError } from "../../../common/errors/common/com
 import { CreateAlbumDTO } from "../../../application/dto/album/album.dto";
 import { ISongRepository } from "../../../domain/repositories/song.repository"; 
 import { Album } from "../../../domain/entities/album.entity";
+import { IEditAlbumUseCase } from "../../../application/interfaces/usecase/album/artist-edit-album-usecase.interface";
 
-export class EditAlbumUseCase {
+export class EditAlbumUseCase implements IEditAlbumUseCase{
     constructor(
         private readonly _transactionManager: ITransactionManager,
         private readonly _albumRepository: IAlbumRepository,

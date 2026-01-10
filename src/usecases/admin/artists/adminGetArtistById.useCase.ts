@@ -1,7 +1,8 @@
+import { IGetArtistByIdUseCase } from "../../../application/interfaces/usecase/artist-features/get-artist-byid-usecase.interface"
 import { Artist } from "../../../domain/entities/arist.entity"
 import { IArtistRepository } from "../../../domain/repositories/artist.repository"
 
-export class GetArtistByIdUseCase{
+export class GetArtistByIdUseCase implements IGetArtistByIdUseCase{
     constructor(
         private readonly _artistRepository: IArtistRepository
     ){}

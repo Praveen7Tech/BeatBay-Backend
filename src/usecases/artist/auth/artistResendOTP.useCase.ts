@@ -5,8 +5,9 @@ import { EmailFormat } from "../../../infrastructure/services/email/email-format
 import logger from "../../../infrastructure/utils/logger/logger"
 import { ResendOtpRequestDTO } from "../../../application/dto/auth/request.dto"
 import { ResendOtpResponseDTO } from "../../../application/dto/auth/response.dto"
+import { IArtistResendOtpUseCase } from "../../../application/interfaces/usecase/artist/artist-resend-otp-usecase.interface"
 
-export class ArtistResendOtpUseCase {
+export class ArtistResendOtpUseCase implements IArtistResendOtpUseCase{
     constructor(
         private readonly _cacheService : ICacheService,
         private readonly _otpService: IOtpService,

@@ -3,8 +3,9 @@ import { IPasswordService } from "../../../domain/services/password.service";
 import { ChangePasswordRequestDTO } from "../../../application/dto/profile/profile.dto"; 
 import { IncorrectPasswordError, NotFoundError } from "../../../common/errors/common/common.errors";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
+import { IArtistChangePasswordUsecase } from "../../../application/interfaces/usecase/artist-features/change-password-usecase.interface";
 
-export class ArtistChangePasswordUsecase {
+export class ArtistChangePasswordUsecase implements IArtistChangePasswordUsecase{
     constructor(
         private readonly _passwordService: IPasswordService,
         private readonly _artistRepository: IArtistRepository,

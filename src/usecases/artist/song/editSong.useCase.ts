@@ -4,8 +4,9 @@ import { IAlbumRepository } from "../../../domain/repositories/album.repository"
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { ITransactionManager } from "../../../domain/services/transaction.service";
 import { EditSongDTO } from "../../../application/dto/song/song.dto"; 
+import { IEditSongUseCase } from "../../../application/interfaces/usecase/song/artist-edit-song-usecase.interface";
 
-export class EditSongUseCase {
+export class EditSongUseCase implements IEditSongUseCase{
     constructor(
         private readonly _songRepository: ISongRepository,
         private readonly _albumRepository: IAlbumRepository,

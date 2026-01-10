@@ -4,8 +4,9 @@ import { IPasswordService } from "../../../domain/services/password.service";
 import { VerifyOtpRequestDTO } from "../../../application/dto/auth/request.dto";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 import { InvalidOtpError, OtpExpiredError } from "../../../common/errors/common/common.errors";
+import { IArtistVerifyOTPuseCase } from "../../../application/interfaces/usecase/artist/artist-verify-otp-usecase.interface";
 
-export class ArtistVerifyOTPuseCase {
+export class ArtistVerifyOTPuseCase implements IArtistVerifyOTPuseCase{
     constructor(
         private readonly _cacheService: ICacheService,
         private readonly _passwordService: IPasswordService,

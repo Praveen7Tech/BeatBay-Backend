@@ -1,9 +1,9 @@
-import { Artist } from "../../../domain/entities/arist.entity"
 import { IArtistRepository } from "../../../domain/repositories/artist.repository"
 import { ArtistTableResponseDTO } from "../../../application/dto/admin/admin.response.dto"
 import { ArtistMapper } from "../../../application/mappers/admin/artist/artist.mapper";
+import { IFetchAllArtistsUseCase } from "../../../application/interfaces/usecase/admin/fetchall-artist-usecase.interface";
 
-export class FetchAllArtistsUseCase{
+export class FetchAllArtistsUseCase implements IFetchAllArtistsUseCase{
     constructor(
         private readonly _artistRepository: IArtistRepository
     ){}

@@ -1,12 +1,13 @@
 import { ClientSession } from "mongoose"
 import { Album } from "../entities/album.entity"
 import { GetAllAlbumsRequest } from "../interfaces/albumRequest"
-import { AdminAlbumDetailsDTO } from "../../application/dto/admin/album/album-details"
+import { EditAlbumDetailsDTO } from "../../application/dto/album/album.dto"
 
 export interface IAlbumRepository{
     create(albumData:Partial<Album>, session: ClientSession): Promise<Album>
     getAll(): Promise<Album[]>
     findById(id: string): Promise<Album | null>
+    getDetails(albumId: string): Promise<EditAlbumDetailsDTO | null>;
     getAlbumsByIds(albumIds: string[]): Promise<Album[]>
     updateById(albumId: string, data: Partial<Album>, session?: ClientSession): Promise<Album | null>
     find(albumId: string): Promise<Album | null>

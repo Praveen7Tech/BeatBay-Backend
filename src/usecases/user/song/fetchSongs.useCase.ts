@@ -1,15 +1,18 @@
+import { FetchSongsResponseDTO } from "../../../application/dto/song/song.response.dto";
 import { IFetchSongsUsecase } from "../../../application/interfaces/usecase/song/fetch-songs-usecase.interface";
-import { Song } from "../../../domain/entities/song.entity";
+import { FetchSongMapper } from "../../../application/mappers/song/fetch-song.mapper";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 
 export class FetchSongsUsecase implements IFetchSongsUsecase {
-    constructor(
-        private readonly _mongooseSongRepository: ISongRepository
-    ){}
+  constructor(
+    private readonly _songRepository: ISongRepository
+  ) {}
 
-    async execute(): Promise<Song[]>{
-        const songs = this._mongooseSongRepository.getAll()
+  async execute(): Promise<FetchSongsResponseDTO> {
+    const songs = await this._songRepository.getAll();
 
-        return songs
-    }
+    return {
+      songs: FetchSongMapper.toDTOList(songs),
+    };
+  }
 }

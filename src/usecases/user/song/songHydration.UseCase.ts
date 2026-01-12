@@ -12,7 +12,7 @@ function isArtistDetails(artist: string | ArtistDetails): artist is ArtistDetail
 export class SongHydrationUseCase implements ISongHydrationUseCase{
     constructor(
         private readonly _mongooseSongRepository: ISongRepository,
-        private readonly _recomentationService: IRecomentationService
+        private readonly _recommendationService: IRecomentationService
     ){}
 
     async execute(songId: string): Promise<SongHydrationResponseDTO>{
@@ -39,11 +39,11 @@ export class SongHydrationUseCase implements ISongHydrationUseCase{
             throw new Error("song recomentation logic failed")
         }
 
-        const recomentations = await this._recomentationService.getRecomentedSongs(
+        const recomentations = await this._recommendationService.getRecomentedSongs(
             songId,artistIdString,genre
         )
 
 
-        return [songDetails, ...recomentations];
+        return [songDetails];
     }
 }

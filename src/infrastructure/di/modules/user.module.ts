@@ -41,6 +41,8 @@ import { SongHydrationUseCase } from "../../../usecases/user/song/songHydration.
 import { ToggleSongLikeStatusUseCase } from "../../../usecases/user/song/toggleSongLike.UseCase";
 import { IMongooseLikesRepository } from "../../../domain/repositories/Likes.repository";
 import { MongooseLikesRepository } from "../../presistence/mongoose/repositories/mongoose.likes.repository";
+import { UserLikedSongsUseCase } from "../../../usecases/user/favorites/userLikedSongs.UseCase";
+import { GetPlayListEditUseCase } from "../../../usecases/user/playList/get-playlistedit.UseCase";
 
 export const userModule = {
     // Repository
@@ -52,7 +54,7 @@ export const userModule = {
     _mongoosesongLikesRepository: asClass<IMongooseLikesRepository>(MongooseLikesRepository).scoped(),
 
     // services
-    _recomentationService: asClass<IRecomentationService>(SongRecommentationService).scoped(),
+    _recommendationService: asClass<IRecomentationService>(SongRecommentationService).scoped(),
     _searchService: asClass<ISearchService>(SearchResponseService).singleton(),
 
     //useCases
@@ -80,10 +82,11 @@ export const userModule = {
     //playList
     _createPlayListUsecase: asClass(CreatePlayListUseCase).scoped(),
     _getPlayListUsecase: asClass(GetPlayListUseCase).scoped(),
+    _getPlayListEditUsecase: asClass(GetPlayListEditUseCase).scoped(),
     _getAllPlayListUsecase: asClass(GetAllPlaylistUseCase).scoped(),
     _addToPlayListUsecase: asClass(AddToPlayListUseCase).scoped(),
     _searchSongsUseCase: asClass(SearchSongsUseCase).scoped(),
-    _editPlauListUsecase: asClass(EditPlayListUseCase).scoped(),
+    _editPlayListUsecase: asClass(EditPlayListUseCase).scoped(),
 
     //search(discover)
     _userSearchDataUsecase: asClass(UserGetSearchDataUseCase).scoped(),
@@ -94,6 +97,7 @@ export const userModule = {
 
     //song like
     _toggleSongLikeUsecase: asClass(ToggleSongLikeStatusUseCase).scoped(),
+    _userLikedSongsUsecase: asClass(UserLikedSongsUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

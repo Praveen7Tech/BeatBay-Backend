@@ -1,5 +1,6 @@
-import { Album } from "../../../../domain/entities/album.entity";
+
+import { FetchAlbumsResponseDTO } from "../../../dto/album/album.response.dto";
 
 export interface IFetchAlbumsUsecase {
-    execute(): Promise<Album[]>;
+    execute(): Promise<FetchAlbumsResponseDTO>;
 }

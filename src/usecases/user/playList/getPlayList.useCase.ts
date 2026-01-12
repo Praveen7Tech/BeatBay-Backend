@@ -1,15 +1,18 @@
+import { PlayListResponseDTO } from "../../../application/dto/playList/request.dto";
 import { IGetPlayListUseCase } from "../../../application/interfaces/usecase/playlist/get-playlist-usecase.interface";
-import { PlayList } from "../../../domain/entities/playList.entiy";
+import { PlayListMapper } from "../../../application/mappers/playlist.mapper";
 import { IPlayListRepository } from "../../../domain/repositories/playList.repository";
 
- export class GetPlayListUseCase implements IGetPlayListUseCase{
-    constructor(
-        private readonly _mongoosePlayListRepository: IPlayListRepository
-    ){}
+export class GetPlayListUseCase implements IGetPlayListUseCase {
+  constructor(
+    private readonly _playListRepository: IPlayListRepository
+  ) {}
 
-    async execute(playListId: string): Promise<PlayList | null>{
-        const playList = await this._mongoosePlayListRepository.findById(playListId)
+  async execute(playListId: string): Promise<PlayListResponseDTO | null> {
+    const playList = await this._playListRepository.findById(playListId);
 
-        return playList
-    }
- }
+    if (!playList) return null;
+
+    return PlayListMapper.toResponse(playList);
+  }
+}

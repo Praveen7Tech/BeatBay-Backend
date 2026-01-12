@@ -25,6 +25,7 @@ import { IEditAlbumUseCase } from "../../../../application/interfaces/usecase/al
 import { IDeleteSongUseCase } from "../../../../application/interfaces/usecase/song/artist-delete-song-usecase.interface";
 import { IDeleteAlbumUsecase } from "../../../../application/interfaces/usecase/album/artist-delete-albu-usecase.interface";
 import { IArtistChangePasswordUsecase } from "../../../../application/interfaces/usecase/artist-features/change-password-usecase.interface";
+import { IAlbumDetailsEditUseCase } from "../../../../application/interfaces/usecase/album/get-albumdetails-edit-usecase.interface";
 
 export class ArtistController {
     constructor(
@@ -40,7 +41,7 @@ export class ArtistController {
         private readonly _artistEditAlbumUsecase: IEditAlbumUseCase,
         private readonly _artistDeleteSongUsecase: IDeleteSongUseCase,
         private readonly _artistDeleteAlbumUsecase: IDeleteAlbumUsecase,
-        private readonly _getAlbumDetailsUsecase: IAlbumDetailsUseCase,
+        private readonly _getAlbumDetailsUsecase: IAlbumDetailsEditUseCase,
         private readonly _getArtistDetailsUsecase: IGetArtistByIdUseCase
     ){}
 
@@ -193,7 +194,7 @@ export class ArtistController {
             }
             const result = await this._artistGetSongsUsecase.execute(artistId)
 
-            return res.status(StatusCode.OK).json(result)
+            return res.status(StatusCode.OK).json(result.songs)
         } catch (error) {
             next(error)
         }

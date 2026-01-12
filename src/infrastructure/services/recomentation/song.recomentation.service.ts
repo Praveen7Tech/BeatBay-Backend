@@ -4,7 +4,7 @@ import { LikeModel } from "../../presistence/mongoose/models/likes.model";
 import { SongModel } from "../../presistence/mongoose/models/song.model";
 
 export class SongRecommentationService implements IRecomentationService{
-    async getRecomentedSongs(songId: string, artistId: string, genre: string, userId: string): Promise<Song[]> {
+    async getRecomentedSongs(songId: string, artistId: string, genre: string, userId: string): Promise<{ song: Song; isLiked: boolean }[]> {
         
         const limit = 10
         const currentSongId = songId
@@ -38,29 +38,23 @@ export class SongRecommentationService implements IRecomentationService{
         .lean()
         .limit(limit).exec()
 
-        const recomentations : Song[] = [...artistSongs, ...genreSongs]
+        const songs : Song[] = [...artistSongs, ...genreSongs]
 
         // update each song the user liked or not
-        if(userId && recomentations.length > 0){
-            const songIds = recomentations.map(song=> song._id)
+        let likedSet = new Set<string>();
 
-            const likeRecords = await LikeModel.find({
-                userId: userId,
-                songId: {$in: songIds}
-            })
-            .select("songId").lean()
+        if (userId && songs.length > 0) {
+            const likes = await LikeModel.find({
+            userId,
+            songId: { $in: songs.map(s => s._id) },
+            }).select("songId");
 
-            const likedSet = new Set(likeRecords.map(record=> record.songId.toString()))
-
-            return recomentations.map(song =>({
-                ...song,
-                isLiked: likedSet.has(song._id.toString())
-            }))
-
+            likedSet = new Set(likes.map(l => l.songId.toString()));
         }
-        return recomentations.map(song => ({
-            ...song,
-            isLiked: false
-        }))
+
+        return songs.map(song => ({
+            song,
+            isLiked: likedSet.has(song._id.toString()),
+        }));
     }
 }

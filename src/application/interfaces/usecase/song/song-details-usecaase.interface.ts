@@ -1,5 +1,5 @@
-import { SongResponseDTO } from "../../../dto/song/song.response.dto";
+import { SongDetailsResponseDTO } from "../../../dto/song/song.response.dto";
 
 export interface ISongDetailsUseCase {
-    execute(songId: string, userId: string): Promise<SongResponseDTO>;
+    execute(songId: string, userId: string): Promise<SongDetailsResponseDTO>;
 }

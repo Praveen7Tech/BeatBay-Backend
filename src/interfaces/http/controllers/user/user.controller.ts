@@ -31,6 +31,8 @@ import { IFetchAllSongsUsecase } from "../../../../application/interfaces/usecas
 import { IFetchAllAlbumsUsecase } from "../../../../application/interfaces/usecase/album/fetch-all-albums-usecase.interface"
 import { IGetAllPlaylistUseCase } from "../../../../application/interfaces/usecase/playlist/get-all-playlist-usecase.interface"
 import { IToggleSongLikeUseCase } from "../../../../application/interfaces/usecase/likes/toggle-song-like-usecase.interface"
+import { IUserLikedSongsUseCase } from "../../../../application/interfaces/usecase/favorites/user-likes-songs-usecase.interface"
+import { IGetPlayListEditUseCase } from "../../../../application/interfaces/usecase/playlist/get-playlist-edit.usecase.interface"
 
 export class UserController{
     constructor(
@@ -49,7 +51,8 @@ export class UserController{
         private readonly _getAllPlayListUsecase: IGetAllPlaylistUseCase,
         private readonly _addToPlayListUsecase: IAddToPlayListUseCase,
         private readonly _searchSongsUseCase: ISearchSongsUseCase,
-        private readonly _editPlauListUsecase: IEditPlayListUseCase,
+        private readonly _getPlayListEditUsecase: IGetPlayListEditUseCase,
+        private readonly _editPlayListUsecase: IEditPlayListUseCase,
         private readonly _getUserDetailsUsecase: IGetUserByIdUseCase,
         private readonly _userSearchDataUsecase: IUserGetSearchDataUseCase,
         private readonly _getUserProfileDetailsUsecase: IGetUserProfileUseCase,
@@ -58,7 +61,8 @@ export class UserController{
         private readonly _fetchallAlbumsUsecase: IFetchAllAlbumsUsecase,
         private readonly _followersUsecase: IGetProfileFollowersPreviewUseCase,
         private readonly _songHydrationUsecase: ISongHydrationUseCase,
-        private readonly _toggleSongLikeUsecase: IToggleSongLikeUseCase
+        private readonly _toggleSongLikeUsecase: IToggleSongLikeUseCase,
+        private readonly _userLikedSongsUsecase: IUserLikedSongsUseCase
         
     ){}
 
@@ -124,9 +128,9 @@ export class UserController{
             if(!req.user?.id){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
-            const songs = await this._fetchSongsUsecase.execute()
+            const response = await this._fetchSongsUsecase.execute()
 
-            return res.status(StatusCode.OK).json(songs)
+            return res.status(StatusCode.OK).json(response.songs)
         } catch (error) {
             next(error)
         }
@@ -137,9 +141,9 @@ export class UserController{
             if(!req.user?.id){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
-            const songs = await this._fetchAlbumsUsecase.execute()
+            const response = await this._fetchAlbumsUsecase.execute()
 
-            return res.status(StatusCode.OK).json(songs)
+            return res.status(StatusCode.OK).json(response.albums)
         } catch (error) {
             next(error)
         }
@@ -366,7 +370,7 @@ export class UserController{
             const playListId = req.params.playListId;
             const updateData = req.body; 
 
-            const existingPlaylist = await this._getPlayListUsecase.execute(playListId)
+            const existingPlaylist = await this._getPlayListEditUsecase.execute(playListId)
             if (!existingPlaylist) {
                 return res.status(404).json({ message: "Playlist not found" });
             }
@@ -387,7 +391,7 @@ export class UserController{
                 updateData.coverImageUrl = imageUpload.secure_url; 
                 updateData.coverImagePublicId= imageUpload.public_id
             }
-            const result = await this._editPlauListUsecase.execute(playListId, updateData);
+            const result = await this._editPlayListUsecase.execute(playListId, updateData);
 
             return res.status(StatusCode.OK).json({message: "Playlist updated successfully", data: result});
         } catch (error) {
@@ -483,6 +487,21 @@ export class UserController{
             return res.status(StatusCode.OK).json(response)
         } catch (error) {
             
+        }
+    }
+
+    LikedSongs = async(req:AuthRequest, res:Response,next:NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            const page = parseInt(req.query.page as string) || 1
+            if ( !userId) {
+                return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });
+            }
+
+            const response = await this._userLikedSongsUsecase.execute(userId, page)
+            return res.status(StatusCode.OK).json(response)
+        } catch (error) {
+            next(error)
         }
     }
 }

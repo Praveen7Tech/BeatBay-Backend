@@ -21,3 +21,26 @@ export interface AlbumDetailsDTO{
   coverImageUrl: string;
   songs: { id: string; title: string; coverImageUrl: string }[];
 }
+
+export interface FetchAlbumItemDTO {
+  id: string;
+  title: string;
+  coverImageUrl: string;
+}
+
+export interface FetchAlbumsResponseDTO {
+  albums: FetchAlbumItemDTO[];
+}
+
+import { SongDetailsDTO } from "../song/song.response.dto";
+import { AlbumSongDetailsDTO } from "./album.dto";
+
+export interface AlbumDetailsResponseDTO {
+  id: string;
+  title: string;
+  description?: string;
+  coverImageUrl: string;
+  artistName: string;
+  songs: AlbumSongDetailsDTO[];
+}
+

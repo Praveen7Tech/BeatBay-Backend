@@ -1,5 +1,5 @@
-import { Album } from "../../../../domain/entities/album.entity";
+import { AlbumDetailsResponseDTO } from "../../../dto/album/album.response.dto";
 
 export interface IAlbumDetailsUseCase {
-    execute(albumId: string): Promise<Album>;
+    execute(albumId: string): Promise<AlbumDetailsResponseDTO>
 }

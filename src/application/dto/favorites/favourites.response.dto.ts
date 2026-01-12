@@ -1,0 +1,24 @@
+import { Song } from "../../../domain/entities/song.entity";
+
+export interface LikedSongs {
+  id: string;
+  title: string;
+  coverImage: string;
+  duration: number;
+  artistName: string;
+  likedAt: string; 
+}
+
+export interface LikedSongsResponseDTO {
+  songs: LikedSongs[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface LikedSongDetails {
+  _id: string;         
+  createdAt: Date;      
+  songDetails: Song;    
+}

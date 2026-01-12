@@ -4,6 +4,7 @@ import { IAlbumRepository } from "../../../../domain/repositories/album.reposito
 import { AlbumModel } from "../models/album.model";
 import { GetAllAlbumsRequest } from "../../../../domain/interfaces/albumRequest";
 import { title } from "process";
+import { EditAlbumDetailsDTO } from "../../../../application/dto/album/album.dto";
 
 export class MongooseAlbumRepository implements IAlbumRepository {
     async create(albumData: Album, session: ClientSession): Promise<Album> {
@@ -24,13 +25,27 @@ export class MongooseAlbumRepository implements IAlbumRepository {
                     isActive: true 
                 };
         return await AlbumModel.findOne(filter)
-        .populate({
-            path:'artistId',
-            select: 'name profilePicture',
-            model: 'Artist'
-        })
+        // .populate({
+        //     path:'artistId',
+        //     select: '_id name profilePicture',
+        //     model: 'Artist'
+        // })
         .populate("songs")
         .lean().exec()
+    }
+
+    async getDetails(albumId: string): Promise<EditAlbumDetailsDTO | null> {
+        const album = await AlbumModel.findById(albumId)
+                .select("_id coverImagePublicId")
+                .lean()
+                .exec();
+        
+        if (!album) return null;
+        
+        return {
+            id: album._id.toString(),
+            coverImagePublicId: album.coverImagePublicId
+        };
     }
 
     async getAlbumsByIds(albumIds: string[]): Promise<Album[]> {

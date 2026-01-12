@@ -47,5 +47,7 @@ export default (container: AwilixContainer): Router=> {
 
     router.put('/song/:songId/toggle-like', userController.toggleLike)
 
+    router.get('/liked-songs', userController.LikedSongs)
+
     return router
 }

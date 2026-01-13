@@ -68,4 +68,16 @@ export class  MongoosePlayListRepository implements IPlayListRepository{
             {session}
         ).exec()
     }
+
+    async removeSong(playlistId: string, songId: string): Promise<void> {
+        await PlayListModel.findByIdAndUpdate(playlistId,{
+            $pull: {songs:songId}
+        })
+        .lean().exec()
+    }
+
+    async delete(playlistId: string): Promise<boolean> {
+        const playlist = await PlayListModel.findByIdAndDelete(playlistId)
+        return !!playlist
+    }
 }

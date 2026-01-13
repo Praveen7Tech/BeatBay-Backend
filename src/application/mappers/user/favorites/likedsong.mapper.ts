@@ -10,7 +10,8 @@ export class LikedSongMapper {
     return {
       id: song._id.toString(),
       title: song.title,
-      coverImage: song.coverImageUrl,
+      coverImageUrl: song.coverImageUrl,
+      audioUrl: song.audioUrl,
       duration: song.duration,
       artistName: song.artistName,
       likedAt: raw.createdAt.toISOString(), // liked date from Like collection

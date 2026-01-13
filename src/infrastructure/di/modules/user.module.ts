@@ -43,6 +43,8 @@ import { IMongooseLikesRepository } from "../../../domain/repositories/Likes.rep
 import { MongooseLikesRepository } from "../../presistence/mongoose/repositories/mongoose.likes.repository";
 import { UserLikedSongsUseCase } from "../../../usecases/user/favorites/userLikedSongs.UseCase";
 import { GetPlayListEditUseCase } from "../../../usecases/user/playList/get-playlistedit.UseCase";
+import { RemoveFromPlaylistUseCase } from "../../../usecases/user/playList/removeFromPlaylist.UseCase";
+import { DeletePlayListUseCase } from "../../../usecases/user/playList/deletePlayList.UseCase";
 
 export const userModule = {
     // Repository
@@ -85,8 +87,10 @@ export const userModule = {
     _getPlayListEditUsecase: asClass(GetPlayListEditUseCase).scoped(),
     _getAllPlayListUsecase: asClass(GetAllPlaylistUseCase).scoped(),
     _addToPlayListUsecase: asClass(AddToPlayListUseCase).scoped(),
+    _remoevFromPlayListUsecase: asClass(RemoveFromPlaylistUseCase).scoped(),
     _searchSongsUseCase: asClass(SearchSongsUseCase).scoped(),
     _editPlayListUsecase: asClass(EditPlayListUseCase).scoped(),
+    _deletePlayListUsecase: asClass(DeletePlayListUseCase).scoped(),
 
     //search(discover)
     _userSearchDataUsecase: asClass(UserGetSearchDataUseCase).scoped(),

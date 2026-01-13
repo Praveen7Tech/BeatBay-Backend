@@ -3,7 +3,8 @@ import { Song } from "../../../domain/entities/song.entity";
 export interface LikedSongs {
   id: string;
   title: string;
-  coverImage: string;
+  coverImageUrl: string;
+  audioUrl: string
   duration: number;
   artistName: string;
   likedAt: string; 

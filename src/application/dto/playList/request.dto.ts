@@ -28,5 +28,6 @@ export interface PlayListResponseDTO {
   name: string;
   coverImageUrl?: string;
   description?: string;
+  totalDuration:number
   songs: PlayListSongDTO[];
 }

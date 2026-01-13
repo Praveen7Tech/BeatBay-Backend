@@ -33,6 +33,8 @@ import { IGetAllPlaylistUseCase } from "../../../../application/interfaces/useca
 import { IToggleSongLikeUseCase } from "../../../../application/interfaces/usecase/likes/toggle-song-like-usecase.interface"
 import { IUserLikedSongsUseCase } from "../../../../application/interfaces/usecase/favorites/user-likes-songs-usecase.interface"
 import { IGetPlayListEditUseCase } from "../../../../application/interfaces/usecase/playlist/get-playlist-edit.usecase.interface"
+import { IRemoveFromPlayListUseCase } from "../../../../application/interfaces/usecase/playlist/remove-from-playlist-usecase.interface"
+import { IDeletePlayListUseCase } from "../../../../application/interfaces/usecase/playlist/delete-playlist-usecase.interface"
 
 export class UserController{
     constructor(
@@ -50,6 +52,8 @@ export class UserController{
         private readonly _getPlayListUsecase: IGetPlayListUseCase,
         private readonly _getAllPlayListUsecase: IGetAllPlaylistUseCase,
         private readonly _addToPlayListUsecase: IAddToPlayListUseCase,
+        private readonly _remoevFromPlayListUsecase: IRemoveFromPlayListUseCase,
+        private readonly _deletePlayListUsecase: IDeletePlayListUseCase,
         private readonly _searchSongsUseCase: ISearchSongsUseCase,
         private readonly _getPlayListEditUsecase: IGetPlayListEditUseCase,
         private readonly _editPlayListUsecase: IEditPlayListUseCase,
@@ -341,6 +345,38 @@ export class UserController{
             const result = await this._addToPlayListUsecase.execute(playListId,songId)
 
             return res.status(StatusCode.CREATED).json({message: "song added to playlist"})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    removeFromPlaylist = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            const { playlistId, songId } = req.params;
+            if(!playlistId || !songId){
+                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const result = await this._remoevFromPlayListUsecase.execute(playlistId,songId)
+
+            res.status(StatusCode.OK).json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    deletePlayList = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const playlistId = req.params.playlistId
+            if(!playlistId){
+                 return res.status(StatusCode.BAD_REQUEST).json({message: MESSAGES.UNAUTHORIZED})
+            }
+
+            const result = await this._deletePlayListUsecase.execute(playlistId)
+            const code = result == true ? StatusCode.OK : StatusCode.NOT_FOUND
+
+            res.status(code).json(result)
         } catch (error) {
             next(error)
         }

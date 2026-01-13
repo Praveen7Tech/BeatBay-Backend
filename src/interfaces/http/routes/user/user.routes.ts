@@ -34,7 +34,9 @@ export default (container: AwilixContainer): Router=> {
     router.get('/get-playlist/:playListId', userController.getPlayList)
     router.get('/get-user-playlist', userController.getAllPlaylists)
     router.post('/addTo-playList/:playListId', userController.addToPlayList)
+    router.delete('/playlist/:playlistId/song/:songId', userController.removeFromPlaylist)
     router.post('/edit-playList/:playListId', uploadImage.single("coverImage"), userController.editPlayList)
+    router.delete('/playlist/:playlistId/delete', userController.deletePlayList)
 
     router.get('/searchSong', userController.searchSongs)
     router.get('/search', userController.searchDiscover)

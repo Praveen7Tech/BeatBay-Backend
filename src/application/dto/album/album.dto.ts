@@ -26,4 +26,5 @@ export interface AlbumSongDetailsDTO {
   coverImageUrl: string;
   audioUrl: string;
   duration: number;
+  isLiked: boolean
 }

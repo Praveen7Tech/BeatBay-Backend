@@ -25,11 +25,6 @@ export class MongooseAlbumRepository implements IAlbumRepository {
                     isActive: true 
                 };
         return await AlbumModel.findOne(filter)
-        // .populate({
-        //     path:'artistId',
-        //     select: '_id name profilePicture',
-        //     model: 'Artist'
-        // })
         .populate("songs")
         .lean().exec()
     }

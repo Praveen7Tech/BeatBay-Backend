@@ -8,7 +8,7 @@ export interface IPlayListRepository {
     findById(playListId: string): Promise<PlayList | null>
     getDetails(playListId: string): Promise<PlayListEditDTO | null>;
     findByUserId(userId: string): Promise<playListProjection[]>
-    update(playListId: string, songId: string): Promise<void>
+    update(playListId: string, songId: string): Promise<boolean>
     edit(playListId: string, entity: Partial<PlayList>): Promise<PlayList | null>;
     removeSongFromAllPlaylists(songId: string, session: ClientSession): Promise<void>
     removeSong(playlistId:string, songId:string): Promise<void>

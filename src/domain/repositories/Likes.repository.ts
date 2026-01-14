@@ -9,4 +9,6 @@ export interface LikedSongsResponseData{
 export interface IMongooseLikesRepository{
     toggleLike(songId:string, userId: string): Promise<boolean>;
     likedSongs(userId: string, page: number): Promise<LikedSongsResponseData>
+    isSongLiked(userId: string, songId: string): Promise<boolean>;
+    findLikedSongIds(userId:string,songIds:string[]): Promise<Set<string>>
 }

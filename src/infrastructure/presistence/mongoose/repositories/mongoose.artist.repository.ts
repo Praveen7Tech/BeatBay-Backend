@@ -5,6 +5,7 @@ import { ArtistModel } from "../models/artist.model";
 import { Song } from "../../../../domain/entities/song.entity";
 import { Album } from "../../../../domain/entities/album.entity";
 import { PaginatedResult } from "../../../../domain/interfaces/paginatedResult.interface";
+import { ArtistPopulated } from "../../../../domain/interfaces/albumRequest";
 
 export class MongooseArtistRepository implements IArtistRepository {
     constructor(){}
@@ -21,6 +22,13 @@ export class MongooseArtistRepository implements IArtistRepository {
         .populate("songs")
         .populate("albums")
         .lean();
+      }
+
+      async findArtistDetailsById(id: string): Promise<ArtistPopulated | null> {
+        return ArtistModel.findById(id)
+          .populate("albums")
+          .populate("songs")
+          .lean<ArtistPopulated>();
       }
     
       

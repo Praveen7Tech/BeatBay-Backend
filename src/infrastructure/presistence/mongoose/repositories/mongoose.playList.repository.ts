@@ -44,11 +44,16 @@ export class  MongoosePlayListRepository implements IPlayListRepository{
         return playlists
     }
 
-    async update(playListId: string, songId: string): Promise<void> {
+    async update(playListId: string, songId: string): Promise<boolean> {
+        const playlist = await PlayListModel.findById(playListId)
+        const isDuplicate = playlist?.songs.some(id=> id.toString() === songId)
+        if(isDuplicate){
+            return false
+        }
         await PlayListModel.findByIdAndUpdate(playListId,{
             $addToSet:{songs: songId}
         }).lean().exec()
-
+        return true
     }
 
     async edit(playListId: string, entity: Partial<PlayList>): Promise<PlayList | null> {

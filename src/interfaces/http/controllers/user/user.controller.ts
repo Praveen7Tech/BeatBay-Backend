@@ -193,7 +193,7 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result = await this._albumDetailsUsecase.execute(albumId)
+            const result = await this._albumDetailsUsecase.execute(albumId, userId)
 
             return res.status(StatusCode.OK).json(result)
         } catch (error) {

@@ -9,7 +9,7 @@ export type CreateSongData = Omit<Song, '_id' | 'createdAt' | 'updatedAt' | 'pla
 export interface ISongRepository{
     create(songData: CreateSongData, session?:ClientSession): Promise<Song>;
     getAll(): Promise<Song[]>
-    findById(id: string, userId?: string): Promise<{song:Song | null, isLiked: boolean}>
+    findById(id: string): Promise<Song | null>
     songHydration(id: string): Promise<Song | null>
     searchByQuery(query: string, options?: {limit?: number; offset?: number}): Promise<Song[]>
     edit(songId: string, data: Partial<Song>, session?: ClientSession): Promise<Song | null>;

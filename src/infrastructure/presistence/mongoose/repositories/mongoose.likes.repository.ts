@@ -56,4 +56,17 @@ export class MongooseLikesRepository implements IMongooseLikesRepository{
 
         return { songs: likedSongs, totalCount };
     }
+
+    async isSongLiked(userId: string, songId: string): Promise<boolean> {
+        const exists = await LikeModel.exists({userId,songId})
+        return !!exists
+    }
+
+    async findLikedSongIds(userId: string, songIds: string[]): Promise<Set<string>> {
+        const likes = await LikeModel.find({userId,
+            songId:{$in:songIds}
+        }).select("songId").lean()
+
+        return new Set(likes.map(l => l.songId.toString()))
+    }
 }

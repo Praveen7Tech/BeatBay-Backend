@@ -19,7 +19,7 @@ export class MongooseSongRepository implements ISongRepository{
         return songs
     }
 
-    async findById(id: string, userId?: string): Promise<{ song: Song | null, isLiked: boolean }> {
+    async findById(id: string): Promise<Song | null> {
         const filter = { _id: id, status: true };
         
         // 1. Fetch the song details
@@ -32,15 +32,15 @@ export class MongooseSongRepository implements ISongRepository{
             .lean<Song>() 
             .exec();
 
-        if (!song) return { song: null, isLiked: false };
+        // if (!song) return { song: null, isLiked: false };
 
-        let isLiked = false;
-        if (userId) {
-            const likeExists = await LikeModel.exists({ userId, songId: id });
-            isLiked = !!likeExists;
-        }
+        // let isLiked = false;
+        // if (userId) {
+        //     const likeExists = await LikeModel.exists({ userId, songId: id });
+        //     isLiked = !!likeExists;
+        // }
 
-        return { song, isLiked };
+        return song
     }
 
     async songHydration(id: string): Promise<Song | null> {

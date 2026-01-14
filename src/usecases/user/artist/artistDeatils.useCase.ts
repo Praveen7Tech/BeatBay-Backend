@@ -1,4 +1,6 @@
+import { ArtistDetailsResponseDTO } from "../../../application/dto/artist/artist.profile.dto";
 import { IArtistDetailsUseCase } from "../../../application/interfaces/usecase/artist-features/artist-details-usecase.interface";
+import { ArtistDetailsMapper } from "../../../application/mappers/artist/profile/artist.profile.mapper";
 import { Artist } from "../../../domain/entities/arist.entity";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 
@@ -7,8 +9,11 @@ export class ArtistDetailsUseCase implements IArtistDetailsUseCase{
         private readonly _mongooseArtistRepository: IArtistRepository
     ){}
 
-    async execute(artistId:string): Promise<Artist | null>{
-        const artistDetails = await this._mongooseArtistRepository.findById(artistId)
-        return artistDetails
+    async execute(artistId:string): Promise<ArtistDetailsResponseDTO  | null>{
+        const artist = await this._mongooseArtistRepository.findArtistDetailsById(artistId);
+
+        if (!artist) return null;
+
+        return ArtistDetailsMapper.toResponse(artist);
     }
 }

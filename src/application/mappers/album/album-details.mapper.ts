@@ -8,7 +8,7 @@ function isArtistDetails(artist: string | ArtistDetails): artist is ArtistDetail
 }
 
 export class AlbumMapper {
-  static toAlbumDetails(album: Album): AlbumDetailsResponseDTO {
+  static toAlbumDetails(album: Album, likedSongIds:Set<string>): AlbumDetailsResponseDTO {
     const artist = album.artistId;
 
     return {
@@ -16,8 +16,16 @@ export class AlbumMapper {
       title: album.title,
       description: album.description,
       coverImageUrl: album.coverImageUrl,
-      artistName: isArtistDetails(artist) ? artist.name : "",
-      songs: album.songs.map(SongMapper.toSongDetailsDTO) ?? [],
+      artistName: album.artistName,
+      releaseYear: album.createdAt,
+      songs: album.songs.map((song: any) => ({
+        id: song._id.toString(),
+        title: song.title,
+        coverImageUrl: song.coverImageUrl,
+        duration: song.duration,
+        audioUrl: song.audioUrl,
+        isLiked: likedSongIds.has(song._id.toString())
+      })),
     };
   }
 }

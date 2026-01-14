@@ -41,6 +41,7 @@ export interface AlbumDetailsResponseDTO {
   description?: string;
   coverImageUrl: string;
   artistName: string;
+  releaseYear: Date;
   songs: AlbumSongDetailsDTO[];
 }
 

@@ -2,7 +2,7 @@ import { ClientSession } from "mongoose";
 import { Artist } from "../entities/arist.entity";
 import { IBaseRepository } from "./base.repository";
 import { Song } from "../entities/song.entity";
-import { Album } from "../entities/album.entity";
+import { ArtistPopulated } from "../interfaces/albumRequest";
 
 export interface IArtistRepository extends IBaseRepository<Artist> {
     addSongIdToArtist(artistId: string, songId: string, session: ClientSession): Promise<void>
@@ -11,4 +11,5 @@ export interface IArtistRepository extends IBaseRepository<Artist> {
     fetchAlbums(artistId: string): Promise<string[]>
     removeSongIdFromArtist(artistId: string, songId:string, session: ClientSession): Promise<void>
     removeAlbumIdFromArtist(artistId: string, albumId:string, session: ClientSession): Promise<void>
+    findArtistDetailsById(id: string): Promise<ArtistPopulated | null>;
 }

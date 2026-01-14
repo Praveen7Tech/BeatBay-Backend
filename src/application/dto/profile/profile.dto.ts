@@ -18,7 +18,7 @@ export interface ChangePasswordRequestDTO{
   newPassword: string
 }
 
-export interface followDTO{
+export interface FollowDTO{
   id:string
   name:string
   profilePicture:string
@@ -27,7 +27,7 @@ export interface followDTO{
 export interface PlayListDTO{
   id:string
   title:string
-  coverImage:string
+  coverImageUrl:string
 }
 export interface UserDTO{
   id:string
@@ -39,16 +39,10 @@ export interface UserDTO{
 
 export interface UserProfileRespnseDTO{
   user: UserDTO,
-  followingArtists: followDTO[]
+  followingArtists: FollowDTO[]
   playlists: PlayListDTO[]
 
 }
-export interface FollowDTO {
-  id: string;
-  name: string;
-  profilePicture: string;
-}
-
 
 export interface UserProfileDTO {
   id: string;
@@ -61,5 +55,6 @@ export interface UserProfileDTO {
 export interface UserProfileResponseDTO {
   user: UserProfileDTO;
   followingArtists: FollowDTO[];
+  followingUsers: FollowDTO[]
   playlists: PlayListDTO[];
 }

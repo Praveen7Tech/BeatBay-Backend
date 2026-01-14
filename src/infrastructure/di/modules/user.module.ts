@@ -45,6 +45,8 @@ import { UserLikedSongsUseCase } from "../../../usecases/user/favorites/userLike
 import { GetPlayListEditUseCase } from "../../../usecases/user/playList/get-playlistedit.UseCase";
 import { RemoveFromPlaylistUseCase } from "../../../usecases/user/playList/removeFromPlaylist.UseCase";
 import { DeletePlayListUseCase } from "../../../usecases/user/playList/deletePlayList.UseCase";
+import { IFollowersRepository } from "../../../domain/repositories/followers.repository";
+import { MongooseFolloersRepository } from "../../presistence/mongoose/repositories/mongoose.followers.repository";
 
 export const userModule = {
     // Repository
@@ -54,6 +56,7 @@ export const userModule = {
     _mongooseArtistRepository: asClass<IArtistRepository>(MongooseArtistRepository).scoped(),
     _mongoosePlayListRepository: asClass<IPlayListRepository>(MongoosePlayListRepository).scoped(),
     _mongoosesongLikesRepository: asClass<IMongooseLikesRepository>(MongooseLikesRepository).scoped(),
+    _mongoosefollowersRepository: asClass<IFollowersRepository>(MongooseFolloersRepository).scoped(),
 
     // services
     _recommendationService: asClass<IRecomentationService>(SongRecommentationService).scoped(),

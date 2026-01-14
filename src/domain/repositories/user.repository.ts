@@ -13,5 +13,4 @@ export interface IUserRepository extends IBaseRepository<User> {
     getUserProfileDetails(userId: string): Promise< User | null>;
     toggleFollow(followId: string, targetId: string,role: string,action: string): Promise<void>
     getMutualFriends(userId: string): Promise<User[]>
-   getFollowersList(targetId: string, page: number, limit: number): Promise<{ followers: FollowedEntity[], total: number }>
 }   

@@ -3,8 +3,9 @@ import { Artist } from "../../../../domain/entities/arist.entity";
 import { PlayList } from "../../../../domain/entities/playList.entiy";
 import { UserProfileResponseDTO } from "../../../dto/profile/profile.dto";
 
-type PopulatedUser = Omit<User, 'followingArtists' | 'playLists'> & {
+type PopulatedUser = Omit<User, 'followingArtists' | 'playLists' | 'followingUsers'> & {
   followingArtists: Artist[];
+  followingUsers: User[]
   playLists: PlayList[];
 };
 
@@ -24,11 +25,18 @@ export class ProfileMapper {
         id: artist._id.toString(),
         name: artist.name,
         profilePicture: artist.profilePicture || "",
+        role: artist.role
+      })),
+      followingUsers: (populatedUser.followingUsers || []).map((user)=> ({
+        id: user._id.toString(),
+        name: user.name,
+        profilePicture: user.profilePicture || "",
+        role: user.role
       })),
       playlists: (populatedUser.playLists || []).map((playlist) => ({
         id: playlist._id.toString(),
         title: playlist.name, 
-        coverImage: playlist.coverImageUrl,
+        coverImageUrl: playlist.coverImageUrl,
       })),
     };
   }

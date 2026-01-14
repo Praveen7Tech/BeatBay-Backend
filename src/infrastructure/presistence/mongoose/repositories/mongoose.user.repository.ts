@@ -1,15 +1,10 @@
 import { IUserRepository } from '../../../../domain/repositories/user.repository';
 import { User } from '../../../../domain/entities/user.entity';
 import { UserModel } from '../models/user.model';
-import { userModule } from '../../../di/modules/user.module';
-import { Artist } from '../../../../domain/entities/arist.entity';
-import mongoose, { ClientSession, model } from 'mongoose';
-import path from 'path';
+import mongoose, { ClientSession } from 'mongoose';
 import { PaginatedResult } from '../../../../domain/interfaces/paginatedResult.interface';
-import { title } from 'process';
-import { UserProfileRespnseDTO } from '../../../../application/dto/profile/profile.dto';
 import { ArtistModel } from '../models/artist.model';
-import { FollowedEntity, FollowingData } from '../../../../domain/interfaces/following';
+import { FollowedEntity } from '../../../../domain/interfaces/following';
 import { FollowerModel } from '../models/followers.model';
 
 export class MongooseUserRepository implements IUserRepository {
@@ -206,11 +201,15 @@ export class MongooseUserRepository implements IUserRepository {
       const user = await UserModel.findById(userId)
           .populate({
             path: "followingArtists",
-            select: "name profilePicture"
+            select: "name profilePicture role"
           })
           .populate({
             path: "playLists",
             select: "name coverImageUrl"
+          })
+          .populate({
+            path: "followingUsers",
+            select: "name profilePicture role"
           })
           .lean(); 
 
@@ -230,32 +229,5 @@ export class MongooseUserRepository implements IUserRepository {
       .lean()
   }
 
-
-  async getFollowersList(targetId: string, page: number, limit: number): Promise<{ followers: FollowedEntity[], total: number }> {
-    const skip = (page - 1) * limit;
-
-    const [followerDocs, total] = await Promise.all([
-        FollowerModel.find({ targetId })
-            .skip(skip)
-            .limit(limit)
-            .sort({ createdAt: -1 }) 
-            .populate<{ followerId: any }>({
-                path: "followerId",
-                select: "name role profilePicture" 
-            })
-            .lean()
-            .exec(),
-        FollowerModel.countDocuments({ targetId })
-    ]);
-
-    const followers: FollowedEntity[] = followerDocs.map(f => ({
-        _id: f.followerId._id.toString(),
-        name: f.followerId.name,
-        role: f.followerId.role,
-        profilePicture: f.followerId.profilePicture || ''
-    }));
-
-    return { followers, total };
-}
 
 }

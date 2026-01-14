@@ -1,18 +1,18 @@
-import { FollowedEntity } from "../../../../domain/interfaces/following";
+import { FollowerPreview } from "../../../../domain/interfaces/following";
 import { FollowingResponseDTO } from "../../../dto/follow/following.dto";
 
 
 export class FollowerMapper {
-    static toFollowerDTO(user: FollowedEntity): FollowingResponseDTO {
+    static toFollowerDTO(user: FollowerPreview): FollowingResponseDTO {
         return {
-            id: user._id,
+            id: user.id,
             name: user.name,
             role: user.role,
             profilePicture: user.profilePicture ?? ''
         };
     }
 
-    static toFollowerDTOs(users: FollowedEntity[]): FollowingResponseDTO[] {
+    static toFollowerDTOs(users: FollowerPreview[]): FollowingResponseDTO[] {
         return users.map(this.toFollowerDTO);
     }
 }

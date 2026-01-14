@@ -1,6 +1,5 @@
 import mongoose, { Schema, Model, HydratedDocument } from 'mongoose';
 import { User } from '../../../../domain/entities/user.entity';
-import { number } from 'zod';
 
 export type UserDocument = HydratedDocument<User>;
 

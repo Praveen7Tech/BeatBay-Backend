@@ -9,3 +9,10 @@ export interface FollowingData {
     artists: FollowedEntity[];
     users: FollowedEntity[];
 }
+
+export interface FollowerPreview{
+    id:string,
+    name:string;
+    role:string;
+    profilePicture:string
+}

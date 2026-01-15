@@ -5,3 +5,8 @@ export interface playListProjection {
     name: string
     coverImageUrl?: string | null
 }
+
+export interface PlayListProjectionResponse{
+    playlists:playListProjection[]
+    total:number
+}

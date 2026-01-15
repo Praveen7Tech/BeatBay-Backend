@@ -9,11 +9,17 @@ export interface PlayListEditRequestDTO{
     description?:string
 }
 
-export interface UserPlaylistResponse{
+export interface UserPlaylistDTO{
     id: string
     name: string
     coverImageUrl?: string | null
 }
+
+export interface UserPlaylistResponse{
+  playlists:UserPlaylistDTO[],
+  totalPages: number
+}
+
 export interface PlayListSongDTO {
   id: string;
   title: string;

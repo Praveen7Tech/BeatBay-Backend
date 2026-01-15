@@ -57,4 +57,5 @@ export interface UserProfileResponseDTO {
   followingArtists: FollowDTO[];
   followingUsers: FollowDTO[]
   playlists: PlayListDTO[];
+  followers: FollowDTO[]
 }

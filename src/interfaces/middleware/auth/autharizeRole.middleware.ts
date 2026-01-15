@@ -14,7 +14,7 @@ export const authorizeRoles = (...allowedRoles: string[]) => {
         message: `Access Denied: ${req.user.role} role does not have permission.` 
       });
     }
-    logger.info("Role based autharization complete!")
+    //logger.info("Role based autharization complete!")
     next();
   };
 };

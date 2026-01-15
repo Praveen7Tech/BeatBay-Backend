@@ -2,7 +2,7 @@ import { ClientSession, HydratedDocument } from "mongoose";
 import { PlayList } from "../../../../domain/entities/playList.entiy";
 import { IPlayListRepository } from "../../../../domain/repositories/playList.repository";
 import { PlayListModel } from "../models/playList.model";
-import { playListProjection } from "../../../../domain/interfaces/playlist.interface";
+import { playListProjection, PlayListProjectionResponse } from "../../../../domain/interfaces/playlist.interface";
 import { PlayListEditDTO } from "../../../../application/dto/playList/edit.playlist.dto";
 
 export class  MongoosePlayListRepository implements IPlayListRepository{
@@ -37,11 +37,19 @@ export class  MongoosePlayListRepository implements IPlayListRepository{
         return playList
     }
 
-    async findByUserId(userId: string): Promise<playListProjection[]> {
-        const playlists = await PlayListModel.find({userId: userId})
-        .select("_id name coverImageUrl").lean().exec()
+    async findByUserId(userId: string,page:number, limit:number): Promise<PlayListProjectionResponse> {
+        const skip = (page - 1) * limit
 
-        return playlists
+        const [playlists, total] = await Promise.all([
+            PlayListModel.find({userId})
+            .skip(skip).limit(limit)
+            .select("name coverImageUrl")
+            .lean(),
+
+            PlayListModel.countDocuments({userId})
+        ])
+
+        return {playlists, total}
     }
 
     async update(playListId: string, songId: string): Promise<boolean> {

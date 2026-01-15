@@ -2,9 +2,10 @@
 export interface SongDTO{
     id: string
     title: string
-    artist: string
+    artistName: string
     duration: number
     coverImageUrl: string
+    audioUrl: string
 }
 
 export interface ArtistDTO {

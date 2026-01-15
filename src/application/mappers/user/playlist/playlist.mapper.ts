@@ -1,7 +1,7 @@
 
 import { PlayList } from "../../../../domain/entities/playList.entiy"; 
 import { playListProjection } from "../../../../domain/interfaces/playlist.interface";
-import { CreatePlayListResponseDTO, UserPlaylistResponse } from "../../../dto/playList/request.dto";
+import { CreatePlayListResponseDTO, UserPlaylistDTO, } from "../../../dto/playList/request.dto";
 
 export class PlayListMapper {
 
@@ -12,7 +12,7 @@ export class PlayListMapper {
         };
     }
 
-    static toUserPlaylistResponseDTO( playlist: playListProjection ): UserPlaylistResponse {
+    static toUserPlaylistResponseDTO( playlist: playListProjection ): UserPlaylistDTO {
         return {
             id: playlist._id.toString(),
             name: playlist.name,
@@ -20,7 +20,7 @@ export class PlayListMapper {
         };
     }
 
-    static toUserPlaylistResponseDTOs( playlists: playListProjection[] ): UserPlaylistResponse[] {
+    static toUserPlaylistResponseDTOs( playlists: playListProjection[] ): UserPlaylistDTO[] {
         return playlists.map(this.toUserPlaylistResponseDTO);
     }
 }

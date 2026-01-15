@@ -10,9 +10,10 @@ export class SearchMapper {
   static song = (s: Song): SongDTO => ({
     id: s._id.toString(),
     title: s.title,
-    artist: s.artistName,
+    artistName: s.artistName,
     duration: s.duration,
-    coverImageUrl: s.coverImageUrl
+    coverImageUrl: s.coverImageUrl,
+    audioUrl: s.audioUrl
   });
 
   static album = (a: Album): AlbumDTO => ({

@@ -2,6 +2,7 @@ import { User } from "../../../../domain/entities/user.entity";
 import { Artist } from "../../../../domain/entities/arist.entity"; 
 import { PlayList } from "../../../../domain/entities/playList.entiy";
 import { UserProfileResponseDTO } from "../../../dto/profile/profile.dto";
+import { FollowerPreview } from "../../../../domain/interfaces/following";
 
 type PopulatedUser = Omit<User, 'followingArtists' | 'playLists' | 'followingUsers'> & {
   followingArtists: Artist[];
@@ -10,7 +11,7 @@ type PopulatedUser = Omit<User, 'followingArtists' | 'playLists' | 'followingUse
 };
 
 export class ProfileMapper {
-  static toResponseDTO(user: User): UserProfileResponseDTO {
+  static toResponseDTO(user: User,followers:FollowerPreview[]): UserProfileResponseDTO {
     const populatedUser = user as unknown as PopulatedUser;
 
     return {
@@ -38,6 +39,7 @@ export class ProfileMapper {
         title: playlist.name, 
         coverImageUrl: playlist.coverImageUrl,
       })),
+      followers: followers
     };
   }
 }

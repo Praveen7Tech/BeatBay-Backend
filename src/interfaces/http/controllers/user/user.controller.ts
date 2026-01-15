@@ -277,8 +277,8 @@ export class UserController{
             const userId = req.user?.id;
             if (!userId) return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });
 
-            const page = parseInt(req.query.page as string) || 1;
-            const limit = parseInt(req.query.limit as string) || 6; 
+            const page = parseInt(req.query.page as string) 
+            const limit = parseInt(req.query.limit as string) 
 
             const result = await this._followersUsecase.execute(userId, page, limit);
             
@@ -321,11 +321,13 @@ export class UserController{
     getAllPlaylists = async(req: AuthRequest, res: Response, next: NextFunction)=>{
         try {
             const userId = req.user?.id
+            const page = Number(req.query.page ) || 1
+            const limit = Number(req.query.limit) || Infinity
             if(!userId){
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const plalists = await this._getAllPlayListUsecase.execute(userId)
+            const plalists = await this._getAllPlayListUsecase.execute(userId, page, limit)
 
             return res.status(StatusCode.OK).json(plalists)
         } catch (error) {
@@ -453,7 +455,8 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
             const userDetails = await this._getUserProfileDetailsUsecase.execute(userId)
-             return res.status(StatusCode.OK).json(userDetails)
+           
+            return res.status(StatusCode.OK).json(userDetails)
         } catch (error) {
             next(error)
         }

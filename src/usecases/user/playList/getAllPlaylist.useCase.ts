@@ -8,10 +8,13 @@ export class GetAllPlaylistUseCase implements IGetAllPlaylistUseCase{
         private readonly _playListRepository: IPlayListRepository
     ){}
 
-    async execute(userId: string): Promise<UserPlaylistResponse[]>{
-        const playlists = await this._playListRepository.findByUserId(userId);
+    async execute(userId: string,page:number, limit:number): Promise<UserPlaylistResponse>{
+        const {playlists,total }= await this._playListRepository.findByUserId(userId,page,limit);
 
-        return PlayListMapper.toUserPlaylistResponseDTOs(playlists);
+        return {
+            playlists: PlayListMapper.toUserPlaylistResponseDTOs(playlists),
+            totalPages: Math.ceil(total / limit)
+        } 
         
     }
 }

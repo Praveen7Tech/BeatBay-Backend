@@ -47,3 +47,12 @@ export interface SearchSongsDTO {
   limit?: number;
   offset?: number;
 }
+
+export interface SongResponseDTO {
+  id: string;
+  title: string;
+  coverImageUrl: string;
+  artistName: string;
+  duration: number;
+  audioUrl: string;
+}

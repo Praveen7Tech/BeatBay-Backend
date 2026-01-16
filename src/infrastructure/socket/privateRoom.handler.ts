@@ -182,7 +182,7 @@ export class PrivateRoomHandler {
                     ...songData,
                     updatedAt: Date.now()
                 };
-console.log("song data - ", updatedSongData)
+
                 await this.socketCacheService.updateRoomPlayBack(roomId, updatedSongData);
 
                 socket.to(roomId).emit("receive_player_sync", updatedSongData);
@@ -208,6 +208,31 @@ console.log("song data - ", updatedSongData)
                 logger.error("Add to queue error:", error);
             }
         });
+
+        socket.on("removeFromQueue", async ({ roomId, songId }: { roomId: string; songId: string }) => {
+            try {
+            console.log("remove updation start", songId);
+
+            const room = await this.socketCacheService.getRoom(roomId);
+            if (!room || !room.queue) return;
+
+            // Remove song by id
+            const updatedQueue = room.queue.filter(
+                (song) => song.id !== songId
+            );
+
+            await this.socketCacheService.updateRoomQueue(roomId, updatedQueue);
+
+            // Emit updated queue to everyone in room
+            io.to(roomId).emit("queue_updated", updatedQueue);
+
+            logger.info(`Song removed from queue in room ${roomId}`);
+            } catch (error) {
+            logger.error("remove from queue error:", error);
+            }
+        }
+        );
+
 
     }
 

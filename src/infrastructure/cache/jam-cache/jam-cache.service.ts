@@ -21,13 +21,6 @@ export class SocketCacheService implements ISocketCacheService{
         logger.info(`room created: ${key}`)
     }
 
-    // update room when song state change
-    async updateRoomPlayBack(roomId: string, songData: any): Promise<void> {
-        const key = this.roomKey(roomId)
-        await this.client.hSet(key, "songData", JSON.stringify(songData))
-        console.log("updation complete")
-    }
-
     // add guest to room while accepting invite
     async addMembersToRoom(roomId: string, member: RoomMember): Promise<void> {
         const key = this.getMemberKey(roomId)
@@ -179,5 +172,18 @@ export class SocketCacheService implements ISocketCacheService{
         // Ensure the room doesn't expire while active (optional/safety)
         await this.client.expire(key, 86400); 
     }
+
+    async updateRoomSongData(roomId: string, songData: SongData | null): Promise<void> {
+        const key = this.roomKey(roomId);
+
+        if (!songData) {
+            await this.client.hDel(key, "songData");
+        } else {
+            await this.client.hSet(key, "songData", JSON.stringify(songData));
+        }
+
+        await this.client.expire(key, 86400);
+    }
+
     
 }

@@ -49,7 +49,8 @@ export interface ISocketCacheService{
 
     getFriendsGlobalStatus(userId: string, friendIds: string[]): Promise<Record<string, any>>;
 
-    updateRoomPlayBack(roomId: string, songData: SongData): Promise<void>
 
     updateRoomQueue(roomId: string, queue: SongData[]): Promise<void>;
+    updateRoomSongData(roomId: string, songData: SongData | null): Promise<void>;
+
 }

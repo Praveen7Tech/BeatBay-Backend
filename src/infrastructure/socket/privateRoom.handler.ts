@@ -176,20 +176,22 @@ export class PrivateRoomHandler {
         /////////////////////////////////////
 
         // UPDATE PLAYBACK
-        socket.on("player_sync", async ({ roomId, songData }: { roomId: string, songData: SongData }) => {
+       socket.on("player_sync", async ({ roomId, songData }) => {
+        console.log("syncing", songData)
             try {
-                const updatedSongData = {
-                    ...songData,
-                    updatedAt: Date.now()
-                };
+                if (!roomId || !songData) return;
 
-                await this.socketCacheService.updateRoomPlayBack(roomId, updatedSongData);
+                // save current song state
+                await this.socketCacheService.updateRoomSongData(roomId, songData);
 
-                socket.to(roomId).emit("receive_player_sync", updatedSongData);
-            } catch (error) {
-                logger.error("Sync Error:", error);
+                // Broadcast to guests
+                socket.to(roomId).emit("player_sync", songData);
+            } catch (err) {
+                logger.error("player_sync error", err);
             }
         });
+
+
 
        socket.on("addTo_queue", async ({ roomId, song }: { roomId: string, song: SongData }) => {
             try {
@@ -197,11 +199,11 @@ export class PrivateRoomHandler {
                 const room = await this.socketCacheService.getRoom(roomId);
                 if (!room) return;
 
-                const updatedQueue = [...(room.queue || []), song];
+                const updatedQueue = [...room.queue, song];
 
                 await this.socketCacheService.updateRoomQueue(roomId, updatedQueue);
 
-                io.to(roomId).emit("queue_updated", updatedQueue);
+                io.to(roomId).emit("queue_updated", song);
                 
                 logger.info(`Song added to queue in room ${roomId}`);
             } catch (error) {
@@ -211,27 +213,26 @@ export class PrivateRoomHandler {
 
         socket.on("removeFromQueue", async ({ roomId, songId }: { roomId: string; songId: string }) => {
             try {
-            console.log("remove updation start", songId);
+                console.log("remove updation start", songId);
 
-            const room = await this.socketCacheService.getRoom(roomId);
-            if (!room || !room.queue) return;
+                const room = await this.socketCacheService.getRoom(roomId);
+                if (!room || !room.queue) return;
 
-            // Remove song by id
-            const updatedQueue = room.queue.filter(
-                (song) => song.id !== songId
-            );
+                // Remove song by id
+                const updatedQueue = room.queue.filter(
+                    (song) => song.id !== songId
+                );
 
-            await this.socketCacheService.updateRoomQueue(roomId, updatedQueue);
+                await this.socketCacheService.updateRoomQueue(roomId, updatedQueue);
 
-            // Emit updated queue to everyone in room
-            io.to(roomId).emit("queue_updated", updatedQueue);
+                // Emit updated queue to everyone in room
+                io.to(roomId).emit("song_removed", songId);
 
-            logger.info(`Song removed from queue in room ${roomId}`);
+                logger.info(`Song removed from queue in room ${roomId}`);
             } catch (error) {
-            logger.error("remove from queue error:", error);
+                logger.error("remove from queue error:", error);
             }
-        }
-        );
+        });
 
 
     }

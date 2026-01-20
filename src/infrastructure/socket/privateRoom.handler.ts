@@ -176,16 +176,15 @@ export class PrivateRoomHandler {
         /////////////////////////////////////
 
         // UPDATE PLAYBACK
-       socket.on("player_sync", async ({ roomId, songData }) => {
-        console.log("syncing", songData)
+       socket.on("player_action", async ({ roomId, songData }) => {
+            logger.info("syncing", songData)
             try {
                 if (!roomId || !songData) return;
 
                 // save current song state
                 await this.socketCacheService.updateRoomSongData(roomId, songData);
 
-                // Broadcast to guests
-                socket.to(roomId).emit("player_sync", songData);
+                io.to(roomId).emit("player_action", songData);
             } catch (err) {
                 logger.error("player_sync error", err);
             }
@@ -232,6 +231,12 @@ export class PrivateRoomHandler {
             } catch (error) {
                 logger.error("remove from queue error:", error);
             }
+        });
+
+        // TIME DRIFT UPDATE
+        socket.on("player_tick", ({ roomId, time, isPlaying }) => {
+            console.log("drift from host", time)
+            socket.to(roomId).emit("player_tick", { time, isPlaying });
         });
 
 

@@ -31,5 +31,8 @@ export default (container: AwilixContainer): Router=>{
     router.get('/get-albumbyid/:id', adminFeaturesController.getAlbumDetails)
     router.put('/album/:id/status', adminFeaturesController.toggleAlbumBlockStatus)
 
+    router.get('/demographics', adminFeaturesController.demographics)
+    router.get('/dashboard-entity', adminFeaturesController.entityBreakDown)
+
     return router
 }

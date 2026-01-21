@@ -54,3 +54,9 @@ export class BlockedAccountError extends DomainError{
         super("Your account account has been blocked by an administrator, plase contact the helpline!", StatusCode.FORBIDDEN)
     }
 }
+
+export class InvalidError extends DomainError {
+    constructor(message: string){
+        super(message, StatusCode.BAD_REQUEST)
+    }
+}

@@ -6,6 +6,7 @@ import { PaginatedResult } from '../../../../domain/interfaces/paginatedResult.i
 import { ArtistModel } from '../models/artist.model';
 import { FollowedEntity } from '../../../../domain/interfaces/following';
 import { FollowerModel } from '../models/followers.model';
+import { DemoGraphics } from '../../../../application/dto/admin/dashboard/dashboard.dto';
 
 export class MongooseUserRepository implements IUserRepository {
   constructor() {}
@@ -227,6 +228,34 @@ export class MongooseUserRepository implements IUserRepository {
       })
       .select("name profilePicture status")
       .lean()
+  }
+
+
+  async getUserStatistics(startDate: Date): Promise<DemoGraphics[]> {
+      const data = await UserModel.aggregate([
+        {$match: {createdAt: {$gte :startDate}}},
+        {
+          $group:{ 
+              _id:{
+                $dateToString:{
+                  format: "%Y-%m-%d", 
+                  date: "$createdAt"
+                }
+              },
+            total: {$sum:1}
+          }
+        },
+        {
+           $project:{
+             _id:0,
+             date: "$_id",
+             total: 1
+           }
+        },
+        { $sort: {date: 1}}
+      ])
+
+      return data
   }
 
 

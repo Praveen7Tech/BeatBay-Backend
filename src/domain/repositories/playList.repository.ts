@@ -2,6 +2,7 @@ import { ClientSession } from "mongoose";
 import { PlayList } from "../entities/playList.entiy";
 import { playListProjection, PlayListProjectionResponse } from "../interfaces/playlist.interface";
 import { PlayListEditDTO } from "../../application/dto/playList/edit.playlist.dto";
+import { DemoGraphics } from "../../application/dto/admin/dashboard/dashboard.dto";
 
 export interface IPlayListRepository {
     create(plalistData:Partial<PlayList>, session?:ClientSession): Promise<PlayList>
@@ -13,4 +14,5 @@ export interface IPlayListRepository {
     removeSongFromAllPlaylists(songId: string, session: ClientSession): Promise<void>
     removeSong(playlistId:string, songId:string): Promise<void>
     delete(playlistId:string): Promise<boolean>
+    //getPlayListStatistics(startDate : Date): Promise<DemoGraphics>
 }

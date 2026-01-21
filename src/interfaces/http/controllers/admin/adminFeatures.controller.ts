@@ -17,6 +17,8 @@ import { IToggleSongStatusUseCase } from "../../../../application/interfaces/use
 import { IAdminGetAllAlbumsUseCase } from "../../../../application/interfaces/usecase/admin/get-all-albums-usecase.interface";
 import { IAdminGetAlbumDetailsByIdUseCase } from "../../../../application/interfaces/usecase/admin/get-album-details-byid-usecase.interface";
 import { IToggleAlbumStatusUseCase } from "../../../../application/interfaces/usecase/admin/toggle-album-status-usecase.interface";
+import { IDashBoardDemographicsUseCase } from "../../../../application/interfaces/usecase/admin/dashboard/dahsboard-demographics-usecase.interface";
+import { IDashBoardEntityBreakDownUseCase } from "../../../../application/interfaces/usecase/admin/dashboard/entity-breakdown-usecase.interface";
 
 export class AdminFeaturesController{
     constructor(
@@ -34,7 +36,9 @@ export class AdminFeaturesController{
         private readonly _toggleBlockStatusUseCase:IToggleSongStatusUseCase,
         private readonly _adminGetAllAlbumsUsecase: IAdminGetAllAlbumsUseCase,
         private readonly _getAlbumDetailsUseCase: IAdminGetAlbumDetailsByIdUseCase,
-        private readonly _toggleAlbumStatusUseCase: IToggleAlbumStatusUseCase
+        private readonly _toggleAlbumStatusUseCase: IToggleAlbumStatusUseCase,
+        private readonly _dashBoardDemographicsUsecase : IDashBoardDemographicsUseCase,
+        private readonly _dashBoardEntityBreakDownUseCase: IDashBoardEntityBreakDownUseCase
     ){}
 
     getAllUser = async(req: AuthRequest, res: Response, next: NextFunction)=>{
@@ -271,6 +275,33 @@ export class AdminFeaturesController{
             });
         } catch (error) {
             next(error);
+        }
+    }
+
+    demographics = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const entity = req.query.entity as string;
+            const range = req.query.range as string;
+
+            if(!entity || !range){
+                return res.status(StatusCode.BAD_REQUEST).json("invalid entiry or range")
+            }
+
+            const data = await this._dashBoardDemographicsUsecase.execute(entity, range)
+
+            return res.status(StatusCode.OK).json(data)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    entityBreakDown = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const data = await this._dashBoardEntityBreakDownUseCase.execute()
+
+            return res.status(StatusCode.OK).json(data)
+        } catch (error) {
+            next(error)
         }
     }
 }

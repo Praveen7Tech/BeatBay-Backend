@@ -6,6 +6,7 @@ import { Song } from "../../../../domain/entities/song.entity";
 import { Album } from "../../../../domain/entities/album.entity";
 import { PaginatedResult } from "../../../../domain/interfaces/paginatedResult.interface";
 import { ArtistPopulated } from "../../../../domain/interfaces/albumRequest";
+import { DemoGraphics } from "../../../../application/dto/admin/dashboard/dashboard.dto";
 
 export class MongooseArtistRepository implements IArtistRepository {
     constructor(){}
@@ -136,4 +137,6 @@ export class MongooseArtistRepository implements IArtistRepository {
       
             return artist
       }
+
+      
 }

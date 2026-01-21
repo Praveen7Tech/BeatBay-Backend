@@ -3,6 +3,7 @@ import { Artist } from "../entities/arist.entity";
 import { IBaseRepository } from "./base.repository";
 import { Song } from "../entities/song.entity";
 import { ArtistPopulated } from "../interfaces/albumRequest";
+import { DemoGraphics } from "../../application/dto/admin/dashboard/dashboard.dto";
 
 export interface IArtistRepository extends IBaseRepository<Artist> {
     addSongIdToArtist(artistId: string, songId: string, session: ClientSession): Promise<void>
@@ -12,4 +13,5 @@ export interface IArtistRepository extends IBaseRepository<Artist> {
     removeSongIdFromArtist(artistId: string, songId:string, session: ClientSession): Promise<void>
     removeAlbumIdFromArtist(artistId: string, albumId:string, session: ClientSession): Promise<void>
     findArtistDetailsById(id: string): Promise<ArtistPopulated | null>;
+   // getArtistStatistics(startDate:Date): Promise<DemoGraphics[]>
 }

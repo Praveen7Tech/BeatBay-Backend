@@ -2,7 +2,7 @@
 import { ClientSession } from "mongoose";
 import { Song } from "../entities/song.entity";
 import { GetAllSongsRequest } from "../interfaces/songRequest";
-import { boolean } from "zod";
+import { DemoGraphics } from "../../application/dto/admin/dashboard/dashboard.dto";
 
 export type CreateSongData = Omit<Song, '_id' | 'createdAt' | 'updatedAt' | 'playCount' | 'likesCount'>;
 
@@ -20,4 +20,5 @@ export interface ISongRepository{
     adminfindById(id: string): Promise<Song | null>
     admingetAllSongs(params: GetAllSongsRequest): Promise<{ songs: Song[], total: number }>;
     updateStatus(id: string, status: boolean): Promise<Song | null>;
+    //getSongStatistics(startDate: Date): Promise<DemoGraphics>
 }

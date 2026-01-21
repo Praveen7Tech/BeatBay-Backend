@@ -1,4 +1,4 @@
-import { asClass } from "awilix";
+import { asClass, asValue } from "awilix";
 import { AdminAuthController } from "../../../interfaces/http/controllers/admin/admin.auth.controller";
 import { AdminLoginUsecase } from "../../../usecases/admin/auth/adminLogin.useCase";
 import { AdminFeaturesController } from "../../../interfaces/http/controllers/admin/adminFeatures.controller";
@@ -12,15 +12,24 @@ import { BlockArtistUseCase } from "../../../usecases/admin/artists/adminBlockAr
 import { UnBlockUArtistUseCase } from "../../../usecases/admin/artists/adminUnBlockArtist.useCase";
 import { GetAdminDashBoardData } from "../../../usecases/admin/dashboard/adminGetDashboardData";
 import { GetAllSongsUseCase } from "../../../usecases/admin/songs/adminGetAllSong.Usecase";
-import { GetSongDetailsByIdUseCase } from "../../../usecases/artist/song/getSongById.useCase";
 import { ToggleSongStatusUseCase } from "../../../usecases/admin/songs/adminUpdateSongStatus.UseCase";
 import { AdminGetSongDetailsByIdUseCase } from "../../../usecases/admin/songs/adminGetSongDetails.UseCase";
 import { AdminGetAllAlbumsUseCase } from "../../../usecases/admin/album/adminGetAllAlbums.Usecase";
 import { AdminGetAlbumDetailsByIdUseCase } from "../../../usecases/admin/album/adminGetAlbumDetails.UseCase";
 import { ToggleAlbumStatusUseCase } from "../../../usecases/admin/album/adminUpdateAlbumStatus.UseCase";
+import { DashBoardDemographicsUseCase } from "../../../usecases/admin/dashboard/adminDemographics.UseCase";
+import { IDashBoardRepository } from "../../../domain/repositories/demographics.repository";
+import { MongooseDashBoardRepository } from "../../presistence/mongoose/repositories/mongoose.dashBoard.repository";
+import { dashBoardModels } from "../../presistence/mongoose/models-listing/dashboard-models";
+import { DashBoardEntityBreakDownUseCase } from "../../../usecases/admin/dashboard/adminEntityBreakdown.UseCase";
 
 
 export const adminModule ={
+
+    _dashBoardModels : asValue(dashBoardModels),
+
+    // dashbord repository setup
+    _dashBoarRepository: asClass<IDashBoardRepository>(MongooseDashBoardRepository).scoped(),
 
     // use cases
     _adminLoginUsecase: asClass(AdminLoginUsecase).scoped(),
@@ -42,6 +51,10 @@ export const adminModule ={
     _adminGetAllAlbumsUsecase: asClass(AdminGetAllAlbumsUseCase).scoped(),
     _getAlbumDetailsUseCase: asClass(AdminGetAlbumDetailsByIdUseCase).scoped(),
     _toggleAlbumStatusUseCase: asClass(ToggleAlbumStatusUseCase).scoped(),
+
+    //demographics
+    _dashBoardDemographicsUsecase: asClass(DashBoardDemographicsUseCase).scoped(),
+    _dashBoardEntityBreakDownUseCase: asClass(DashBoardEntityBreakDownUseCase).scoped(),
 
     // controllers
     adminAuthController: asClass(AdminAuthController).scoped(),

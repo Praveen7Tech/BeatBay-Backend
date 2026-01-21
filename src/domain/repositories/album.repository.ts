@@ -2,6 +2,7 @@ import { ClientSession } from "mongoose"
 import { Album } from "../entities/album.entity"
 import { GetAllAlbumsRequest } from "../interfaces/albumRequest"
 import { EditAlbumDetailsDTO } from "../../application/dto/album/album.dto"
+import { DemoGraphics } from "../../application/dto/admin/dashboard/dashboard.dto"
 
 export interface IAlbumRepository{
     create(albumData:Partial<Album>, session: ClientSession): Promise<Album>
@@ -21,4 +22,5 @@ export interface IAlbumRepository{
     admingetAllAlbums(params: GetAllAlbumsRequest): Promise<{ albums: any[], total: number }>;
     adminFindById(id: string): Promise<Album | null>
     updateStatus(id: string, status: boolean): Promise<Album | null>
+    //getAlbumStatistics(startDate: Date): Promise<DemoGraphics>
 }

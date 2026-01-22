@@ -15,4 +15,5 @@ export interface FollowerPreview{
     name:string;
     role:string;
     profilePicture:string
+    createdAt: string
 }

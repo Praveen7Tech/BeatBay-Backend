@@ -26,6 +26,8 @@ import { IDeleteSongUseCase } from "../../../../application/interfaces/usecase/s
 import { IDeleteAlbumUsecase } from "../../../../application/interfaces/usecase/album/artist-delete-albu-usecase.interface";
 import { IArtistChangePasswordUsecase } from "../../../../application/interfaces/usecase/artist-features/change-password-usecase.interface";
 import { IAlbumDetailsEditUseCase } from "../../../../application/interfaces/usecase/album/get-albumdetails-edit-usecase.interface";
+import { IGetAllFansUseCase } from "../../../../application/interfaces/usecase/artist/fans/artist-getallfans-usecase.interface";
+import { IArtistDashBoardDataUseCase } from "../../../../application/interfaces/usecase/artist/dashboard/artist-dashboard-usecase.interface";
 
 export class ArtistController {
     constructor(
@@ -42,7 +44,9 @@ export class ArtistController {
         private readonly _artistDeleteSongUsecase: IDeleteSongUseCase,
         private readonly _artistDeleteAlbumUsecase: IDeleteAlbumUsecase,
         private readonly _getAlbumDetailsUsecase: IAlbumDetailsEditUseCase,
-        private readonly _getArtistDetailsUsecase: IGetArtistByIdUseCase
+        private readonly _getArtistDetailsUsecase: IGetArtistByIdUseCase,
+        private readonly _getallFansUsecase: IGetAllFansUseCase,
+        private readonly _artistDashBoardDataUsecase: IArtistDashBoardDataUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
@@ -441,6 +445,37 @@ export class ArtistController {
 
             const result = await this._artistDeleteAlbumUsecase.execute(albumId, artistId)
             return res.status(StatusCode.OK).json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    getFans = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const artistId = req.user?.id
+            const page = Number(req.query.page)
+            const limit = Number(req.query.limit) || 5
+            if(!artistId || !page){
+                return res.status(StatusCode.UNAUTHORIZED).json(MESSAGES.UNAUTHORIZED)
+            }
+
+            const fans = await this._getallFansUsecase.execute(artistId,page,limit)
+    
+            return res.status(StatusCode.OK).json(fans)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    dashBoard = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const artistId = req.user?.id
+            if(!artistId) return res.status(StatusCode.UNAUTHORIZED).json(MESSAGES.UNAUTHORIZED);
+
+            const data = await this._artistDashBoardDataUsecase.execute(artistId)
+             console.log("dish ", data)
+
+            return res.status(StatusCode.OK).json(data)
         } catch (error) {
             next(error)
         }

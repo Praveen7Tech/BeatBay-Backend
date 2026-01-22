@@ -1,6 +1,6 @@
 import { Model } from "mongoose";
 import { DemoGraphics, EntityBreakdownCounts, EntityBreakDownResponse } from "../../../../application/dto/admin/dashboard/dashboard.dto";
-import { IDashBoardRepository } from "../../../../domain/repositories/demographics.repository";
+import { Entity, IDashBoardRepository } from "../../../../domain/repositories/demographics.repository";
 
 export class MongooseDashBoardRepository implements IDashBoardRepository{
     constructor(
@@ -87,6 +87,12 @@ export class MongooseDashBoardRepository implements IDashBoardRepository{
             private: privatePlaylists
             }
         };
+    }
+
+    countDocuments(field:string,id: string, entiry: Entity): Promise<number> {
+        const model = this._dashBoardModels[entiry]
+
+        return model.countDocuments({[field]:id})
     }
 
 }

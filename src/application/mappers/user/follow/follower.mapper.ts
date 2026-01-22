@@ -1,4 +1,5 @@
 import { FollowerPreview } from "../../../../domain/interfaces/following";
+import { Fans } from "../../../dto/artist/dashboard/artist.dashboard.dto";
 import { FollowingResponseDTO } from "../../../dto/follow/following.dto";
 
 

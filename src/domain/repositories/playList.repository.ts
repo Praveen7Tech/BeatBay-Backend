@@ -14,5 +14,5 @@ export interface IPlayListRepository {
     removeSongFromAllPlaylists(songId: string, session: ClientSession): Promise<void>
     removeSong(playlistId:string, songId:string): Promise<void>
     delete(playlistId:string): Promise<boolean>
-    //getPlayListStatistics(startDate : Date): Promise<DemoGraphics>
+    countDocuments(): Promise<number>
 }

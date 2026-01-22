@@ -40,4 +40,5 @@ export interface DashBoardResponse{
   totalArtist: number
   totalSongs: number
   totalAlbums: number
+  totalPlaylists: number
 }

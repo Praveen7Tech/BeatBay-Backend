@@ -22,7 +22,6 @@ export class MongooseSongRepository implements ISongRepository{
     async findById(id: string): Promise<Song | null> {
         const filter = { _id: id, status: true };
         
-        // 1. Fetch the song details
         const song = await SongModel.findOne(filter)
             .populate({
                 path: 'artistId',
@@ -32,19 +31,11 @@ export class MongooseSongRepository implements ISongRepository{
             .lean<Song>() 
             .exec();
 
-        // if (!song) return { song: null, isLiked: false };
-
-        // let isLiked = false;
-        // if (userId) {
-        //     const likeExists = await LikeModel.exists({ userId, songId: id });
-        //     isLiked = !!likeExists;
-        // }
-
         return song
     }
 
     async songHydration(id: string): Promise<Song | null> {
-        // 1. Check if the song exists and is active
+       
         const song = await SongModel.findOne({ _id: id, status: true })
             .populate({
                 path: 'artistId',
@@ -57,13 +48,13 @@ export class MongooseSongRepository implements ISongRepository{
         if (!song) return null;
 
         const blockedAlbum = await AlbumModel.findOne({
-            songs: id,         // check if song ID is in the 'songs' array
-            isActive: false    // The album is blocked
+            songs: id,         
+            isActive: false    
         }).select('_id').lean();
 
         if (blockedAlbum) {
             console.log(`Access Denied: Song ${id} belongs to Blocked Album ${blockedAlbum._id}`);
-            return null; // Return null so the player removes the song
+            return null; 
         }
 
         return song;
@@ -90,8 +81,8 @@ export class MongooseSongRepository implements ISongRepository{
      async edit(songId: string, data: Partial<Song>, session?: ClientSession): Promise<Song | null> {
         const updatedSong = await SongModel.findByIdAndUpdate(
             songId,
-            { $set: data }, // Use $set to update only the fields provided in the 'data' object
-            { new: true },   // Return the updated document
+            { $set: data }, // use $set to update only the fields provided in the 'data' object
+            { new: true },   
         ).lean().exec();
 
         return updatedSong ? (updatedSong as unknown as Song) : null;
@@ -116,7 +107,7 @@ export class MongooseSongRepository implements ISongRepository{
     async getAllSongs(page: number, limit: number, query?: string): Promise<{songs: Song[], total: number}> {
     const skip: number = (page - 1) * limit;
     
-    // Define a type-safe filter object using the Song interface
+    // type-safe filter object using the Song interface
      const filter: FilterQuery<Song> = { status: true };
 
         if (query) {
@@ -166,12 +157,12 @@ export class MongooseSongRepository implements ISongRepository{
             }
         }
 
-        // 3. Handle Genre
+        //  Handle Genre
         if (genre && genre !== 'all') {
             filter.genre = genre;
         }
 
-        // 4. Handle Sort
+        // Handle Sort
         let sortOption: any = { createdAt: -1 };
         if (sort === 'popularity') sortOption = { likesCount: -1 };
         if (sort === 'az') sortOption = { title: 1 };

@@ -30,5 +30,8 @@ export default (container: AwilixContainer): Router=> {
     router.put('/edit-album/:albumId', uploadImage.single("coverImageUrl"), artistController.editAlbum)
     router.delete('/delete-album/:albumId', artistController.deleteAlbum)
 
+    router.get('/get-allfans', artistController.getFans)
+    router.get('/dashboard', artistController.dashBoard)
+
     return router
 }

@@ -32,6 +32,8 @@ import { MongoosePlayListRepository } from "../../presistence/mongoose/repositor
 import { DeleteAlbumUsecase } from "../../../usecases/artist/album/artistDeleteAlbum.useCase";
 import { AlbumDetailsUseCase } from "../../../usecases/user/album/albumDetails.useCase";
 import { GetArtistByIdUseCase } from "../../../usecases/admin/artists/adminGetArtistById.useCase";
+import { ArtistFansListingUseCase } from "../../../usecases/artist/fans/artistFansListing.UseCase";
+import { ArtistDashBoardDataUseCase } from "../../../usecases/artist/dashboard/artistDashboardData.UseCase";
 
 export const artistModule = {
 
@@ -68,6 +70,12 @@ export const artistModule = {
     _artistEditAlbumUsecase: asClass(EditAlbumUseCase).scoped(),
     _artistDeleteAlbumUsecase: asClass(DeleteAlbumUsecase).scoped(),
     _getAlbumDetailsUsecase: asClass(AlbumDetailsUseCase).scoped(),
+
+    // fans usecase
+    _getallFansUsecase: asClass(ArtistFansListingUseCase).scoped(),
+
+    //dashboard
+    _artistDashBoardDataUsecase: asClass(ArtistDashBoardDataUseCase).scoped(),
     
 
     // controller

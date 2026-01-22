@@ -93,4 +93,8 @@ export class  MongoosePlayListRepository implements IPlayListRepository{
         const playlist = await PlayListModel.findByIdAndDelete(playlistId)
         return !!playlist
     }
+
+    async countDocuments(): Promise<number> {
+        return PlayListModel.countDocuments()
+    }
 }

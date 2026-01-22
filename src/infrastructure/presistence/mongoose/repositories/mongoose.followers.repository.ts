@@ -13,7 +13,7 @@ export class MongooseFolloersRepository implements IFollowersRepository{
                     .sort({ createdAt: -1 }) 
                     .populate<{ followerId: any }>({
                         path: "followerId",
-                        select: "name role profilePicture" 
+                        select: "name role profilePicture createdAt" 
                     })
                     .lean()
                     .exec(),
@@ -24,7 +24,8 @@ export class MongooseFolloersRepository implements IFollowersRepository{
                 id: doc.followerId._id.toString(),
                 name: doc.followerId.name,
                 role: doc.followerId.role,
-                profilePicture: doc.followerId.profilePicture
+                profilePicture: doc.followerId.profilePicture,
+                createdAt: doc.followerId.createdAt
             }))
 
         return { followers, total };

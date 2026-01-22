@@ -271,7 +271,7 @@ export class AdminFeaturesController{
             
             return res.status(StatusCode.OK).json({
             success: true,
-            message: `Song successfully ${!status ? 'blocked' : 'unblocked'}`,
+            message: `Album successfully ${!status ? 'blocked' : 'unblocked'}`,
             });
         } catch (error) {
             next(error);

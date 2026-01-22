@@ -8,6 +8,5 @@ export interface IBaseRepository<T> {
     findAll(page: number, limit: number, search: string ): Promise<PaginatedResult<T>>
     blockById(id: string): Promise<boolean>
     unBlockById(id: string): Promise<boolean>
-    countDocuments(): Promise<number>
     searchByName(query: string): Promise<T[] | null>
 }

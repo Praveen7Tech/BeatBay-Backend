@@ -14,7 +14,6 @@ export interface IAlbumRepository{
     find(albumId: string): Promise<Album | null>
     removeSongFromAllAlbums(songId: string, session: ClientSession): Promise<void>
     delete(albumId: string, session: ClientSession): Promise<boolean>
-    countDocuments(): Promise<number>
     updateSongTitleInAlbums(songId: string, newTitle: string, session: ClientSession): Promise<void>
     removeSongTitleFromAllAlbums(songTitle: string, session: ClientSession): Promise<void>
 
@@ -22,5 +21,4 @@ export interface IAlbumRepository{
     admingetAllAlbums(params: GetAllAlbumsRequest): Promise<{ albums: any[], total: number }>;
     adminFindById(id: string): Promise<Album | null>
     updateStatus(id: string, status: boolean): Promise<Album | null>
-    //getAlbumStatistics(startDate: Date): Promise<DemoGraphics>
 }

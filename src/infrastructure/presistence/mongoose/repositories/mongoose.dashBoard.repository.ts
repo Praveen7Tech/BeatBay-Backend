@@ -46,7 +46,7 @@ export class MongooseDashBoardRepository implements IDashBoardRepository{
             publicPlaylists, privatePlaylists
         ] = await Promise.all([
             this._dashBoardModels.users.countDocuments({ status:true }),
-            this._dashBoardModels.users.countDocuments({ status:true }),
+            this._dashBoardModels.users.countDocuments({ status:false }),
             this._dashBoardModels.users.countDocuments({ status:true }),
             this._dashBoardModels.users.countDocuments({ status: false }),
 
@@ -57,7 +57,7 @@ export class MongooseDashBoardRepository implements IDashBoardRepository{
             this._dashBoardModels.songs.countDocuments({ status:false }),
 
             this._dashBoardModels.albums.countDocuments({ isActive: true }),
-            this._dashBoardModels.albums.countDocuments({ isBlocked: true }),
+            this._dashBoardModels.albums.countDocuments({ isActive: false }),
 
             this._dashBoardModels.playlists.countDocuments({ visibility: "public" }),
             this._dashBoardModels.playlists.countDocuments({ visibility: "private" })
@@ -93,6 +93,12 @@ export class MongooseDashBoardRepository implements IDashBoardRepository{
         const model = this._dashBoardModels[entiry]
 
         return model.countDocuments({[field]:id})
+    }
+
+    countAllDocumets(entity: Entity): Promise<number> {
+        const model = this._dashBoardModels[entity]
+
+        return model.countDocuments()
     }
 
 }

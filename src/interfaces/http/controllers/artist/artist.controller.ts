@@ -473,7 +473,6 @@ export class ArtistController {
             if(!artistId) return res.status(StatusCode.UNAUTHORIZED).json(MESSAGES.UNAUTHORIZED);
 
             const data = await this._artistDashBoardDataUsecase.execute(artistId)
-             console.log("dish ", data)
 
             return res.status(StatusCode.OK).json(data)
         } catch (error) {

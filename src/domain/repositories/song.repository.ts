@@ -14,11 +14,9 @@ export interface ISongRepository{
     searchByQuery(query: string, options?: {limit?: number; offset?: number}): Promise<Song[]>
     edit(songId: string, data: Partial<Song>, session?: ClientSession): Promise<Song | null>;
     delete(songId: string, session: ClientSession): Promise<boolean>
-    countDocuments(): Promise<number>
     findSongsByIds(ids: string[]): Promise<Song[]>;
     getAllSongs(page: number, limit: number, query?: string): Promise<{songs: Song[], total: number}>
     adminfindById(id: string): Promise<Song | null>
     admingetAllSongs(params: GetAllSongsRequest): Promise<{ songs: Song[], total: number }>;
     updateStatus(id: string, status: boolean): Promise<Song | null>;
-    //getSongStatistics(startDate: Date): Promise<DemoGraphics>
 }

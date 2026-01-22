@@ -6,4 +6,5 @@ export interface IDashBoardRepository{
     getDemographics(entity: Entity, startDate:Date): Promise<DemoGraphics[]>
     getEntityBreakDown(): Promise<EntityBreakdownCounts>
     countDocuments(field:string,id:string,entiry:Entity): Promise<number>
+    countAllDocumets(entity:Entity): Promise<number>
 }

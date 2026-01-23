@@ -27,14 +27,40 @@ export interface RoomData{
     queue: SongData[]
 }
 
+export interface SetData{
+    roomId:string
+    hostId?:string
+}
+
+export type RedisPipeLineResult = (string|number|boolean|null)
+
+export interface FriendsGlobalStatus{
+    results: RedisPipeLineResult[]
+    hasUserRoom: boolean
+}
+
+export type FriendActivityStatus = "connected" | "received" | "pending" | "none";
+
+export interface FriendStatusQueryResult {
+    friendId: string;
+    inActiveRoom: boolean;
+    inviteToMeRaw: string | null;
+    isInvitedByMe: boolean;
+}
+
+export interface GlobalStatusResponse {
+    results: FriendStatusQueryResult[];
+    hasUserRoom: boolean;
+}
+
 
 export interface ISocketCacheService{
     createRoom(roomId: string, hostId: string, hostData:RoomMember): Promise<void>
     addMembersToRoom(roomId: string, member: RoomMember): Promise<void>
     getRoom(roomId:string): Promise<RoomData | null>
 
-    setInvite(userId: string, data: any, ttl: number): Promise<void>
-    getInvite(userId: string): Promise<any | null>
+    setInvite(userId: string, data: SetData, ttl: number): Promise<void>
+    getInvite(userId: string): Promise<SetData | null>
     deleteInvite(userId: string): Promise<void>
 
     setUserActiveRoom(userId: string, roomId: string): Promise<void>
@@ -47,7 +73,7 @@ export interface ISocketCacheService{
 
     removeMember(roomId: string, userId: string): Promise<void>
 
-    getFriendsGlobalStatus(userId: string, friendIds: string[]): Promise<Record<string, any>>;
+    getFriendsGlobalStatus(userId: string, friendIds: string[]): Promise<GlobalStatusResponse>;
 
 
     updateRoomQueue(roomId: string, queue: SongData[]): Promise<void>;

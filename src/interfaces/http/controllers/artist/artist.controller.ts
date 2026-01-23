@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import { AuthRequest } from "../../../middleware/auth/authMiddleware";
 import { StatusCode } from "../../../../common/constants/status.enum";
 import { MESSAGES } from "../../../../common/constants/constants.message";
@@ -20,7 +20,6 @@ import { IArtistGetAlbumsUseCase } from "../../../../application/interfaces/usec
 import { IGetSongDetailsByIdUseCase } from "../../../../application/interfaces/usecase/song/artist-getsong-detail-byid-usecase.interface";
 import { IEditSongUseCase } from "../../../../application/interfaces/usecase/song/artist-edit-song-usecase.interface";
 import { IGetAlbumDetailsByIdUseCase } from "../../../../application/interfaces/usecase/album/artisgetalbum-detail-byid-usecase.interface";
-import { IAlbumDetailsUseCase } from "../../../../application/interfaces/usecase/album/album-details-usecase.interface";
 import { IEditAlbumUseCase } from "../../../../application/interfaces/usecase/album/artist-edit-album-usecase.interface";
 import { IDeleteSongUseCase } from "../../../../application/interfaces/usecase/song/artist-delete-song-usecase.interface";
 import { IDeleteAlbumUsecase } from "../../../../application/interfaces/usecase/album/artist-delete-albu-usecase.interface";
@@ -28,6 +27,7 @@ import { IArtistChangePasswordUsecase } from "../../../../application/interfaces
 import { IAlbumDetailsEditUseCase } from "../../../../application/interfaces/usecase/album/get-albumdetails-edit-usecase.interface";
 import { IGetAllFansUseCase } from "../../../../application/interfaces/usecase/artist/fans/artist-getallfans-usecase.interface";
 import { IArtistDashBoardDataUseCase } from "../../../../application/interfaces/usecase/artist/dashboard/artist-dashboard-usecase.interface";
+import { SongUploadFile } from "../../../types/songFile.type";
 
 export class ArtistController {
     constructor(
@@ -116,7 +116,7 @@ export class ArtistController {
                 return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });
             }
 
-            const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+            const files = req.files as unknown as SongUploadFile
 
             if (!files['trackFile'] || !files['coverImage'] || !files['lrcFile']) {
                 return res.status(400).json({ message: "Missing required files." });
@@ -282,12 +282,9 @@ export class ArtistController {
             if (!existingSong) {
                 return res.status(StatusCode.NOT_FOUND).json({ message: "Song not found" });
             }
-            // if (existingSong.artistId !== artistId) {
-            //     return res.status(StatusCode.FORBIDDEN).json({ message: "Not authorized to edit this song" });
-            // }
 
-            const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-            const updateData: any = { ...req.body }; 
+            const files = req.files as unknown as SongUploadFile
+            const updateData = { ...req.body }; 
 
             // Transform tags if present
             if (updateData.tags) {
@@ -298,49 +295,43 @@ export class ArtistController {
             }
 
             // Audio file update (optional)
-            if (files['trackFile'] && files['trackFile'].length > 0) {
-                const audioFile = files['trackFile'][0];
-                const audioFileDataURL = `data:${audioFile.mimetype};base64,${audioFile.buffer.toString("base64")}`;
-
+             const trackFile = files.trackFile?.[0];
+            if (trackFile) {
+                const audioFileDataURL = `data:${trackFile.mimetype};base64,${trackFile.buffer.toString("base64")}`;
                 const FileUploadOptions: uploadOptionsType = {
                     resource_type: "video",
                     public_id: existingSong.audioPublicId,
                     invalidate: true
                 };
-
                 const audioFileUpload = await cloudinary.uploader.upload(audioFileDataURL, FileUploadOptions);
                 updateData.songFilePath = audioFileUpload.secure_url;
                 updateData.audioPublicId = audioFileUpload.public_id;
                 updateData.duration = audioFileUpload.duration;
             }
 
-            // Cover image update (optional)
-            if (files['coverImage'] && files['coverImage'].length > 0) {
-                const coverImageFile = files['coverImage'][0];
+            // Cover Image Update
+            const coverImageFile = files.coverImage?.[0];
+            if (coverImageFile) {
                 const coverImageDataURL = `data:${coverImageFile.mimetype};base64,${coverImageFile.buffer.toString("base64")}`;
-
                 const UploadOption: uploadOptionsType = {
                     resource_type: "image",
                     public_id: existingSong.coverImagePublicId,
                     invalidate: true
                 };
-
                 const coverImageUpload = await cloudinary.uploader.upload(coverImageDataURL, UploadOption);
                 updateData.coverImagePath = coverImageUpload.secure_url;
                 updateData.coverImagePublicId = coverImageUpload.public_id;
             }
 
-            // Lyrics file update (optional)
-            if (files['lrcFile'] && files['lrcFile'].length > 0) {
-                const lrcFile = files['lrcFile'][0];
+            // Lyrics File Update
+            const lrcFile = files.lrcFile?.[0];
+            if (lrcFile) {
                 const lrcFileDataURL = `data:${lrcFile.mimetype};base64,${lrcFile.buffer.toString("base64")}`;
-
                 const UploadOption: uploadOptionsType = {
                     resource_type: "raw",
                     public_id: existingSong.lyricsPublicId,
                     invalidate: true
                 };
-
                 const lrcFileUpload = await cloudinary.uploader.upload(lrcFileDataURL, UploadOption);
                 updateData.lrcFilePath = lrcFileUpload.secure_url;
                 updateData.lyricsPublicId = lrcFileUpload.public_id;

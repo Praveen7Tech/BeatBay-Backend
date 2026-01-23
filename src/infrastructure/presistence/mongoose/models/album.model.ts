@@ -1,7 +1,7 @@
 import mongoose, { HydratedDocument, Model, Schema } from "mongoose";
 import { Album } from "../../../../domain/entities/album.entity";
 
-type AlbumDocument = HydratedDocument<Album>
+export type AlbumDocument = HydratedDocument<Album>
 
 const AlbumSchema = new Schema({
     artistId:{

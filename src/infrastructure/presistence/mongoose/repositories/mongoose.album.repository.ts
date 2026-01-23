@@ -1,10 +1,10 @@
 import { ClientSession, FilterQuery } from "mongoose";
-import { Album } from "../../../../domain/entities/album.entity";
-import { IAlbumRepository } from "../../../../domain/repositories/album.repository";
+import { Album, AlbumWithSongs } from "../../../../domain/entities/album.entity";
+import { IAlbumRepository, PaginaterAlbumResult } from "../../../../domain/repositories/album.repository";
 import { AlbumModel } from "../models/album.model";
 import { GetAllAlbumsRequest } from "../../../../domain/interfaces/albumRequest";
-import { title } from "process";
 import { EditAlbumDetailsDTO } from "../../../../application/dto/album/album.dto";
+import { Song } from "../../../../domain/entities/song.entity";
 
 export class MongooseAlbumRepository implements IAlbumRepository {
     async create(albumData: Album, session: ClientSession): Promise<Album> {
@@ -19,13 +19,13 @@ export class MongooseAlbumRepository implements IAlbumRepository {
            return songs
     }
 
-    async findById(id: string): Promise<Album | null> {
+    async findById(id: string): Promise<AlbumWithSongs | null> {
         const filter: FilterQuery<Album> = { 
                     _id: id, 
                     isActive: true 
                 };
         return await AlbumModel.findOne(filter)
-        .populate("songs")
+        .populate<{songs: Song[]}>("songs")
         .lean().exec()
     }
 
@@ -96,7 +96,7 @@ export class MongooseAlbumRepository implements IAlbumRepository {
         ).exec()
     }
 
-    async getAllAlbum(page: number, limit: number, query?: string): Promise<{albums: Album[], total: number}> {
+    async getAllAlbum(page: number, limit: number, query?: string): Promise<PaginaterAlbumResult> {
         const skip = (page - 1) * limit;
         
         // Search filter 
@@ -110,7 +110,7 @@ export class MongooseAlbumRepository implements IAlbumRepository {
         return { albums: albums as unknown as Album[], total };
     }
 
-    async admingetAllAlbums(params: GetAllAlbumsRequest): Promise<{ albums: any[], total: number }> {
+    async admingetAllAlbums(params: GetAllAlbumsRequest): Promise<PaginaterAlbumResult> {
         const { page, limit, search, status, sort } = params;
         const skip = (page - 1) * limit;
 
@@ -124,7 +124,7 @@ export class MongooseAlbumRepository implements IAlbumRepository {
             filter.isActive = status === 'active'; 
         }
 
-        let sortOption: any = {};
+        let sortOption = {};
         if (sort === 'newest') sortOption = { createdAt: -1 };
         else if (sort === 'az') sortOption = { title: 1 };
         else if (sort === 'za')sortOption = {title: -1};
@@ -144,16 +144,18 @@ export class MongooseAlbumRepository implements IAlbumRepository {
         return { albums, total };
     }
 
-    async adminFindById(id: string): Promise<Album | null> {
-        return await AlbumModel.findById(id)
+    async adminFindById(id: string): Promise<AlbumWithSongs | null> {
+        const album = await AlbumModel.findById(id)
             .select('_id title artistName coverImageUrl description isActive createdAt songs')
-            .populate({
+            .populate<{songs: Song[]}>({
                 path: 'songs',
                 model: 'Song',
                 select: 'title coverImageUrl status' 
             })
             .lean()
             .exec();
+
+        return album   
     }
 
     async updateStatus(id: string, status: boolean): Promise<Album | null> {

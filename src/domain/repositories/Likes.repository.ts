@@ -1,5 +1,4 @@
 import { LikedSongDetails } from "../../application/dto/favorites/favourites.response.dto";
-import { Song } from "../entities/song.entity";
 
 export interface LikedSongsResponseData{
     songs: LikedSongDetails[]

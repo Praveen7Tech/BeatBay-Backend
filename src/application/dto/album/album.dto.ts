@@ -1,4 +1,3 @@
-import { Interface } from "readline";
 
 export interface CreateAlbumDTO {
     title: string, 

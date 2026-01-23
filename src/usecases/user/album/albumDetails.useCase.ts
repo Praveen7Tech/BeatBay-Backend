@@ -2,7 +2,6 @@ import { AlbumDetailsResponseDTO } from "../../../application/dto/album/album.re
 import { IAlbumDetailsUseCase } from "../../../application/interfaces/usecase/album/album-details-usecase.interface";
 import { AlbumMapper } from "../../../application/mappers/album/album-details.mapper";
 import { NotFoundError } from "../../../common/errors/common/common.errors";
-import { Song } from "../../../domain/entities/song.entity";
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
 import { IMongooseLikesRepository } from "../../../domain/repositories/Likes.repository";
 
@@ -20,7 +19,7 @@ export class AlbumDetailsUseCase implements IAlbumDetailsUseCase {
       throw new NotFoundError("Album currently not available");
     }
 
-    const songIds = album.songs.map((song:any)=> song._id.toString())
+    const songIds = album.songs.map((song)=> song._id.toString())
 
     const likedSongIds = await this._mongoosesongLikesRepository.findLikedSongIds(userId,songIds)
 

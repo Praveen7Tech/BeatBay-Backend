@@ -3,7 +3,6 @@ import cors from "cors"
 import { scopePerRequest } from "awilix-express"
 import container from "../../infrastructure/di/container"
 import cookieParser from "cookie-parser"
-import mongoose from "mongoose"
 import path from "path"
 
 const app = express()

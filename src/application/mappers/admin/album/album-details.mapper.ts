@@ -1,9 +1,9 @@
-import { Album } from "../../../../domain/entities/album.entity";
+import { AlbumWithSongs } from "../../../../domain/entities/album.entity";
 import { AdminAlbumDetailsDTO } from "../../../dto/admin/album/album-details";
 
 
 export class AdminAlbumDetailsMapper {
-  static toDTO(album: Album): AdminAlbumDetailsDTO {
+  static toDTO(album: AlbumWithSongs): AdminAlbumDetailsDTO {
     return {
       id: album._id.toString(),
       title: album.title,
@@ -13,7 +13,7 @@ export class AdminAlbumDetailsMapper {
       isActive: album.isActive,
       createdAt: album.createdAt,
 
-      songs: (album.songs).map((song: any) => ({
+      songs: (album.songs).map((song) => ({
         id: song._id.toString(),
         title: song.title,
         coverImageUrl: song.coverImageUrl,

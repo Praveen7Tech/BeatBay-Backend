@@ -3,13 +3,10 @@ import { Artist } from "../../../../domain/entities/arist.entity";
 import { IArtistRepository } from "../../../../domain/repositories/artist.repository";
 import { ArtistModel } from "../models/artist.model"; 
 import { Song } from "../../../../domain/entities/song.entity";
-import { Album } from "../../../../domain/entities/album.entity";
 import { PaginatedResult } from "../../../../domain/interfaces/paginatedResult.interface";
 import { ArtistPopulated } from "../../../../domain/interfaces/albumRequest";
-import { DemoGraphics } from "../../../../application/dto/admin/dashboard/dashboard.dto";
 
 export class MongooseArtistRepository implements IArtistRepository {
-    constructor(){}
 
     async create(entity: Artist): Promise<Artist> {
         const artist = new ArtistModel(entity);

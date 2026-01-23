@@ -3,12 +3,12 @@ import { DomainError } from '../../../common/errors/base/domain.error';
 import { StatusCode } from '../../../common/constants/status.enum'; 
 import { ZodError } from 'zod';
 
-export const errorHandlerMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {
+export const errorHandlerMiddleware = (err: Error, _req: Request, res: Response, _next: NextFunction) => {
     console.error("Catch error: ", err);
 
     if (err instanceof ZodError) {
         return res.status(StatusCode.BAD_REQUEST).json({
-            message: "Un authorized request..!",
+            message: "Validation failed.!",
             errors: err.issues.map((issue) => ({
                 path: issue.path.join("."),
                 message: issue.message,
@@ -20,5 +20,9 @@ export const errorHandlerMiddleware = (err: any, req: Request, res: Response, ne
         return res.status(err.status).json({ message: err.message });
     }
 
-    return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ message: err.message || 'Internal server error' });
+    const errorMessage = err instanceof Error ? err.message : 'Internal server error';
+    
+    return res.status(StatusCode.INTERNAL_SERVER_ERROR).json({ 
+        message: errorMessage 
+    });
 };

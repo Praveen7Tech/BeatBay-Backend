@@ -1,4 +1,4 @@
-import { ArtistDetails, Song } from "../../../domain/entities/song.entity";
+import { ArtistDetails } from "../../../domain/entities/song.entity";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { IRecomentationService } from "../../../domain/services/recomentation.service";
 import { SongHydrationResponseDTO } from "../../../application/dto/song/song.response.dto";

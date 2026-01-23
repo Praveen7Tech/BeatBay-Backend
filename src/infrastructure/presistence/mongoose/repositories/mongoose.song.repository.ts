@@ -4,7 +4,6 @@ import { CreateSongData, ISongRepository } from "../../../../domain/repositories
 import { SongModel } from "../models/song.model";
 import { GetAllSongsRequest } from "../../../../domain/interfaces/songRequest";
 import { AlbumModel } from "../models/album.model";
-import { LikeModel } from "../models/likes.model";
 
 export class MongooseSongRepository implements ISongRepository{
     async create(songData: CreateSongData, session?:ClientSession): Promise<Song> {
@@ -82,7 +81,8 @@ export class MongooseSongRepository implements ISongRepository{
         const updatedSong = await SongModel.findByIdAndUpdate(
             songId,
             { $set: data }, // use $set to update only the fields provided in the 'data' object
-            { new: true },   
+            // { new: true },  
+            {session} 
         ).lean().exec();
 
         return updatedSong ? (updatedSong as unknown as Song) : null;
@@ -138,7 +138,7 @@ export class MongooseSongRepository implements ISongRepository{
         const { page, limit, search, status, genre, sort } = params;
         const skip = (page - 1) * limit;
 
-        const filter: any = {};
+        const filter: FilterQuery<Song> = {};
 
         if (search) {
             filter.$or = [
@@ -163,7 +163,7 @@ export class MongooseSongRepository implements ISongRepository{
         }
 
         // Handle Sort
-        let sortOption: any = { createdAt: -1 };
+        let sortOption: Record<string, 1 | -1> = { createdAt: -1 };
         if (sort === 'popularity') sortOption = { likesCount: -1 };
         if (sort === 'az') sortOption = { title: 1 };
         if (sort === 'za') sortOption = { title: -1 };

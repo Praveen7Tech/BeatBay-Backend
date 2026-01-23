@@ -1,10 +1,10 @@
-import { Model } from "mongoose";
-import { DemoGraphics, EntityBreakdownCounts, EntityBreakDownResponse } from "../../../../application/dto/admin/dashboard/dashboard.dto";
+import { DemoGraphics, EntityBreakdownCounts } from "../../../../application/dto/admin/dashboard/dashboard.dto";
 import { Entity, IDashBoardRepository } from "../../../../domain/repositories/demographics.repository";
+import { IDashboardModelMap } from "../models-listing/dashboard-models";
 
 export class MongooseDashBoardRepository implements IDashBoardRepository{
     constructor(
-        private readonly _dashBoardModels: Record<string, Model<any>>
+        private readonly _dashBoardModels: IDashboardModelMap
     ){}
 
     async getDemographics(entity: "users" | "artists" | "songs" | "albums" | "playlists", startDate: Date): Promise<DemoGraphics[]> {

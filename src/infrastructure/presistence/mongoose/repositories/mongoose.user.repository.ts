@@ -9,7 +9,7 @@ import { FollowerModel } from '../models/followers.model';
 import { DemoGraphics } from '../../../../application/dto/admin/dashboard/dashboard.dto';
 
 export class MongooseUserRepository implements IUserRepository {
-  constructor() {}
+
 
   async create(entity: User): Promise<User> {
     
@@ -49,7 +49,7 @@ export class MongooseUserRepository implements IUserRepository {
       try {
           const isFollow = action === 'follow';
 
-          const follower = await UserModel.findById(followId).session(session);
+          //const follower = await UserModel.findById(followId).session(session);
 
           const followField = role === 'artist' ? 'followingArtists' : 'followingUsers';
           

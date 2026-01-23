@@ -1,5 +1,5 @@
 import { Server, Socket } from "socket.io"
-import { ISocketCacheService, RoomData, RoomMember, SongData } from "../../domain/services/redis/jamCache.service"
+import { ISocketCacheService, RoomMember, SongData } from "../../domain/services/redis/jamCache.service"
 import logger from "../utils/logger/logger";
 import { IMutualFriendsStatusUseCase } from "../../application/interfaces/usecase/mutual-friends/mutual-friends-status-usecase.interface";
 

@@ -1,7 +1,6 @@
 import { ArtistDetailsResponseDTO } from "../../../application/dto/artist/artist.profile.dto";
 import { IArtistDetailsUseCase } from "../../../application/interfaces/usecase/artist-features/artist-details-usecase.interface";
 import { ArtistDetailsMapper } from "../../../application/mappers/artist/profile/artist.profile.mapper";
-import { Artist } from "../../../domain/entities/arist.entity";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 
 export class ArtistDetailsUseCase implements IArtistDetailsUseCase{

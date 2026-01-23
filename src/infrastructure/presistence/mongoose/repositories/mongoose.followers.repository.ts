@@ -1,3 +1,4 @@
+import { FollowerUser, FollowerWithUser } from "../../../../domain/entities/follower.entity";
 import { FollowerPreview } from "../../../../domain/interfaces/following";
 import { IFollowersRepository } from "../../../../domain/repositories/followers.repository";
 import { FollowerModel } from "../models/followers.model";
@@ -11,7 +12,7 @@ export class MongooseFolloersRepository implements IFollowersRepository{
                     .skip(skip)
                     .limit(limit)
                     .sort({ createdAt: -1 }) 
-                    .populate<{ followerId: any }>({
+                    .populate<{ followerId: FollowerUser }>({
                         path: "followerId",
                         select: "name role profilePicture createdAt" 
                     })
@@ -19,8 +20,10 @@ export class MongooseFolloersRepository implements IFollowersRepository{
                     .exec(),
                 FollowerModel.countDocuments({ targetId })
             ]);
+
+            const populatedDocs = docs as FollowerWithUser[]
             
-            const followers: FollowerPreview[] = docs.map((doc)=>({
+            const followers: FollowerPreview[] = populatedDocs.map((doc)=>({
                 id: doc.followerId._id.toString(),
                 name: doc.followerId.name,
                 role: doc.followerId.role,

@@ -1,7 +1,6 @@
 import { NextFunction, Response } from "express";
 import { AuthRequest } from "./authMiddleware";
 import { StatusCode } from "../../../common/constants/status.enum";
-import logger from "../../../infrastructure/utils/logger/logger";
 
 export const authorizeRoles = (...allowedRoles: string[]) => {
   return (req: AuthRequest, res: Response, next: NextFunction) => {

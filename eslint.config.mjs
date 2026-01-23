@@ -30,10 +30,10 @@ export default tseslint.config(
       },
     },
     rules: {
-      // Add or override rules specific to your TypeScript project here
-      // For example, an override for `no-unused-vars`
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
     },
   }
 );
+
+//  "dev": "nodemon --watch src --ext ts --exec \"npm run lint && ts-node src/server.ts\""

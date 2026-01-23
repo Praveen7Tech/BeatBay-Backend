@@ -34,8 +34,7 @@ export class SongDetailsUseCase implements ISongDetailsUseCase {
       throw new Error("Recommendation logic failed");
     }
 
-    const recommendationResults = await this._recommendationService.getRecomentedSongs
-    (songId,song.artistId._id, song.genre, userId );
+    const recommendationResults = await this._recommendationService.getRecomentedSongs(songId,song.artistId._id, song.genre, userId );
 
     return {
       song: SongDetailsMapper.toDTO(song, isLiked),

@@ -13,7 +13,7 @@ export class GetUserProfileUseCase implements IGetUserProfileUseCase{
     async execute(userId: string): Promise<UserProfileResponseDTO>{
 
         const userData = await this._userRepository.getUserProfileDetails(userId)
-        const {followers,total} = await this._mongoosefollowersRepository.getFollowersList(userId,1,10)
+        const {followers } = await this._mongoosefollowersRepository.getFollowersList(userId,1,10)
 
         return ProfileMapper.toResponseDTO(userData!,followers)
     }

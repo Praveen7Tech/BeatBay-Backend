@@ -1,6 +1,5 @@
 import mongoose, { HydratedDocument, Model, Schema } from "mongoose";
 import { Song } from "../../../../domain/entities/song.entity";
-import { boolean } from "zod";
 
 export type SongDocument = HydratedDocument<Song>;
 

@@ -19,6 +19,7 @@ import { IAdminGetAlbumDetailsByIdUseCase } from "../../../../application/interf
 import { IToggleAlbumStatusUseCase } from "../../../../application/interfaces/usecase/admin/toggle-album-status-usecase.interface";
 import { IDashBoardDemographicsUseCase } from "../../../../application/interfaces/usecase/admin/dashboard/dahsboard-demographics-usecase.interface";
 import { IDashBoardEntityBreakDownUseCase } from "../../../../application/interfaces/usecase/admin/dashboard/entity-breakdown-usecase.interface";
+import { SortType } from "../../../../domain/interfaces/songRequest";
 
 export class AdminFeaturesController{
     constructor(
@@ -185,7 +186,7 @@ export class AdminFeaturesController{
                 search: search as string,
                 status: status as string,
                 genre: genre as string,
-                sort: sort as any
+                sort: sort as SortType
             });
 
             return res.status(StatusCode.OK).json(result);
@@ -239,7 +240,7 @@ export class AdminFeaturesController{
                 limit: Number(limit) || 10,
                 search: search as string,
                 status: status as string,
-                sort: sort as any
+                sort: sort as SortType
             });
 
             return res.status(StatusCode.OK).json(result);
@@ -267,7 +268,7 @@ export class AdminFeaturesController{
             const { id } = req.params;
             const { status } = req.body; 
 
-            const updatedSong = await this._toggleAlbumStatusUseCase.execute(id, status);
+             await this._toggleAlbumStatusUseCase.execute(id, status);
             
             return res.status(StatusCode.OK).json({
             success: true,

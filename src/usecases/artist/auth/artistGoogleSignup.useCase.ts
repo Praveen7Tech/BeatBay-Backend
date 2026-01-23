@@ -17,7 +17,7 @@ export class ArtistGoogleLoginUseCase implements IArtistGoogleLoginUseCase{
   async execute(request: GoogleLoginRequestDTO):Promise<LoginResponseDTO> {
 
     const payload = await this._googleAuthService.verifyToken(request.token);
-    const { name, email, picture, sub } = payload;
+    const { name, email, sub } = payload;
 
     if (!email || !name) {
       throw new BadRequestError("Google account did not return an email");

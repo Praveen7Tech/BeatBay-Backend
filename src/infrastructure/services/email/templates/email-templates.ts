@@ -1,5 +1,3 @@
-// Email template generators matching the music app theme
-// Dark background with green accents (#1DB954)
 
 const colors = {
   primary: '#1DB954',
@@ -34,7 +32,7 @@ const baseStyles = `
   .feature-row { padding: 8px 0; color: ${colors.text}; font-size: 14px; }
 `;
 
-const logoSection = (appName: string = 'Soundwave') => `
+const logoSection = (appName: string ) => `
   <div style="text-align: center; margin-bottom: 32px;">
     <div style="width: 56px; height: 56px; background-color: ${colors.primary}; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin: 0 auto;">
       <span style="font-size: 24px;">🎵</span>
@@ -45,7 +43,7 @@ const logoSection = (appName: string = 'Soundwave') => `
   </div>
 `;
 
-const footerSection = (appName: string = 'Soundwave') => `
+const footerSection = (appName: string) => `
   <div class="footer">
     <p style="margin: 0 0 8px;">© 2024 ${appName}. All rights reserved.</p>
     <p style="margin: 0;">

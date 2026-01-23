@@ -1,3 +1,4 @@
+import { Song } from "./song.entity"
 
 export interface Album{
     _id: string
@@ -12,4 +13,8 @@ export interface Album{
     isActive: boolean
     createdAt: Date;
     updatedAt: Date;
+}
+
+export interface AlbumWithSongs extends Omit<Album, "songs">{
+    songs: Song[]
 }

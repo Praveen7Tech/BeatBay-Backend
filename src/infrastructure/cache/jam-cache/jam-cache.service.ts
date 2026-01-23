@@ -1,4 +1,4 @@
-import { ISocketCacheService, RoomData, RoomMember, SongData } from "../../../domain/services/redis/jamCache.service";
+import { FriendStatusQueryResult, GlobalStatusResponse, ISocketCacheService, RedisPipeLineResult, RoomData, RoomMember, SetData, SongData } from "../../../domain/services/redis/jamCache.service";
 import { getRedisClient } from "../../config/redis";
 import logger from "../../utils/logger/logger";
 
@@ -54,13 +54,13 @@ export class SocketCacheService implements ISocketCacheService{
     }
 
     // set temporary invite only presist 10 minut
-    async setInvite(userId: string, data: any, ttl: number): Promise<void> {
+    async setInvite(userId: string, data: SetData, ttl: number): Promise<void> {
         const key = this.getInviteKey(userId)
         await this.client.set(key, JSON.stringify(data), {EX: ttl})
     }
 
     // get temporary invites for user UI interface
-    async getInvite(userId: string): Promise<any | null> {
+    async getInvite(userId: string): Promise<SetData | null> {
         const key = this.getInviteKey(userId)
         const data = await this.client.get(key)
         return data ? JSON.parse(data) : null
@@ -146,24 +146,36 @@ export class SocketCacheService implements ISocketCacheService{
     }
 
     // get friends status globbally for mutual friends
-    async getFriendsGlobalStatus(userId: string, friendIds: string[]): Promise<Record<string, any>> {
+    async getFriendsGlobalStatus(userId: string, friendIds: string[]): Promise<GlobalStatusResponse> {
         const pipeline = this.client.multi();
-
-        // 1. Get the user's own active room to check who THEY invited
         const userRoomId = await this.getUserActiveRooms(userId);
 
         friendIds.forEach(fId => {
-            pipeline.get(this.getUserPointer(fId)); // Is friend in a room?
-            pipeline.get(this.getInviteKey(userId)); // Did this friend invite ME?
+            pipeline.get(this.getUserPointer(fId));    // Result [0]
+            pipeline.get(this.getInviteKey(userId));   // Result [1]
             if (userRoomId) {
-                // Is this friend in MY room's pending list?
-                pipeline.sIsMember(this.pendingGuestKey(userRoomId), fId);
+                pipeline.sIsMember(this.pendingGuestKey(userRoomId), fId); // Result [2]
             }
         });
 
-        const results = await pipeline.exec();
-        return { results, hasUserRoom: !!userRoomId };
+        const rawResults = (await pipeline.exec()) as unknown as RedisPipeLineResult[];
+        const hasUserRoom = !!userRoomId;
+        const step = hasUserRoom ? 3 : 2;
+
+        const mappedResults: FriendStatusQueryResult[] = friendIds.map((fId, index) => {
+            const offset = index * step;
+            return {
+                friendId: fId,
+                inActiveRoom: !!rawResults[offset],
+                inviteToMeRaw: rawResults[offset + 1] as string | null,
+                // Redis sIsMember returns 1 for true, 0 for false
+                isInvitedByMe: hasUserRoom ? rawResults[offset + 2] === 1 : false, 
+            };
+        });
+
+        return { results: mappedResults, hasUserRoom };
     }
+
 
     async updateRoomQueue(roomId: string, queue: SongData[]): Promise<void> {
         const key = this.roomKey(roomId);

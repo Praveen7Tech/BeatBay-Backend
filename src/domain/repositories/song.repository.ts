@@ -2,7 +2,6 @@
 import { ClientSession } from "mongoose";
 import { Song } from "../entities/song.entity";
 import { GetAllSongsRequest } from "../interfaces/songRequest";
-import { DemoGraphics } from "../../application/dto/admin/dashboard/dashboard.dto";
 
 export type CreateSongData = Omit<Song, '_id' | 'createdAt' | 'updatedAt' | 'playCount' | 'likesCount'>;
 

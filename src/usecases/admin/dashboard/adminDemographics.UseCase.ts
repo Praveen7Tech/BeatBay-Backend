@@ -2,7 +2,6 @@ import { DemographicsResponseDTO } from "../../../application/dto/admin/dashboar
 import { IDashBoardDemographicsUseCase } from "../../../application/interfaces/usecase/admin/dashboard/dahsboard-demographics-usecase.interface";
 import { getDateRange } from "../../../application/utils/dateRange";
 import { Entity, IDashBoardRepository } from "../../../domain/repositories/demographics.repository";
-import logger from "../../../infrastructure/utils/logger/logger";
 
 
 export class DashBoardDemographicsUseCase implements IDashBoardDemographicsUseCase{

@@ -32,7 +32,7 @@ export class AuthController {
     try {
       const dto: SignupRequestDTO= SignupRequestSchema.parse(req.body)
 
-      const result = await this._signupUsecase.execute(dto);
+       await this._signupUsecase.execute(dto);
       return res.status(StatusCode.CREATED).json({message:MESSAGES.OTP_SEND});
     } catch (error) {
       next(error); 
@@ -53,7 +53,7 @@ export class AuthController {
   async resendOtp(req: Request, res: Response, next: NextFunction) {
     try {
       const dto: ResendOtpRequestDTO= ResendOtpRequestSchema.parse(req.body)
-      const result = await this._resendOtpUsecase.execute(dto)
+       await this._resendOtpUsecase.execute(dto)
       
       return res.status(StatusCode.OK).json({message:MESSAGES.OTP_RESEND_SUCCESS})
     } catch (error) {

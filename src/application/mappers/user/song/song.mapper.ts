@@ -1,5 +1,4 @@
 import { Song } from "../../../../domain/entities/song.entity";
-import { AlbumSongDetailsDTO } from "../../../dto/album/album.dto";
 import { SongListDTO } from "../../../dto/song/song.dto";
 
 

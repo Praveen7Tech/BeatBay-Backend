@@ -1,4 +1,3 @@
-import { Artist } from "../../../../domain/entities/arist.entity";
 import { ArtistPopulated } from "../../../../domain/interfaces/albumRequest";
 import { ArtistDetailsResponseDTO } from "../../../dto/artist/artist.profile.dto";
 

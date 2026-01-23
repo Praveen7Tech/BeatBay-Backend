@@ -344,7 +344,7 @@ export class UserController{
                 return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
-            const result = await this._addToPlayListUsecase.execute(playListId,songId)
+            await this._addToPlayListUsecase.execute(playListId,songId)
 
             return res.status(StatusCode.CREATED).json({message: "song added to playlist"})
         } catch (error) {
@@ -356,7 +356,7 @@ export class UserController{
         try {
             const userId = req.user?.id
             const { playlistId, songId } = req.params;
-            if(!playlistId || !songId){
+            if(!userId || !playlistId || !songId){
                  return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
             }
 
@@ -413,8 +413,8 @@ export class UserController{
                 return res.status(404).json({ message: "Playlist not found" });
             }
             // Get the full public ID path from the database
-            let existingPublicId = existingPlaylist.coverImagePublicId;
-           const PLAYLIST_FOLDER = `/playList/${playListId}`
+            const existingPublicId = existingPlaylist.coverImagePublicId;
+            const PLAYLIST_FOLDER = `/playList/${playListId}`
 
             if(req.file){
                 const dataURL = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`
@@ -525,7 +525,7 @@ export class UserController{
             const response = await this._toggleSongLikeUsecase.execute(songId, userId)
             return res.status(StatusCode.OK).json(response)
         } catch (error) {
-            
+            next(error)
         }
     }
 

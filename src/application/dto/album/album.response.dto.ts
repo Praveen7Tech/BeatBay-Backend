@@ -1,4 +1,7 @@
-  export interface AlbumResponseDTO {
+
+import { AlbumSongDetailsDTO } from "./album.dto";
+
+export interface AlbumResponseDTO {
     id: string;
     name: string;
     coverImageUrl: string;
@@ -32,8 +35,6 @@ export interface FetchAlbumsResponseDTO {
   albums: FetchAlbumItemDTO[];
 }
 
-import { SongDetailsDTO } from "../song/song.response.dto";
-import { AlbumSongDetailsDTO } from "./album.dto";
 
 export interface AlbumDetailsResponseDTO {
   id: string;

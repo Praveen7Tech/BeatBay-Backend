@@ -1,8 +1,8 @@
-import { ClientSession, HydratedDocument } from "mongoose";
+import { ClientSession } from "mongoose";
 import { PlayList } from "../../../../domain/entities/playList.entiy";
 import { IPlayListRepository } from "../../../../domain/repositories/playList.repository";
 import { PlayListModel } from "../models/playList.model";
-import { playListProjection, PlayListProjectionResponse } from "../../../../domain/interfaces/playlist.interface";
+import { PlayListProjectionResponse } from "../../../../domain/interfaces/playlist.interface";
 import { PlayListEditDTO } from "../../../../application/dto/playList/edit.playlist.dto";
 
 export class  MongoosePlayListRepository implements IPlayListRepository{

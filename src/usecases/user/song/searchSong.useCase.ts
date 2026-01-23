@@ -1,7 +1,6 @@
 import { SearchSongsDTO, SongResponseDTO } from "../../../application/dto/song/song.dto";
 import { ISearchSongsUseCase } from "../../../application/interfaces/usecase/song/search-songs-usecaseinterface";
 import { SearchSongMapper } from "../../../application/mappers/song/search-song.mapper";
-import { Song } from "../../../domain/entities/song.entity";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 
 

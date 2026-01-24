@@ -14,7 +14,12 @@ export interface User {
   followingArtists?: string[]
   followingUsers: string[]
   followingCount?: number
-  followersCount: number
+  followersCount: number,
+  isPremium: boolean;
+  stripCustomerId: string
+  subscriptionId: string
+  subscriptionStatus: 'active' | "cancelled" | 'none';
+  premiumExpiresOn: Date
   createdAt?: Date;
   updatedAt?: Date;
 }

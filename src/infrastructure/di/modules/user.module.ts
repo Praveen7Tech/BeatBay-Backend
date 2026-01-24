@@ -47,6 +47,9 @@ import { RemoveFromPlaylistUseCase } from "../../../usecases/user/playList/remov
 import { DeletePlayListUseCase } from "../../../usecases/user/playList/deletePlayList.UseCase";
 import { IFollowersRepository } from "../../../domain/repositories/followers.repository";
 import { MongooseFolloersRepository } from "../../presistence/mongoose/repositories/mongoose.followers.repository";
+import { PremiumSubScriptionUseCase } from "../../../usecases/user/premium/premiumSubcription.UseCase";
+import { IStripeService } from "../../../domain/services/stripe/stripe.service";
+import { StripeService } from "../../stripe/StripeService";
 
 export const userModule = {
     // Repository
@@ -61,6 +64,7 @@ export const userModule = {
     // services
     _recommendationService: asClass<IRecomentationService>(SongRecommentationService).scoped(),
     _searchService: asClass<ISearchService>(SearchResponseService).singleton(),
+    _stripeService: asClass<IStripeService>(StripeService).scoped(),
 
     //useCases
     _editProfileUserUsecase: asClass(editProfileUsecase).scoped(),
@@ -105,6 +109,9 @@ export const userModule = {
     //song like
     _toggleSongLikeUsecase: asClass(ToggleSongLikeStatusUseCase).scoped(),
     _userLikedSongsUsecase: asClass(UserLikedSongsUseCase).scoped(),
+
+    //subscription
+    _premiumSubScriptionUsecase:asClass(PremiumSubScriptionUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

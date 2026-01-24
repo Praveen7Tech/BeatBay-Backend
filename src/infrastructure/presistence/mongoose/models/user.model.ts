@@ -53,6 +53,26 @@ const userSchema = new Schema<UserDocument>(
       type: Number,
       default: 0
     },
+    isPremium: {
+      type: Boolean,
+      default: false
+    },
+    stripCustomerId:{
+      type: String,
+      default: null
+    },
+    subscriptionId:{
+      type: String,
+      default: null
+    },
+    subscriptionStatus:{
+      type : String,
+      enum: ['active','cancelled','none'],
+      default: 'none'
+    },
+    premiumExpiresOn:{
+      type: Date,
+    }
   },
   { timestamps: true }
 );

@@ -35,7 +35,12 @@ import { IUserLikedSongsUseCase } from "../../../../application/interfaces/useca
 import { IGetPlayListEditUseCase } from "../../../../application/interfaces/usecase/playlist/get-playlist-edit.usecase.interface"
 import { IRemoveFromPlayListUseCase } from "../../../../application/interfaces/usecase/playlist/remove-from-playlist-usecase.interface"
 import { IDeletePlayListUseCase } from "../../../../application/interfaces/usecase/playlist/delete-playlist-usecase.interface"
+import { IPremiumSubScriptionUsecase } from "../../../../application/interfaces/usecase/premium/subscription-usecase.interface"
+import { stripe } from "../../../../infrastructure/stripe/stripe.config"
+import { ISubscriptionSuccessUseCase } from "../../../../application/interfaces/usecase/premium/subscription-success-usecasse.interface"
+import { ISubcriptionFailedUsecase } from "../../../../application/interfaces/usecase/premium/subscription-failed-usecase.interface"
 
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET_KEY
 export class UserController{
     constructor(
         private readonly _editProfileUserUsecase: IEditProfileUseCase,
@@ -66,7 +71,10 @@ export class UserController{
         private readonly _followersUsecase: IGetProfileFollowersPreviewUseCase,
         private readonly _songHydrationUsecase: ISongHydrationUseCase,
         private readonly _toggleSongLikeUsecase: IToggleSongLikeUseCase,
-        private readonly _userLikedSongsUsecase: IUserLikedSongsUseCase
+        private readonly _userLikedSongsUsecase: IUserLikedSongsUseCase,
+        private readonly _premiumSubScriptionUsecase: IPremiumSubScriptionUsecase,
+        private readonly _subscriptionSuccessUseCase: ISubscriptionSuccessUseCase,
+        private readonly _subcriptionFailedUsecase: ISubcriptionFailedUsecase
         
     ){}
 
@@ -542,5 +550,60 @@ export class UserController{
         } catch (error) {
             next(error)
         }
+    }
+
+    SubcriptionCheckout = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            const email = req.user?.email
+            const {priceId} = req.body
+            console.log("juii ", priceId)
+            if(!userId || !email || !priceId){
+                return res.status(StatusCode.UNAUTHORIZED).json(MESSAGES.UNAUTHORIZED)
+            }
+
+            const data = await this._premiumSubScriptionUsecase.execute(userId,email,priceId)
+            return res.status(StatusCode.OK).json({url: data.url})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+
+    stripeWebHookHandle = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        const siggnature = req.headers['stripe-signature'] as string
+        let event ;
+        try {
+            event = stripe.webhooks.constructEvent(req.body, siggnature, WEBHOOK_SECRET!)
+        } catch (error) {
+            next(error)
+            return res.status(400).send(`Webhook Error: ${error}`);
+        }
+
+        try {
+            switch(event.type){
+                case 'checkout.session.completed':{
+                    const session = event.data.object as any
+                    const userId = session.metadata?.userId
+
+                    await this._subscriptionSuccessUseCase.execute(true, session.customer,session.subscription,"active")
+
+                    break;
+                }
+
+                case 'invoice.payment_failed':{
+                    const invoice = event.data.object as any
+
+                    await this._subcriptionFailedUsecase.execute("past_due", true)
+
+                    break;
+                }
+            }
+        } catch (error) {
+            console.error("Database updation error during premuim subscription")
+            next(error)
+        }
+
+        res.status(StatusCode.OK).json({success: true})
     }
 }

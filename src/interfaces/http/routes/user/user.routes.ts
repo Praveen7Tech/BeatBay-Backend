@@ -1,5 +1,5 @@
 import { AwilixContainer } from "awilix"
-import { Router } from "express"
+import express, { Router } from "express"
 import { UserController } from "../../controllers/user/user.controller"
 import { authMiddleware } from "../../../middleware/auth/authMiddleware"
 import { statusCheckMiddleware } from "../../../middleware/status/statusCheckMiddleware"
@@ -50,6 +50,9 @@ export default (container: AwilixContainer): Router=> {
     router.put('/song/:songId/toggle-like', userController.toggleLike)
 
     router.get('/liked-songs', userController.LikedSongs)
+
+    router.post('/subscription/checkout', userController.SubcriptionCheckout)
+    router.post('/stripe-webhook', express.raw({type: 'apllication/josn'}) ,userController.stripeWebHookHandle)
 
     return router
 }

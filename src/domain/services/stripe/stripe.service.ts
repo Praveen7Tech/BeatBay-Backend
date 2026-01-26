@@ -1,3 +1,5 @@
+import { Subscription } from "../../entities/subscription.entity";
+
 export interface CheckoutSessionResponse {
     id: string;
     url: string | null;
@@ -5,4 +7,7 @@ export interface CheckoutSessionResponse {
 
 export interface IStripeService{
     createCheckoutSession(userId:string, email:string, priceId:string):Promise<CheckoutSessionResponse>
+    upsertSubscription(data: Partial<Subscription>): Promise<void>;
+    handlepaymentFailure(subscriptionId: string): Promise<void>
+    deleteSubscription(stripeSubId: string): Promise<void>;
 }

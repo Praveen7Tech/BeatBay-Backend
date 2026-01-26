@@ -50,6 +50,7 @@ import { MongooseFolloersRepository } from "../../presistence/mongoose/repositor
 import { PremiumSubScriptionUseCase } from "../../../usecases/user/premium/premiumSubcription.UseCase";
 import { IStripeService } from "../../../domain/services/stripe/stripe.service";
 import { StripeService } from "../../stripe/StripeService";
+import { HandleWebHookUseCase } from "../../../usecases/user/premium/handleWebhook.UseCase";
 
 export const userModule = {
     // Repository
@@ -64,7 +65,6 @@ export const userModule = {
     // services
     _recommendationService: asClass<IRecomentationService>(SongRecommentationService).scoped(),
     _searchService: asClass<ISearchService>(SearchResponseService).singleton(),
-    _stripeService: asClass<IStripeService>(StripeService).scoped(),
 
     //useCases
     _editProfileUserUsecase: asClass(editProfileUsecase).scoped(),

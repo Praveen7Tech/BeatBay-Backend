@@ -4,8 +4,12 @@ import { scopePerRequest } from "awilix-express"
 import container from "../../infrastructure/di/container"
 import cookieParser from "cookie-parser"
 import path from "path"
+import stripeWebhookRouter from "../../interfaces/http/routes/stripe/stripe.webhook.route"
 
 const app = express()
+
+// stripe webhook route
+app.use('/stripe', stripeWebhookRouter(container))
 
 app.use(express.json())
 app.use(urlencoded({extended: true}))

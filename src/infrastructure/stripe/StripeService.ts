@@ -1,4 +1,7 @@
+import { Subscription } from "../../domain/entities/subscription.entity";
 import { CheckoutSessionResponse, IStripeService } from "../../domain/services/stripe/stripe.service";
+import { SubscriptionModel } from "../presistence/mongoose/models/subscription.model";
+import { UserModel } from "../presistence/mongoose/models/user.model";
 import { stripe } from "./stripe.config";
 
 const CLIENT_URL = process.env.FRONTEND_URL
@@ -16,5 +19,34 @@ export class StripeService implements IStripeService{
         })
 
         return session
+    }
+
+    async upsertSubscription(data: Partial<Subscription>): Promise<void> {
+    console.log("sub data", data)    
+        await SubscriptionModel.findOneAndUpdate(
+            {stripeCustomerId: data.stripeSubscriptionId},
+            {$set: data},
+            {upsert : true}
+        )
+
+        await UserModel.findByIdAndUpdate(data.userId,{
+            isPremium: true,
+            stripCustomerId: data.stripeCustomerId
+        })
+    }
+
+    async deleteSubscription(stripeSubId: string): Promise<void> {
+        const sub = await SubscriptionModel.findOneAndDelete({stripeSubscriptionId: stripeSubId})
+
+        if(sub){
+            await UserModel.findByIdAndUpdate(sub.userId, {isPremium: false})
+        }
+    }
+
+    async handlepaymentFailure(subscriptionId: string): Promise<void> {
+        await SubscriptionModel.findOneAndUpdate(
+            {stripeSubscriptionId: subscriptionId},
+            {$set: {status: "past_due"}}
+        )
     }
 }

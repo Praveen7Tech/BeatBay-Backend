@@ -18,7 +18,7 @@ export interface User {
   isPremium: boolean;
   stripCustomerId: string
   subscriptionId: string
-  subscriptionStatus: 'active' | "cancelled" | 'none';
+  subscriptionStatus: 'active' | "past_due" | "cancelled" | 'none';
   premiumExpiresOn: Date
   createdAt?: Date;
   updatedAt?: Date;

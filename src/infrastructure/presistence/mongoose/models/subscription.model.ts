@@ -14,7 +14,25 @@ const SubscriptionSchema = new Schema({
     required: true 
   },
   currentPeriodEnd: { type: Date, required: true },
-  cancelAtPeriodEnd: { type: Boolean, default: false }
+  cancelAtPeriodEnd: { type: Boolean, default: false },
+  planPeriod:{
+    type:String,
+    enum: ['Monthly', '6 Months','yearLY']
+  },
+  amount:{
+    type:String,
+    default: 0
+  },
+  currency:{
+    type: String
+  },
+  paymentMethodType:{
+    type: String,
+    enum: ['card', 'upi', 'paypal', "apple_pay"]
+  },
+  paymentMethodDetails:{
+    type: String
+  }
 }, { timestamps: true });
 
 export const SubscriptionModel : Model<SubscriptionDocument> = mongoose.model<SubscriptionDocument>("Subscription", SubscriptionSchema)

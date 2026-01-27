@@ -36,6 +36,8 @@ import { IGetPlayListEditUseCase } from "../../../../application/interfaces/usec
 import { IRemoveFromPlayListUseCase } from "../../../../application/interfaces/usecase/playlist/remove-from-playlist-usecase.interface"
 import { IDeletePlayListUseCase } from "../../../../application/interfaces/usecase/playlist/delete-playlist-usecase.interface"
 import { IPremiumSubScriptionUsecase } from "../../../../application/interfaces/usecase/premium/subscription-usecase.interface"
+import { IUserSubscriptionDataUseCase } from "../../../../application/interfaces/usecase/premium/subscription-data-usecase.interface"
+import { IToggleAutoRenewalUseCase } from "../../../../application/interfaces/usecase/premium/toggle-auto-renewal-usecase.interface"
 export class UserController{
     constructor(
         private readonly _editProfileUserUsecase: IEditProfileUseCase,
@@ -67,7 +69,9 @@ export class UserController{
         private readonly _songHydrationUsecase: ISongHydrationUseCase,
         private readonly _toggleSongLikeUsecase: IToggleSongLikeUseCase,
         private readonly _userLikedSongsUsecase: IUserLikedSongsUseCase,
-        private readonly _premiumSubScriptionUsecase: IPremiumSubScriptionUsecase,    
+        private readonly _premiumSubScriptionUsecase: IPremiumSubScriptionUsecase,
+        private readonly _getUserSubscriptionDataUsecase: IUserSubscriptionDataUseCase,
+        private readonly _toggleAutoRenewalUseCase: IToggleAutoRenewalUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction) =>{
@@ -557,6 +561,37 @@ export class UserController{
             const data = await this._premiumSubScriptionUsecase.execute(userId,email,priceId)
          
             return res.status(StatusCode.OK).json({url: data.url})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    subscription = async(req:AuthRequest, res:Response, next: NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            if(!userId){
+                return res.status(StatusCode.UNAUTHORIZED).json(MESSAGES.UNAUTHORIZED)
+            }
+
+            const data = await this._getUserSubscriptionDataUsecase.execute(userId)
+
+            return res.status(StatusCode.OK).json(data)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    autoSubscriptionToggle = async(req:AuthRequest, res:Response, next: NextFunction)=>{
+        try {
+            const { subscriptionId, newValue } = req.body;
+        
+            if (!subscriptionId || newValue === undefined) {
+                return res.status(StatusCode.BAD_REQUEST).json({ message: "Missing required fields" });
+            }
+            
+            const data = await this._toggleAutoRenewalUseCase.execute(subscriptionId, newValue);
+
+            return res.status(StatusCode.OK).json({ success: data });
         } catch (error) {
             next(error)
         }

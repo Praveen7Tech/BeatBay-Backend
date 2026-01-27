@@ -1,4 +1,6 @@
-export type SubscriptionStatus = 'active' | 'past_due' | 'unpaid' | 'canceled' | 'incomplete' | 'trialing';
+export type SubscriptionStatus = 'Active' | 'Past_due' | 'Unpaid' | 'Canceled' | 'Incomplete' | 'Trialing';
+export type PaymentType = 'card' | 'upi' | 'apple_pay' | 'paypal'
+export type PlanPeriod = "Monthly" | "6 Months" | 'Yearly'
 
 export interface Subscription{
     id: string
@@ -10,4 +12,9 @@ export interface Subscription{
     priceId: string
     currentPeriodEnd: Date
     cancelAtPeriodEnd: boolean
+    planPeriod: string
+    amount: number
+    currency: string
+    paymentMethodType: PaymentType
+    paymentMethodDetails: string
 }

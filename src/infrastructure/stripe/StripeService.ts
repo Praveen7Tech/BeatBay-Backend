@@ -43,7 +43,7 @@ export class StripeService implements IStripeService{
         }
     }
 
-    async handlepaymentFailure(subscriptionId: string): Promise<void> {
+    async handlePaymentFailure(subscriptionId: string): Promise<void> {
         await SubscriptionModel.findOneAndUpdate(
             {stripeSubscriptionId: subscriptionId},
             {$set: {status: "past_due"}}

@@ -5,8 +5,9 @@ export interface Subscription{
     userId: string
     stripeCustomerId: string
     stripeSubscriptionId: string
+    stripePriceId: string
     status: SubscriptionStatus
     priceId: string
     currentPeriodEnd: Date
-    cancelAtPeriodEbd: boolean
+    cancelAtPeriodEnd: boolean
 }

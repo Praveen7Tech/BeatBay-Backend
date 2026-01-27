@@ -48,9 +48,6 @@ import { DeletePlayListUseCase } from "../../../usecases/user/playList/deletePla
 import { IFollowersRepository } from "../../../domain/repositories/followers.repository";
 import { MongooseFolloersRepository } from "../../presistence/mongoose/repositories/mongoose.followers.repository";
 import { PremiumSubScriptionUseCase } from "../../../usecases/user/premium/premiumSubcription.UseCase";
-import { IStripeService } from "../../../domain/services/stripe/stripe.service";
-import { StripeService } from "../../stripe/StripeService";
-import { HandleWebHookUseCase } from "../../../usecases/user/premium/handleWebhook.UseCase";
 
 export const userModule = {
     // Repository

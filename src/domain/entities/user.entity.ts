@@ -16,10 +16,7 @@ export interface User {
   followingCount?: number
   followersCount: number,
   isPremium: boolean;
-  stripCustomerId: string
-  subscriptionId: string
-  subscriptionStatus: 'active' | "past_due" | "cancelled" | 'none';
-  premiumExpiresOn: Date
+  stripeCustomerId: string
   createdAt?: Date;
   updatedAt?: Date;
 }

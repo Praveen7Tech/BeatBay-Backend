@@ -10,4 +10,5 @@ export interface IStripeService{
     upsertSubscription(data: Partial<Subscription>): Promise<void>;
     handlePaymentFailure(subscriptionId: string): Promise<void>
     deleteSubscription(stripeSubId: string): Promise<void>;
+    toggleAutoRenewal(subscriptionId: string, autoRenew: boolean): Promise<void>
 }

@@ -5,6 +5,7 @@ import { authMiddleware } from "../../../middleware/auth/authMiddleware"
 import { statusCheckMiddleware } from "../../../middleware/status/statusCheckMiddleware"
 import { uploadImage } from "../../../middleware/uploads/uploadImage"
 import { authorizeRoles } from "../../../middleware/auth/autharizeRole.middleware"
+import { route } from "awilix-express"
 
 export default (container: AwilixContainer): Router=> {
     const router = Router()
@@ -52,6 +53,8 @@ export default (container: AwilixContainer): Router=> {
     router.get('/liked-songs', userController.LikedSongs)
 
     router.post('/subscription/checkout', userController.SubcriptionCheckout)
+    router.get('/subscription', userController.subscription)
+    router.put('/auto-subscription-toggle', userController.autoSubscriptionToggle)
 
     return router
 }

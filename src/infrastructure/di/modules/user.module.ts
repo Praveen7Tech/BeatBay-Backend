@@ -48,6 +48,7 @@ import { DeletePlayListUseCase } from "../../../usecases/user/playList/deletePla
 import { IFollowersRepository } from "../../../domain/repositories/followers.repository";
 import { MongooseFolloersRepository } from "../../presistence/mongoose/repositories/mongoose.followers.repository";
 import { PremiumSubScriptionUseCase } from "../../../usecases/user/premium/premiumSubcription.UseCase";
+import { ToggleAutoRenewalUseCase } from "../../../usecases/user/premium/toggleAutoRenewal.UseCase"
 
 export const userModule = {
     // Repository
@@ -109,6 +110,7 @@ export const userModule = {
 
     //subscription
     _premiumSubScriptionUsecase:asClass(PremiumSubScriptionUseCase).scoped(),
+    _toggleAutoRenewalUseCase: asClass(ToggleAutoRenewalUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

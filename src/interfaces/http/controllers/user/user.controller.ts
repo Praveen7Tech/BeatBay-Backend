@@ -36,10 +36,6 @@ import { IGetPlayListEditUseCase } from "../../../../application/interfaces/usec
 import { IRemoveFromPlayListUseCase } from "../../../../application/interfaces/usecase/playlist/remove-from-playlist-usecase.interface"
 import { IDeletePlayListUseCase } from "../../../../application/interfaces/usecase/playlist/delete-playlist-usecase.interface"
 import { IPremiumSubScriptionUsecase } from "../../../../application/interfaces/usecase/premium/subscription-usecase.interface"
-import { stripe } from "../../../../infrastructure/stripe/stripe.config"
-import { IHandleWebHookUsecase } from "../../../../application/interfaces/usecase/premium/handleWebHook-usecase.interface"
-
-const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET_KEY
 export class UserController{
     constructor(
         private readonly _editProfileUserUsecase: IEditProfileUseCase,

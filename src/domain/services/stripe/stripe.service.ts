@@ -8,6 +8,6 @@ export interface CheckoutSessionResponse {
 export interface IStripeService{
     createCheckoutSession(userId:string, email:string, priceId:string):Promise<CheckoutSessionResponse>
     upsertSubscription(data: Partial<Subscription>): Promise<void>;
-    handlepaymentFailure(subscriptionId: string): Promise<void>
+    handlePaymentFailure(subscriptionId: string): Promise<void>
     deleteSubscription(stripeSubId: string): Promise<void>;
 }

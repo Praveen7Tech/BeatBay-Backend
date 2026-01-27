@@ -57,21 +57,9 @@ const userSchema = new Schema<UserDocument>(
       type: Boolean,
       default: false
     },
-    stripCustomerId:{
+    stripeCustomerId:{
       type: String,
       default: null
-    },
-    subscriptionId:{
-      type: String,
-      default: null
-    },
-    subscriptionStatus:{
-      type : String,
-      enum: ['active','cancelled','none'],
-      default: 'none'
-    },
-    premiumExpiresOn:{
-      type: Date,
     }
   },
   { timestamps: true }

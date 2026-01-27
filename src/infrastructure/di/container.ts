@@ -6,7 +6,7 @@ import { userModule } from './modules/user.module';
 import { stripeModule } from './modules/stripe.module';
 //import { socketModule } from './modules/socket.module';
 
-const container = createContainer({ injectionMode: InjectionMode.PROXY });
+const container = createContainer({ injectionMode: InjectionMode.CLASSIC });
 
 container.register(authModule);
 container.register(adminModule)

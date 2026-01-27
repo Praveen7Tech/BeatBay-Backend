@@ -10,14 +10,18 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
 
     async execute(event: Stripe.Event): Promise<void> {
         
-        const data = event.data.object as any
+        //const data = event.data.object as any
 
         switch (event.type) {
             case 'checkout.session.completed':
+
+                const session = event.data.object as Stripe.Checkout.Session
+        console.log("session ", session)
                 await this._stripeService.upsertSubscription({
-                    userId: data.metadata.userId,
-                    stripeCustomerId: data.customer,
-                    stripeSubscriptionId: data.subscription,
+                    userId: session.metadata?.userId,
+                    stripeCustomerId: session.customer as string,
+                    stripeSubscriptionId: session.subscription as string,
+                    stripePriceId: session.line_items?.data[0]?.price?.id,
                     status: 'active',
                     currentPeriodEnd: new Date() 
                 });
@@ -25,12 +29,20 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
                 break;
 
             case 'invoice.payment_failed':
-                await this._stripeService.handlepaymentFailure(data.subscriptionId);
-                logger.info("failure payment")
-                break;
+
+                 const invoice = event.data.object as Stripe.Invoice;
+                 const subscriptionId = (invoice as any).subscription as string;
+            console.log("invoice ", invoice)    
+                if (subscriptionId) {
+                    await this._stripeService.handlePaymentFailure(subscriptionId);
+                    logger.info(`Payment failure for subscription: ${subscriptionId}`);
+                }
 
             case 'customer.subscription.deleted':
-                await this._stripeService.deleteSubscription(data.id);
+
+                const subscription = event.data.object as Stripe.Subscription
+            console.log("sub ", subscription)    
+                await this._stripeService.deleteSubscription(subscription.id);
                 logger.info("delete subscription")  
                 break;
         }

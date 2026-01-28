@@ -10,7 +10,8 @@ export class AuthMapper {
             email: user.email,
             profilePicture: user.profilePicture || "",
             followingCount: user.followingCount || 0,
-            role: user.role
+            role: user.role,
+            isPremium: user.isPremium
         }
     }
 

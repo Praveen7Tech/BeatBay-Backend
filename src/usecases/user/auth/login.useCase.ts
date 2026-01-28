@@ -44,7 +44,7 @@ export class LoginUsecase implements ILoginUsecase {
         return {
             user:userData,
             accessToken,
-            refreshToken
+            refreshToken,
         }
     }
 }

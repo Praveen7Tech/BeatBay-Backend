@@ -6,6 +6,8 @@ export class SubscriptionRepository implements ISubscriptionRepository{
 
     async getSubscription(userId: string): Promise<Partial<Subscription> | null> {
         const sub = await SubscriptionModel.findOne({userId})
+        .sort({createdAt: -1}).lean()
+        
         if(!sub) return null
 
         return {

@@ -38,6 +38,9 @@ import { IDeletePlayListUseCase } from "../../../../application/interfaces/useca
 import { IPremiumSubScriptionUsecase } from "../../../../application/interfaces/usecase/premium/subscription-usecase.interface"
 import { IUserSubscriptionDataUseCase } from "../../../../application/interfaces/usecase/premium/subscription-data-usecase.interface"
 import { IToggleAutoRenewalUseCase } from "../../../../application/interfaces/usecase/premium/toggle-auto-renewal-usecase.interface"
+import { success } from "zod"
+import { ICancelSubscriptionUseCase } from "../../../../application/interfaces/usecase/premium/cancelSubscription-usecase.interface"
+import { IGetPaymentHistoryUseCase } from "../../../../application/interfaces/usecase/premium/getPaymentHistory-usecase.interface"
 export class UserController{
     constructor(
         private readonly _editProfileUserUsecase: IEditProfileUseCase,
@@ -71,7 +74,9 @@ export class UserController{
         private readonly _userLikedSongsUsecase: IUserLikedSongsUseCase,
         private readonly _premiumSubScriptionUsecase: IPremiumSubScriptionUsecase,
         private readonly _getUserSubscriptionDataUsecase: IUserSubscriptionDataUseCase,
-        private readonly _toggleAutoRenewalUseCase: IToggleAutoRenewalUseCase
+        private readonly _toggleAutoRenewalUseCase: IToggleAutoRenewalUseCase,
+        private readonly _cancelSubscriptionUseCase: ICancelSubscriptionUseCase,
+        private readonly _getPaymentHistoryUsecase: IGetPaymentHistoryUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction) =>{
@@ -588,10 +593,42 @@ export class UserController{
             if (!subscriptionId || newValue === undefined) {
                 return res.status(StatusCode.BAD_REQUEST).json({ message: "Missing required fields" });
             }
-            
+
             const data = await this._toggleAutoRenewalUseCase.execute(subscriptionId, newValue);
 
             return res.status(StatusCode.OK).json({ success: data });
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    cancelSubscription = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            const {subscriptionId } = req.body
+
+            if(!userId || !subscriptionId){
+                return res.status(StatusCode.BAD_REQUEST).json({ message: "Missing required fields" });
+            }
+
+            const data = await this._cancelSubscriptionUseCase.execute(subscriptionId)
+
+            return res.status(StatusCode.OK).json({success: true})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    subscriptionHistory = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const userId =  req.user?.id
+            if(!userId ){
+                return res.status(StatusCode.BAD_REQUEST).json({ message: "Missing required fields" });
+            }
+
+            const history = await this._getPaymentHistoryUsecase.execute(userId)
+
+            return res.status(StatusCode.OK).json(history)
         } catch (error) {
             next(error)
         }

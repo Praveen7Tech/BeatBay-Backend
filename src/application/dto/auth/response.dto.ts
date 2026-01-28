@@ -14,6 +14,7 @@ export interface AuthUserDTO {
   profilePicture: string;
   followingCount: number;
   role: string;
+  isPremium: boolean
 }
 
 export interface AuthArtistDTO {

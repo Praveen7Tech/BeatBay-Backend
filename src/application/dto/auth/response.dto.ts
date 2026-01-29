@@ -24,6 +24,8 @@ export interface AuthArtistDTO {
   profilePicture: string;
   followersCount: number;
   role: string;
+  payOutEnabled: boolean
+  stripeConnectId?: string
 }
 
 

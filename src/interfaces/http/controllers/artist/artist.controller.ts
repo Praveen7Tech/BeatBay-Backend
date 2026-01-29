@@ -28,6 +28,8 @@ import { IAlbumDetailsEditUseCase } from "../../../../application/interfaces/use
 import { IGetAllFansUseCase } from "../../../../application/interfaces/usecase/artist/fans/artist-getallfans-usecase.interface";
 import { IArtistDashBoardDataUseCase } from "../../../../application/interfaces/usecase/artist/dashboard/artist-dashboard-usecase.interface";
 import { SongUploadFile } from "../../../types/songFile.type";
+import { IGetArtistOnBoardingLinkUseCase } from "../../../../application/interfaces/usecase/artist/revenue/getOnBoardLink-usecase.interface";
+import { success } from "zod";
 
 export class ArtistController {
     constructor(
@@ -46,7 +48,8 @@ export class ArtistController {
         private readonly _getAlbumDetailsUsecase: IAlbumDetailsEditUseCase,
         private readonly _getArtistDetailsUsecase: IGetArtistByIdUseCase,
         private readonly _getallFansUsecase: IGetAllFansUseCase,
-        private readonly _artistDashBoardDataUsecase: IArtistDashBoardDataUseCase
+        private readonly _artistDashBoardDataUsecase: IArtistDashBoardDataUseCase,
+        private readonly _getArtistOnBoardingLinkUsecase: IGetArtistOnBoardingLinkUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
@@ -466,6 +469,21 @@ export class ArtistController {
             const data = await this._artistDashBoardDataUsecase.execute(artistId)
 
             return res.status(StatusCode.OK).json(data)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    payoutOnboarding = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+           const artistId = req.user?.id
+           if(!artistId){
+              return res.status(StatusCode.UNAUTHORIZED).json(MESSAGES.UNAUTHORIZED);
+           } 
+
+           const data = await this._getArtistOnBoardingLinkUsecase.execute(artistId)
+
+           return res.status(StatusCode.OK).json({success: true, link: data.link})
         } catch (error) {
             next(error)
         }

@@ -22,7 +22,9 @@ export class AuthMapper {
             email: user.email,
             profilePicture: user.profilePicture || "",
             followersCount: user.followersCount || 0,
-            role: user.role
+            role: user.role,
+            payOutEnabled: user.payOutEnabled,
+            stripeConnectId: user.stripeConnectId
         }
     }
 }

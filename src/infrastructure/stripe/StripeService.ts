@@ -4,44 +4,44 @@ import { CheckoutSessionResponse, IStripeService } from "../../domain/services/s
 import { SubscriptionModel } from "../presistence/mongoose/models/subscription.model";
 import { UserModel } from "../presistence/mongoose/models/user.model";
 import { stripe } from "./stripe.config";
-import { PaymentHistoryDTO } from "../../application/dto/premium/payment-history.dto";
-import { date } from "zod";
 
 const CLIENT_URL = process.env.FRONTEND_URL
 
 export class StripeService implements IStripeService{
     async createCheckoutSession(userId: string, email: string, priceId: string): Promise<CheckoutSessionResponse> {
+        const user = await UserModel.findById(userId);
+        let stripeCustomerId = user?.stripeCustomerId;
 
-        const user = await UserModel.findById(userId)
+        // retrieve the customer to see if it exists in sandbox environment 
+        if (stripeCustomerId) {
+            try {
+                await stripe.customers.retrieve(stripeCustomerId);
+            } catch (error) {
+                stripeCustomerId = undefined; 
+            }
+        }
 
-        const SessionOption : Stripe.Checkout.SessionCreateParams = {
+        // If no ID or ID was invalid/from another mode, create a new one
+        if (!stripeCustomerId) {
+            const customer = await stripe.customers.create({
+                email: email,
+                metadata: { userId }
+            });
+            stripeCustomerId = customer.id;
+
+            await UserModel.findByIdAndUpdate(userId, { stripeCustomerId });
+        }
+
+        const SessionOption: Stripe.Checkout.SessionCreateParams = {
             mode: "subscription",
-            line_items: [{price: priceId, quantity: 1}],
-            metadata: {userId},
-            subscription_data: { metadata: {userId}},
+            customer: stripeCustomerId,
+            line_items: [{ price: priceId, quantity: 1 }],
             success_url: `${CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${CLIENT_URL}/payment-failed`,
-        }
+            subscription_data: { metadata: { userId } },
+        };
 
-        if(user?.stripeCustomerId){
-            SessionOption.customer = user.stripeCustomerId
-        }else{
-            SessionOption.customer_email = email
-        }
-
-        // const session = await stripe.checkout.sessions.create({
-        //     line_items:[{price: priceId, quantity:1}],
-        //     mode: 'subscription',
-        //     metadata:{userId},
-        //     subscription_data:{
-        //         metadata:{userId}
-        //     },
-        //     customer_email: email,
-        //     success_url: `${CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-        //     cancel_url: `${CLIENT_URL}/payment-failed`,
-        // })
-
-        return await stripe.checkout.sessions.create(SessionOption)
+        return await stripe.checkout.sessions.create(SessionOption);
     }
 
     async upsertSubscription(data: Partial<Subscription>): Promise<void> {
@@ -94,5 +94,29 @@ export class StripeService implements IStripeService{
             limit: 20 // Best practice: limit history
         });
         return invoices.data;
+    }
+
+
+    async createConnectAccount(): Promise<Stripe.Account> {
+        const account = await stripe.accounts.create({
+            type: "express",
+            capabilities:{
+                transfers: {requested: true}
+            }
+        })
+
+        return account
+    }
+
+    async createOnBoardingLink(stripeConnectId: string): Promise<string> {
+        
+        const link = await stripe.accountLinks.create({
+            account: stripeConnectId,
+            refresh_url: `${process.env.FRONTEND_URL}/payout-error`,
+            return_url: `${process.env.FRONTEND_URL}/artist/revenue`,
+            type: "account_onboarding"
+        })
+
+        return link.url
     }
 }

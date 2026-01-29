@@ -34,6 +34,7 @@ import { AlbumDetailsUseCase } from "../../../usecases/user/album/albumDetails.u
 import { GetArtistByIdUseCase } from "../../../usecases/admin/artists/adminGetArtistById.useCase";
 import { ArtistFansListingUseCase } from "../../../usecases/artist/fans/artistFansListing.UseCase";
 import { ArtistDashBoardDataUseCase } from "../../../usecases/artist/dashboard/artistDashboardData.UseCase";
+import { GetArtistOnBoardingLinkUseCase } from "../../../usecases/artist/stripe/createOnBoardingLink.UseCase";
 
 export const artistModule = {
 
@@ -76,6 +77,9 @@ export const artistModule = {
 
     //dashboard
     _artistDashBoardDataUsecase: asClass(ArtistDashBoardDataUseCase).scoped(),
+
+    // revenue onboard
+    _getArtistOnBoardingLinkUsecase: asClass(GetArtistOnBoardingLinkUseCase).scoped(),
     
 
     // controller

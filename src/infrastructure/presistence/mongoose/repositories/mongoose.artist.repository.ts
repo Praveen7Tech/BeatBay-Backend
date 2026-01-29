@@ -135,5 +135,21 @@ export class MongooseArtistRepository implements IArtistRepository {
             return artist
       }
 
+      async getStripeConnectId(artistId: string): Promise<string | null> {
+          
+        const artist = await ArtistModel.findById(artistId)
+        .select("stripeConnectId")
+
+        return artist?.stripeConnectId ?? null
+      }
+
+
+      async updatePayoutStatus(stripeConnectionId: string, status: boolean): Promise<void> {
+          
+        await ArtistModel.findOneAndUpdate(
+          {stripeConnectId:stripeConnectionId},
+          {payOutEnabled: status}
+        )
+      }
       
 }

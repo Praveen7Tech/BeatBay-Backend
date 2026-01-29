@@ -15,4 +15,6 @@ export interface IStripeService{
     toggleAutoRenewal(subscriptionId: string, autoRenew: boolean): Promise<void>;
     cancelSubscription(subscriptionId: string): Promise<void>;
     getPaymentHistory(stripeCustomerId: string): Promise<Stripe.Invoice[]>;
+    createConnectAccount(): Promise<Stripe.Account>
+    createOnBoardingLink(stripeConnectId: string): Promise<string>
 }

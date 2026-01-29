@@ -12,4 +12,6 @@ export interface IArtistRepository extends IBaseRepository<Artist> {
     removeSongIdFromArtist(artistId: string, songId:string, session: ClientSession): Promise<void>
     removeAlbumIdFromArtist(artistId: string, albumId:string, session: ClientSession): Promise<void>
     findArtistDetailsById(id: string): Promise<ArtistPopulated | null>;
+    getStripeConnectId(artistId:string): Promise<string | null>;
+    updatePayoutStatus(stripeConnectionId: string, status: boolean):Promise<void>
 }

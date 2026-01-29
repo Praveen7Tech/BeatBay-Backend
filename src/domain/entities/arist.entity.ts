@@ -13,6 +13,8 @@ export interface Artist {
   songs?: string[]; 
   status?:boolean
   followersCount?: number
+  stripeConnectId: string
+  payOutEnabled: boolean
   createdAt?: Date;
   updatedAt?: Date;
 }

@@ -6,12 +6,14 @@ import { GoogleLoginRequestDTO } from "../../../application/dto/auth/request.dto
 import { IArtistGoogleLoginUseCase } from "../../../application/interfaces/usecase/artist/artist-google-login-usecase.interface";
 import { LoginResponseDTO } from "../../../application/dto/auth/response.dto";
 import { AuthMapper } from "../../../application/mappers/user/auth/auth.mapper";
+import { IStripeService } from "../../../domain/services/stripe/stripe.service";
 
 export class ArtistGoogleLoginUseCase implements IArtistGoogleLoginUseCase{
   constructor(
     private readonly _googleAuthService: IGoogleAuthService,
     private readonly _artistRepository: IArtistRepository,
     private readonly _tokenService: ITokenService,
+    private readonly _stripeService: IStripeService
   ) {}
 
   async execute(request: GoogleLoginRequestDTO):Promise<LoginResponseDTO> {
@@ -26,6 +28,8 @@ export class ArtistGoogleLoginUseCase implements IArtistGoogleLoginUseCase{
     let artist = await this._artistRepository.findByEmail(email);
 
     if (!artist) {
+      // create stripe connect account
+      const ConnectAccount = await this._stripeService.createConnectAccount()
         
       artist = await this._artistRepository.create({
         name ,
@@ -34,6 +38,7 @@ export class ArtistGoogleLoginUseCase implements IArtistGoogleLoginUseCase{
         googleId:sub,
         profilePicture: null,
         role: 'artist',
+        stripeConnectId: ConnectAccount.id
       });
     }
 

@@ -33,5 +33,7 @@ export default (container: AwilixContainer): Router=> {
     router.get('/get-allfans', artistController.getFans)
     router.get('/dashboard', artistController.dashBoard)
 
+    router.post('/payouts/onboard', artistController.payoutOnboarding)
+
     return router
 }

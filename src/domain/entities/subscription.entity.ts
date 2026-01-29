@@ -9,7 +9,6 @@ export interface Subscription{
     stripeSubscriptionId: string
     stripePriceId: string
     status: SubscriptionStatus
-    priceId: string
     currentPeriodEnd: Date
     cancelAtPeriodEnd: boolean
     planPeriod: string

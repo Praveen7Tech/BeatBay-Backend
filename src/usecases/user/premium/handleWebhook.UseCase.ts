@@ -4,10 +4,12 @@ import { IStripeService } from "../../../domain/services/stripe/stripe.service";
 import logger from "../../../infrastructure/utils/logger/logger";
 import { PaymentType, PlanPeriod, SubscriptionStatus } from "../../../domain/entities/subscription.entity";
 import { stripe } from "../../../infrastructure/stripe/stripe.config";
+import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 
 export class HandleWebHookUseCase implements IHandleWebHookUsecase{
     constructor(
-        private readonly _stripeService: IStripeService
+        private readonly _stripeService: IStripeService,
+        private readonly _artistRepository: IArtistRepository
     ){}
 
     async execute(event: Stripe.Event): Promise<void> {
@@ -95,6 +97,16 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
                
                 await this._stripeService.deleteSubscription(subscription.id);
                 logger.info("delete subscription")  
+                break;
+            }
+
+            case 'account.updated' : {
+                const account = event.data.object as Stripe.Account
+
+                if(account.payouts_enabled && account.details_submitted){
+                    await this._artistRepository.updatePayoutStatus( account.id,true)
+                }
+                logger.info("artist payout status updated")    
                 break;
             }
         }

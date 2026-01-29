@@ -47,6 +47,14 @@ const artistSchema = new Schema<ArtistDocument>(
         followersCount:{
             type: Number,
             default: 0
+        },
+        stripeConnectId: {
+            type:String,
+            default: null
+        },
+        payOutEnabled:{
+            type: Boolean,
+            default: false
         }
     },
     {timestamps: true}

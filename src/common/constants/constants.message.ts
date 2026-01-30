@@ -14,5 +14,6 @@ export const MESSAGES = {
   PROFILE_UPDATED: "profile updated successfully.",
   LOGOUT_SUCCESSFUL: "logout succssfully completed..!",
   VERIFICATION_COMPLETE: "Verification complete successfully",
-  PASSWORD_UPDATED: "password updated successfully!"
+  PASSWORD_UPDATED: "password updated successfully!",
+  MISSING_FIELDS: "Missing required fields!"
 };

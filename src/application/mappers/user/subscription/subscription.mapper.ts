@@ -6,11 +6,12 @@ export class SubscriptionMapper{
     static toResposneDTO = (sub:Subscription): SubscriptionDTO=>({
         id: sub.id,
         planName: `${sub.planPeriod} Plan`,
-        amount: sub.amount,
+        amount: sub.localAmount,
         autoReniewEnable: sub.cancelAtPeriodEnd,
         cardInfo: sub.paymentMethodDetails,
         nextBillingDate: sub.currentPeriodEnd,
         subscriptionId: sub.stripeSubscriptionId,
-        status: sub.status
+        status: sub.status,
+        currency: sub.currency
     })
 }

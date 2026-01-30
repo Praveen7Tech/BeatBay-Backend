@@ -193,4 +193,10 @@ export class MongooseSongRepository implements ISongRepository{
          return SongModel.findById(id)
         .lean().exec()
     }
+
+    async updatePlayCount(songId: string): Promise<void> {
+        await SongModel.findByIdAndUpdate(songId,
+            {$inc: {playCount: 1}}
+        )
+    }
 }

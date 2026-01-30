@@ -15,6 +15,7 @@ import adminFeaturesRouterFactory from './interfaces/http/routes/admin/admin.fea
 import artistRouterFactory from './interfaces/http/routes/artist/artist.routes'
 import { createSocketServer } from './infrastructure/config/socket';
 import { registerSocketHandler } from './infrastructure/socket/socket.handler';
+import { PayoutCronJob } from './infrastructure/cron/payout.cron';
 
 dotenv.config();
 
@@ -51,6 +52,9 @@ async function startServer() {
     //logger.log("Container resolved authController:", container.resolve('authController'))
 
     app.use(errorHandlerMiddleware)
+    
+    // monthly payout cron
+    PayoutCronJob(container)
 
     httpServer.listen(PORT, () => {
       logger.info(`✅ Server running on http://localhost:${PORT}`)

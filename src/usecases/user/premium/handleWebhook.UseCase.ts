@@ -61,6 +61,11 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
                     planPeriod = 'Yearly';
                 }
 
+                const latestInvoice = await stripe.invoices.retrieve(subscription.latest_invoice as string);
+
+                const amountUSD = item.price.unit_amount || 0
+                const localAmount = latestInvoice.amount_paid / 100 || 0
+
                 await this._stripeService.upsertSubscription({
                     userId: subscription.metadata.userId, 
                     stripeSubscriptionId: subscription.id,
@@ -70,8 +75,10 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
                     currentPeriodEnd: periodEnd,
                     cancelAtPeriodEnd: subscription.cancel_at_period_end,
                     //datas
-                    amount: (item.price.unit_amount || 0) / 100,
-                    currency: item.price.currency,
+                    amountUSD: amountUSD,
+                    localAmount:localAmount,
+                    currency: subscription.currency,
+
                     planPeriod: planPeriod,
                     paymentMethodType:paymentType as PaymentType,
                     paymentMethodDetails: paymentMethodDetails

@@ -18,4 +18,5 @@ export interface ISongRepository{
     adminfindById(id: string): Promise<Song | null>
     admingetAllSongs(params: GetAllSongsRequest): Promise<{ songs: Song[], total: number }>;
     updateStatus(id: string, status: boolean): Promise<Song | null>;
+    updatePlayCount(songId: string): Promise<void>
 }

@@ -17,7 +17,7 @@ export class SubscriptionRepository implements ISubscriptionRepository{
             planPeriod: sub.planPeriod as PlanPeriod,
             currentPeriodEnd: sub.currentPeriodEnd,
             cancelAtPeriodEnd: sub.cancelAtPeriodEnd,
-            amount: sub.amount,
+            localAmount: sub.localAmount,
             currency: sub.currency,
             paymentMethodDetails: sub.paymentMethodDetails,
         }

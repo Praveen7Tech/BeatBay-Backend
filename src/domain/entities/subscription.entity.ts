@@ -12,7 +12,8 @@ export interface Subscription{
     currentPeriodEnd: Date
     cancelAtPeriodEnd: boolean
     planPeriod: string
-    amount: number
+    amountUSD: number
+    localAmount: number
     currency: string
     paymentMethodType: PaymentType
     paymentMethodDetails: string

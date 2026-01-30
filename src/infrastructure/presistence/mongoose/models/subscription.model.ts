@@ -19,8 +19,12 @@ const SubscriptionSchema = new Schema({
     type:String,
     enum: ['Monthly', '6 Months','yearLY']
   },
-  amount:{
-    type:String,
+  amountUSD:{
+    type:Number,
+    default: 0
+  },
+  localAmount:{
+    type: Number,
     default: 0
   },
   currency:{

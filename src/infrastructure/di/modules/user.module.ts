@@ -49,6 +49,9 @@ import { IFollowersRepository } from "../../../domain/repositories/followers.rep
 import { MongooseFolloersRepository } from "../../presistence/mongoose/repositories/mongoose.followers.repository";
 import { PremiumSubScriptionUseCase } from "../../../usecases/user/premium/premiumSubcription.UseCase";
 import { ToggleAutoRenewalUseCase } from "../../../usecases/user/premium/toggleAutoRenewal.UseCase"
+import { TrackSongPlaysUseCase } from "../../../usecases/user/plays/trachSongPlays.UseCase";
+import { IPlayRepository } from "../../../domain/repositories/play.repository";
+import { SongPlayRepository } from "../../presistence/mongoose/repositories/mongoose.plays.repository";
 
 export const userModule = {
     // Repository
@@ -59,6 +62,7 @@ export const userModule = {
     _mongoosePlayListRepository: asClass<IPlayListRepository>(MongoosePlayListRepository).scoped(),
     _mongoosesongLikesRepository: asClass<IMongooseLikesRepository>(MongooseLikesRepository).scoped(),
     _mongoosefollowersRepository: asClass<IFollowersRepository>(MongooseFolloersRepository).scoped(),
+    _playRepository: asClass<IPlayRepository>(SongPlayRepository).scoped(),
 
     // services
     _recommendationService: asClass<IRecomentationService>(SongRecommentationService).scoped(),
@@ -111,6 +115,9 @@ export const userModule = {
     //subscription
     _premiumSubScriptionUsecase:asClass(PremiumSubScriptionUseCase).scoped(),
     _toggleAutoRenewalUseCase: asClass(ToggleAutoRenewalUseCase).scoped(),
+
+    // song play
+    _trackSongPlayUsecase: asClass(TrackSongPlaysUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

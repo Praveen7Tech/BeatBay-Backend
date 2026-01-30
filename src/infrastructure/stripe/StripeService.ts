@@ -119,4 +119,30 @@ export class StripeService implements IStripeService{
 
         return link.url
     }
+
+     async getNetRevenue(startDate: Date, endDate: Date): Promise<number> {
+        const payments = await stripe.paymentIntents.list({
+            created: { gte: Math.floor(startDate.getTime() / 1000), lte: Math.floor(endDate.getTime() / 1000) },
+            expand: ['data.latest_charge.balance_transaction'], 
+            limit: 100,
+        });
+
+        return payments.data.reduce((acc, pay) => {
+            const charge = pay.latest_charge as Stripe.Charge;
+            const bt = charge?.balance_transaction as Stripe.BalanceTransaction;
+            
+            //  'bt.net' to get the USD cents that hit balance after conversion
+            return acc + (bt?.net || 0); 
+        }, 0);
+    }
+
+    async transferToArtist(amount: number, connectId: string, description: string): Promise<Stripe.Transfer> {
+   console.log("payment amount", amount, connectId)     
+        return await stripe.transfers.create({
+            amount: Math.round(amount),
+            currency: 'usd',
+            destination: connectId,
+            description: description
+        })
+    }
 }

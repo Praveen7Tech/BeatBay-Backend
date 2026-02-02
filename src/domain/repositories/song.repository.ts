@@ -1,14 +1,14 @@
 
 import { ClientSession } from "mongoose";
-import { Song } from "../entities/song.entity";
+import { Song, SongNew } from "../entities/song.entity";
 import { GetAllSongsRequest } from "../interfaces/songRequest";
 
-export type CreateSongData = Omit<Song, '_id' | 'createdAt' | 'updatedAt' | 'playCount' | 'likesCount'>;
+export type CreateSongData = Omit<SongNew, '_id' | 'createdAt' | 'updatedAt' | 'playCount' | 'likesCount'>;
 
 export interface ISongRepository{
     create(songData: CreateSongData, session?:ClientSession): Promise<Song>;
     getAll(): Promise<Song[]>
-    findById(id: string): Promise<Song | null>
+    findById(id: string): Promise<SongNew | null>
     songHydration(id: string): Promise<Song | null>
     searchByQuery(query: string, options?: {limit?: number; offset?: number}): Promise<Song[]>
     edit(songId: string, data: Partial<Song>, session?: ClientSession): Promise<Song | null>;

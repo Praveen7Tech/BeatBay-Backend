@@ -1,5 +1,5 @@
 import { ClientSession, FilterQuery } from "mongoose";
-import { Song } from "../../../../domain/entities/song.entity";
+import { Song, SongNew } from "../../../../domain/entities/song.entity";
 import { CreateSongData, ISongRepository } from "../../../../domain/repositories/song.repository";
 import { SongModel } from "../models/song.model";
 import { GetAllSongsRequest } from "../../../../domain/interfaces/songRequest";
@@ -18,7 +18,7 @@ export class MongooseSongRepository implements ISongRepository{
         return songs
     }
 
-    async findById(id: string): Promise<Song | null> {
+    async findById(id: string): Promise<SongNew | null> {
         const filter = { _id: id, status: true };
         
         const song = await SongModel.findOne(filter)
@@ -27,7 +27,7 @@ export class MongooseSongRepository implements ISongRepository{
                 select: 'name profilePicture',
                 model: 'Artist'
             })
-            .lean<Song>() 
+            .lean<SongNew>() 
             .exec();
 
         return song

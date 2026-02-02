@@ -1,4 +1,4 @@
-import { Song, ArtistDetails } from "../../../domain/entities/song.entity";
+import { SongNew, ArtistDetails } from "../../../domain/entities/song.entity";
 import { SongDetailsDTO } from "../../dto/song/song.response.dto";
 
 function isArtistDetails(
@@ -9,7 +9,9 @@ function isArtistDetails(
 
 export class SongDetailsMapper {
 
-  static toDTO(song: Song, isLiked: boolean): SongDetailsDTO {
+  // Main song DTO 
+  static toDTO( song: SongNew,isLiked: boolean, urls: { audioUrl: string; coverImageUrl: string; lyricsUrl:string }): SongDetailsDTO {
+
     if (!isArtistDetails(song.artistId)) {
       throw new Error("Artist must be populated");
     }
@@ -17,9 +19,9 @@ export class SongDetailsMapper {
     return {
       id: song._id.toString(),
       title: song.title,
-      coverImageUrl: song.coverImageUrl,
-      audioUrl: song.audioUrl,
-      lyricsUrl: song.lyricsUrl,
+      coverImageUrl: urls.coverImageUrl,
+      audioUrl: urls.audioUrl,
+      lyricsUrl: urls.lyricsUrl,
       duration: song.duration,
       isLiked,
       artist: {
@@ -30,11 +32,36 @@ export class SongDetailsMapper {
     };
   }
 
-  static toDTOList(
-    songs: { song: Song; isLiked: boolean }[]
+  // Recommended song DTO 
+  static toRecommendedDTO(
+    song: SongNew,
+    isLiked: boolean,
+    urls: { audioUrl: string; coverImageUrl: string }
+  ): SongDetailsDTO {
+
+    if (!isArtistDetails(song.artistId)) {
+      throw new Error("Artist must be populated");
+    }
+
+    return {
+      id: song._id.toString(),
+      title: song.title,
+      coverImageUrl: urls.coverImageUrl,
+      audioUrl: urls.audioUrl,
+      lyricsUrl: "", 
+      duration: song.duration,
+      isLiked,
+      artist: {
+        id: song.artistId._id.toString(),
+        name: song.artistId.name,
+        profilePicture: song.artistId.profilePicture,
+      },
+    };
+  }
+
+  static toRecommendedDTOList(
+    songs: { song: SongNew; isLiked: boolean; urls: { audioUrl: string; coverImageUrl: string }; }[]
   ): SongDetailsDTO[] {
-    return songs.map(item =>
-      this.toDTO(item.song, item.isLiked)
-    );
+     return songs.map(item => this.toRecommendedDTO(item.song, item.isLiked, item.urls) );
   }
 }

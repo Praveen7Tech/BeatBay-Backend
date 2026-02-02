@@ -35,6 +35,9 @@ import { GetArtistByIdUseCase } from "../../../usecases/admin/artists/adminGetAr
 import { ArtistFansListingUseCase } from "../../../usecases/artist/fans/artistFansListing.UseCase";
 import { ArtistDashBoardDataUseCase } from "../../../usecases/artist/dashboard/artistDashboardData.UseCase";
 import { GetArtistOnBoardingLinkUseCase } from "../../../usecases/artist/stripe/createOnBoardingLink.UseCase";
+import { CreateSongUploadURLUsecase } from "../../../usecases/artist/song/presigned-url/create-songUploadUrl.UseCase";
+import { IAWSS3StorageService } from "../../../domain/services/aws/asw-s3.service";
+import { AWSS3StorageService } from "../../services/aws/asw-s3.storage.service";
 
 export const artistModule = {
 
@@ -44,6 +47,9 @@ export const artistModule = {
     _songRepository: asClass<ISongRepository>(MongooseSongRepository).scoped(),
     _albumRepository: asClass<IAlbumRepository>(MongooseAlbumRepository).scoped(),
     _playListRepository: asClass<IPlayListRepository>(MongoosePlayListRepository).scoped(),
+
+    // aws s3 service
+    _awsStorageService: asClass<IAWSS3StorageService>(AWSS3StorageService).singleton(),
 
     // usecases
     _artistSignupUsecase: asClass(ArtistSignupUsecase).scoped(),
@@ -63,6 +69,9 @@ export const artistModule = {
     _artistsongDetailsUsecase: asClass(GetSongDetailsByIdUseCase).scoped(),
     _editSongUsecase: asClass(EditSongUseCase).scoped(),
     _artistDeleteSongUsecase: asClass(DeleteSongUseCase).scoped(),
+
+    // presigned-url setup
+    _createSongUploadUrlUsecase: asClass(CreateSongUploadURLUsecase).scoped(),
 
     // albums usecase
     _artistCreateAlbumUsecase: asClass(ArtistCreateAlbumUseCase).scoped(),

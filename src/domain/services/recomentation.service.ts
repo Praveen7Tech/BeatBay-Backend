@@ -1,5 +1,5 @@
-import { Song } from "../entities/song.entity";
+import { Song, SongNew } from "../entities/song.entity";
 
 export interface IRecomentationService {
-    getRecomentedSongs(songId: string,artistId:string, genre: string, userId?: string): Promise<{ song: Song; isLiked: boolean }[]>
+    getRecomentedSongs(songId: string,artistId:string, genre: string, userId?: string): Promise<{ song: SongNew; isLiked: boolean }[]>
 }

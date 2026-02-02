@@ -1,5 +1,5 @@
-import { Song } from "../../../../domain/entities/song.entity";
+import { Song, SongNew } from "../../../../domain/entities/song.entity";
 
 export interface IGetSongDetailsByIdUseCase {
-    execute(songId: string): Promise<Song | null>;
+    execute(songId: string): Promise<SongNew | null>;
 }

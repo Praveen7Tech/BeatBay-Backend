@@ -26,15 +26,14 @@ export class UploadSongUseCase implements IUploadSongUseCase{
                 description:request.description,
                 genre:request.genre,
                 tags:request.tags,
-                audioUrl:request.songFilePath,
-                audioPublicId: request.audioPublicId,
-                lyricsUrl: request.lrcFilePath,
-                lyricsPublicId: request.lyricsPublicId,
+                
+                audioKey:request.trackKey,
+                coverImageKey: request.coverKey,
+                lyricsKey: request.lyricsKey,
+                
                 artistId:artistId,
                 artistName: artist?.name,
                 status: true,
-                coverImageUrl:request.coverImagePath,
-                coverImagePublicId: request.coverImagePublicId,
                 duration: request.duration
             }
         const newSong = await this._songRepository.create(songData, session)

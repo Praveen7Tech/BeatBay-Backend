@@ -1,10 +1,10 @@
-import { Song } from "../../../domain/entities/song.entity";
+import { Song, SongNew } from "../../../domain/entities/song.entity";
 import { IRecomentationService } from "../../../domain/services/recomentation.service";
 import { LikeModel } from "../../presistence/mongoose/models/likes.model";
 import { SongModel } from "../../presistence/mongoose/models/song.model";
 
 export class SongRecommentationService implements IRecomentationService{
-    async getRecomentedSongs(songId: string, artistId: string, genre: string, userId: string): Promise<{ song: Song; isLiked: boolean }[]> {
+    async getRecomentedSongs(songId: string, artistId: string, genre: string, userId: string): Promise<{ song: SongNew; isLiked: boolean }[]> {
         
         const limit = 10
         const currentSongId = songId
@@ -19,7 +19,7 @@ export class SongRecommentationService implements IRecomentationService{
             select: 'name profilePicture',
             model: 'Artist'
         })
-        .lean()
+        .lean<SongNew[]>()
         .limit(limit).exec()
 
         const playedSongIds = artistSongs.map(song=> song._id.toString())
@@ -35,10 +35,10 @@ export class SongRecommentationService implements IRecomentationService{
             select: 'name profilePicture',
             model: 'Artist'
         })
-        .lean()
+        .lean<SongNew[]>()
         .limit(limit).exec()
 
-        const songs : Song[] = [...artistSongs, ...genreSongs]
+        const songs = [...artistSongs, ...genreSongs]
 
         // update each song the user liked or not
         let likedSet = new Set<string>();

@@ -27,11 +27,12 @@
 
 
 import mongoose, { HydratedDocument, Model, Schema } from "mongoose";
-import { Song } from "../../../../domain/entities/song.entity";
+import { SongNew } from "../../../../domain/entities/song.entity";
 
-export type SongDocument = HydratedDocument<Song>;
+export type SongDocument = HydratedDocument<SongNew>;
 
 const songSchema = new Schema({
+    uploadId: { type: String },
     artistId: { type: Schema.Types.ObjectId, ref: 'Artist', required: true },
     artistName: { type: String, required: true },
     title: { type: String, required: true },
@@ -47,7 +48,7 @@ const songSchema = new Schema({
     duration: { type: Number, required: true },
     playCount: { type: Number, default: 0 },
     likesCount: { type: Number, default: 0 },
-}, { timestamps: true }); 
+}, { timestamps: true, }); 
 
 
 export const SongModel: Model<SongDocument> = mongoose.model<SongDocument>('Song', songSchema);

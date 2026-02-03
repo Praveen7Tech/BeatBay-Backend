@@ -13,6 +13,7 @@
 //     duration: number;
 // }
 export interface UploadSongDTO {
+    uploadId: string
     title: string;
     description: string;
     genre: string,
@@ -28,12 +29,9 @@ export interface EditSongDTO {
     description?: string;
     genre?: string;
     tags?: string[];  
-    songFilePath?: string;
-    audioPublicId?: string;
-    coverImagePath?: string;
-    coverImagePublicId?: string;
-    lrcFilePath?: string;
-    lyricsPublicId?: string;
+    trackKey?: string;
+    coverKey?: string; 
+    lyricsKey?: string;
     duration?: number;
 }
 

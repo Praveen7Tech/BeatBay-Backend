@@ -1,4 +1,4 @@
-import { Song } from "../../../../domain/entities/song.entity";
+import { Song, SongNew } from "../../../../domain/entities/song.entity";
 import { CreateAlbumDTO } from "../../../dto/album/album.dto";
 
 
@@ -7,7 +7,7 @@ export class ArtistCreateAlbumMapper {
     artistId: string,
     artistName: string,
     request: CreateAlbumDTO,
-    songs: Song[]
+    songs: SongNew[]
   ) => ({
     artistId,
     artistName,

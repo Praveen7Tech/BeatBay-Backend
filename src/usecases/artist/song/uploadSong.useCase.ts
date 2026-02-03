@@ -4,6 +4,7 @@ import { ITransactionManager } from "../../../domain/services/transaction.servic
 import { UploadSongDTO } from "../../../application/dto/song/song.dto";
 import { NotFoundError } from "../../../common/errors/common/common.errors";
 import { IUploadSongUseCase } from "../../../application/interfaces/usecase/song/artist-upload-song-usecase.interface";
+import { SongNew } from "../../../domain/entities/song.entity";
 
 export class UploadSongUseCase implements IUploadSongUseCase{
     constructor(
@@ -21,7 +22,8 @@ export class UploadSongUseCase implements IUploadSongUseCase{
                 throw new NotFoundError("Artist not found")
             }
             
-            const songData = {
+            const songData: Partial<SongNew> = {
+                uploadId: request.uploadId,
                 title: request.title,
                 description:request.description,
                 genre:request.genre,
@@ -36,7 +38,7 @@ export class UploadSongUseCase implements IUploadSongUseCase{
                 status: true,
                 duration: request.duration
             }
-        const newSong = await this._songRepository.create(songData, session)
+        const newSong = await this._songRepository.create(songData as SongNew, session)
 
         await this._artistRepository.addSongIdToArtist(artistId, newSong._id, session)
 

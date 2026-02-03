@@ -8,8 +8,11 @@ export interface UploadUrlItem {
   key: string;
 }
 
-export type UploadUrlResponse = Record<FileType["type"], UploadUrlItem>;
+export interface UploadUrlResponse {
+  uploadId: string;
+  links: Partial<Record<FileType["type"], UploadUrlItem>>;
+} 
 
 export interface ICreateSongUploadUrlsUsecase {
-  execute(artistId: string, files: FileType[]): Promise<UploadUrlResponse>;
+  execute(artistId: string, files: FileType[],existUploadId?:string): Promise<UploadUrlResponse>;
 }

@@ -1,5 +1,5 @@
 import { ObjectId } from "mongoose"
-import { Song } from "./song.entity"
+import { Song, SongNew } from "./song.entity"
 
 export interface PlayList{
     _id: ObjectId
@@ -8,7 +8,7 @@ export interface PlayList{
     description: string | null
     coverImageUrl: string
     coverImagePublicId: string
-    songs: Song[]
+    songs: SongNew[]
     createdAt: Date
     updatedAt: Date
 }

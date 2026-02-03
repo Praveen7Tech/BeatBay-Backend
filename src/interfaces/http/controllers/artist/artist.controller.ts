@@ -52,48 +52,48 @@ export class ArtistController {
         private readonly _createSongUploadUrlUsecase: ICreateSongUploadUrlsUsecase,
     ){}
 
-    editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
-        try {
-            const artistId = req.user?.id
-            const existArtist = await this._getArtistDetailsUsecase.execute(artistId!)
+    // editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
+    //     try {
+    //         const artistId = req.user?.id
+    //         const existArtist = await this._getArtistDetailsUsecase.execute(artistId!)
 
-            if(!artistId || !existArtist){
-                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
-            }
+    //         if(!artistId || !existArtist){
+    //             return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+    //         }
 
-            let profileImageUrl : string | undefined;
-            let profileImagePublicId : string | undefined
+    //         let profileImageUrl : string | undefined;
+    //         let profileImagePublicId : string | undefined
 
-            const existingPublicId = existArtist.profileImagePublicId
-            const ARTIST_FOLDER = `/artist_profile/${artistId}`
+    //         const existingPublicId = existArtist.profileImagePublicId
+    //         const ARTIST_FOLDER = `/artist_profile/${artistId}`
             
-            if(req.file){
-                const dataURL = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+    //         if(req.file){
+    //             const dataURL = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
 
-                const editOption : uploadOptionsType={
-                    resource_type:"image",
-                    public_id: existingPublicId,
-                    invalidate: true,
-                    folder: !existingPublicId ? ARTIST_FOLDER : undefined
-                }
+    //             const editOption : uploadOptionsType={
+    //                 resource_type:"image",
+    //                 public_id: existingPublicId,
+    //                 invalidate: true,
+    //                 folder: !existingPublicId ? ARTIST_FOLDER : undefined
+    //             }
 
-                const uploadImage = await cloudinary.uploader.upload(dataURL, editOption)
+    //             const uploadImage = await cloudinary.uploader.upload(dataURL, editOption)
 
-                profileImageUrl = uploadImage.secure_url;
-                profileImagePublicId = uploadImage.public_id
+    //             profileImageUrl = uploadImage.secure_url;
+    //             profileImagePublicId = uploadImage.public_id
 
-            }
-            logger.info("artistId r")
-            const dto : EditProfileRequestDTO = EditProfileSchema.parse({...req.body, profileImage:profileImageUrl}) 
-            if(profileImagePublicId) dto.profileImagePublicId = profileImagePublicId
+    //         }
+    //         logger.info("artistId r")
+    //         const dto : EditProfileRequestDTO = EditProfileSchema.parse({...req.body, profileImage:profileImageUrl}) 
+    //         if(profileImagePublicId) dto.profileImagePublicId = profileImagePublicId
 
-            const result = await this._artistEditProfileUsecase.execute(artistId,dto)
+    //         const result = await this._artistEditProfileUsecase.execute(artistId,dto)
 
-            return res.status(StatusCode.OK).json({user:result.user,message:MESSAGES.PROFILE_UPDATED})            
-        } catch (error) {
-            next(error)
-        }
-    }
+    //         return res.status(StatusCode.OK).json({user:result.user,message:MESSAGES.PROFILE_UPDATED})            
+    //     } catch (error) {
+    //         next(error)
+    //     }
+    // }
     
     changePassword = async(req:AuthRequest, res:Response, next: NextFunction) =>{
         try {

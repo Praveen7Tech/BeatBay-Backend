@@ -18,7 +18,8 @@ export interface AlbumPopulated {
 export interface SongPopulated {
   _id: string;
   title: string;
-  coverImageUrl: string;
+  coverImageKey: string;
+  coverImageUrl?: string;
   artistName: string;
   duration: string
   status: boolean;

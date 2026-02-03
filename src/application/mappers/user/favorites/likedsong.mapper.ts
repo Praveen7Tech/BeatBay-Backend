@@ -1,28 +1,22 @@
-import {
-  LikedSongDetails,
-  LikedSongs,
-  LikedSongsResponseDTO,
-} from "../../../dto/favorites/favourites.response.dto";
+import { LikedSongDetails, LikedSongs, LikedSongsResponseDTO, PreparedLikedSong } from "../../../dto/favorites/favourites.response.dto";
+
 
 export class LikedSongMapper {
-  static toSongListItem(raw: LikedSongDetails): LikedSongs {
-    const song = raw.songDetails;
+  static toSongListItem(prepared: PreparedLikedSong): LikedSongs {
+    const song = prepared.raw.songDetails;
+
     return {
       id: song._id.toString(),
       title: song.title,
-      coverImageUrl: song.coverImageUrl,
-      audioUrl: song.audioUrl,
+      coverImageUrl: prepared.coverImageUrl,
+      audioUrl: prepared.audioUrl,
       duration: song.duration,
       artistName: song.artistName,
-      likedAt: raw.createdAt.toISOString(), // liked date from Like collection
+      likedAt: prepared.raw.createdAt.toISOString(),
     };
   }
 
-  static toSongListResponse(
-    songs: LikedSongDetails[],
-    total: number,
-    page: number,
-    limit: number
+  static toSongListResponse(songs: PreparedLikedSong[], total: number,page: number,limit: number
   ): LikedSongsResponseDTO {
     return {
       songs: songs.map(this.toSongListItem),

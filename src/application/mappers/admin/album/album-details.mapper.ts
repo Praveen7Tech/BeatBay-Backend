@@ -16,7 +16,7 @@ export class AdminAlbumDetailsMapper {
       songs: (album.songs).map((song) => ({
         id: song._id.toString(),
         title: song.title,
-        coverImageUrl: song.coverImageUrl,
+        coverImageUrl: song.coverImageUrl!,
         isActive: song.status
       }))
     };

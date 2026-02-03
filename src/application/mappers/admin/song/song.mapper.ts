@@ -1,14 +1,15 @@
 import { Song, SongNew } from "../../../../domain/entities/song.entity";
 import { AdminSongListItemDTO } from "../../../dto/admin/songs/song-listing.dto";
+import { PreparedAdminSong } from "../../../dto/song/song.dto";
 
 
 export class AdminSongMapper {
-  static toListItemDTO(song: SongNew): AdminSongListItemDTO {
+  static toListItemDTO(song: PreparedAdminSong): AdminSongListItemDTO {
     return {
       id: song._id.toString(),
       title: song.title,
       genre: song.genre,
-      coverImageUrl: song?.coverImageKey,
+      coverImageUrl: song.coverImageUrl,
       duration: song.duration,
       status: song.status,
       likesCount: song.likesCount,
@@ -16,7 +17,7 @@ export class AdminSongMapper {
     };
   }
 
-  static toListItemDTOs(songs: SongNew[]): AdminSongListItemDTO[] {
+  static toListItemDTOs(songs: PreparedAdminSong[]): AdminSongListItemDTO[] {
     return songs.map(this.toListItemDTO);
   }
 }

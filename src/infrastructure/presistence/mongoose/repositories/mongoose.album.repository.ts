@@ -4,7 +4,7 @@ import { IAlbumRepository, PaginaterAlbumResult } from "../../../../domain/repos
 import { AlbumModel } from "../models/album.model";
 import { GetAllAlbumsRequest } from "../../../../domain/interfaces/albumRequest";
 import { EditAlbumDetailsDTO } from "../../../../application/dto/album/album.dto";
-import { Song } from "../../../../domain/entities/song.entity";
+import { Song, SongNew } from "../../../../domain/entities/song.entity";
 
 export class MongooseAlbumRepository implements IAlbumRepository {
     async create(albumData: Album, session: ClientSession): Promise<Album> {
@@ -25,7 +25,7 @@ export class MongooseAlbumRepository implements IAlbumRepository {
                     isActive: true 
                 };
         return await AlbumModel.findOne(filter)
-        .populate<{songs: Song[]}>("songs")
+        .populate<{songs: SongNew[]}>("songs")
         .lean().exec()
     }
 
@@ -147,15 +147,15 @@ export class MongooseAlbumRepository implements IAlbumRepository {
     async adminFindById(id: string): Promise<AlbumWithSongs | null> {
         const album = await AlbumModel.findById(id)
             .select('_id title artistName coverImageUrl description isActive createdAt songs')
-            .populate<{songs: Song[]}>({
+            .populate<{songs: SongNew[]}>({
                 path: 'songs',
                 model: 'Song',
-                select: 'title coverImageUrl status' 
+                select: 'title status uploadId audioKey coverImageKey lyricsKey' 
             })
             .lean()
             .exec();
 
-        return album   
+        return album as AlbumWithSongs | null
     }
 
     async updateStatus(id: string, status: boolean): Promise<Album | null> {

@@ -12,6 +12,10 @@ export class GetSongDetailsByIdUseCase implements IGetSongDetailsByIdUseCase
     private readonly _awsStorageService: IAWSS3StorageService
   ) {}
 
+    private getFileNameFromKey(key: string): string {
+      return key.split("/").pop() || "";
+    }
+
   async execute(songId: string): Promise<ArtistSongDetailsDTO> {
     const song = await this._songRepository.findById(songId);
 
@@ -19,11 +23,9 @@ export class GetSongDetailsByIdUseCase implements IGetSongDetailsByIdUseCase
       throw new NotFoundError("Song not found");
     }
 
-    const [audioUrl, coverImageUrl, lyricsUrl] = await Promise.all([
-      this._awsStorageService.getAccessPresignedUrl(song.audioKey),
-      this._awsStorageService.getAccessPresignedUrl(song.coverImageKey),
-      this._awsStorageService.getAccessPresignedUrl(song.lyricsKey),
-    ]);
+    const  coverImageUrl = await this._awsStorageService.getAccessPresignedUrl(song.coverImageKey)
+    const audioUrl = this.getFileNameFromKey(song.audioKey)
+    const lyricsUrl = this.getFileNameFromKey(song.lyricsKey)
 
     return ArtistSongDetailsMapper.toDTO(song, {
       audioUrl,

@@ -13,16 +13,17 @@ export class ArtistDetailsMapper {
       albums: artist.albums?.map((album) => ({
         id: album._id.toString(),
         title: album.title,
-        coverImageUrl: album.coverImageUrl,
+        coverImageUrl: album.coverImageUrl, 
       })) || [],
 
       songs: artist.songs?.map((song) => ({
         id: song._id.toString(),
         title: song.title,
-        coverImageUrl: song.coverImageUrl,
+        coverImageUrl: song.coverImageUrl!, 
         artistName: song.artistName,
         duration: song.duration
       })) || [],
     };
   }
 }
+

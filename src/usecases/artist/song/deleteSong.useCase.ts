@@ -5,6 +5,7 @@ import { IAlbumRepository } from "../../../domain/repositories/album.repository"
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
 import { IPlayListRepository } from "../../../domain/repositories/playList.repository";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
+import { IAWSS3StorageService } from "../../../domain/services/aws/asw-s3.service";
 import { ITransactionManager } from "../../../domain/services/transaction.service";
 
 export class DeleteSongUseCase implements IDeleteSongUseCase{
@@ -13,35 +14,45 @@ export class DeleteSongUseCase implements IDeleteSongUseCase{
         private readonly _songRepository: ISongRepository,
         private readonly _artistRepository: IArtistRepository,
         private readonly _albumRepository: IAlbumRepository,
-        private readonly _playListRepository: IPlayListRepository
+        private readonly _playListRepository: IPlayListRepository,
+        private readonly _awsStorageService: IAWSS3StorageService
     ) {}
 
     async execute(songId: string, artistId: string): Promise<boolean> {
 
-        const deleteSong =  await this._transactionManager.withTransaction(async (session) => {
+        const song = await this._songRepository.findById(songId)
+        if (!song) throw new NotFoundError("Song not found!");
+        const keysToDelete = [song.audioKey, song.coverImageKey, song.lyricsKey]
 
-            const song = await this._songRepository.findById(songId)
+        await this._transactionManager.withTransaction(async (session) => {
             
             const songDeleted = await this._songRepository.delete(songId, session);
-            if (!songDeleted || !song) {
-                throw new NotFoundError("Song not found or already deleted!");
+            if (!songDeleted ) {
+                throw new NotFoundError("Failed to delete song!");
             }
             const songTitle = song.title
 
-            //  Remove songId from artist repository
+            //  remove songId from artist repository
             await this._artistRepository.removeSongIdFromArtist(artistId, songId, session);
 
-            // Remove songId and title from albums 
+            // remove songId and title from albums 
             await this._albumRepository.removeSongFromAllAlbums(songId, session);
             await this._albumRepository.removeSongTitleFromAllAlbums(songTitle, session)
 
-            //  Remove song from user playlists 
+            //  remove song from user playlists 
             await this._playListRepository.removeSongFromAllPlaylists(songId, session);
-
-            // await this.s3Service.deleteFiles(songId);  (fix implimentation in future)
             
         });
 
-        return deleteSong !== null
+        // delete song files from aws s3
+        try {
+            if(keysToDelete.length > 0){
+                await Promise.all(keysToDelete.map(key => this._awsStorageService.deleteFile(key)))
+            }
+        } catch (error) {
+            console.error("Error in delete s3 files", error)
+        }
+
+        return true
     }
 }

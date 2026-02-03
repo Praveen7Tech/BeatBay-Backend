@@ -1,17 +1,17 @@
 import { Album } from "../../../../domain/entities/album.entity";
 import { Artist } from "../../../../domain/entities/arist.entity";
-import { Song } from "../../../../domain/entities/song.entity";
 import { User } from "../../../../domain/entities/user.entity";
 import { AlbumDTO, ArtistDTO, SongDTO, TopResultDTO } from "../../../dto/search/search.response.dto";
+import { PreparedSong, PreparedTopResult } from "../../../dto/song/song.dto";
 
 
 export class SearchMapper {
 
-  static song = (s: Song): SongDTO => ({
-    id: s._id.toString(),
-    title: s.title,
-    artistName: s.artistName,
-    duration: s.duration,
+  static song = (s: PreparedSong): SongDTO => ({
+    id: s.song._id.toString(),
+    title: s.song.title,
+    artistName: s.song.artistName,
+    duration: s.song.duration,
     coverImageUrl: s.coverImageUrl,
     audioUrl: s.audioUrl
   });
@@ -36,12 +36,12 @@ export class SearchMapper {
     profilePicture: u.profilePicture ?? ''
   });
 
-  static topResult = (s: Song | null): TopResultDTO | null =>
+  static topResult = (s: PreparedTopResult | null): TopResultDTO | null =>
     s
       ? {
-          id: s._id.toString(),
-          title: s.title,
-          artist: s.artistName,
+          id: s.song._id.toString(),
+          title: s.song.title,
+          artist: s.song.artistName,
           coverImageUrl: s.coverImageUrl
         }
       : null;

@@ -13,14 +13,14 @@ export class CreateSongUploadURLUsecase implements ICreateSongUploadUrlsUsecase
     const songUploadId = existUploadId || nanoid()
     const uploadGroupId = `${artistId}/${songUploadId}`; 
 
-    const links: Partial<Record<FileType["type"], UploadUrlItem>> = {};
+    const links: Partial<Record<FileType["field"], UploadUrlItem>> = {};
 
     for (const file of files) {
-      const key = `songs/${uploadGroupId}/${file.type}`; 
+      const key = `songs/${uploadGroupId}/${file.fileName}`; 
 
-      const uploadUrl = await this._awsStorageService.getUploadPresignedUrl(key, file.mime);
+      const uploadUrl = await this._awsStorageService.getUploadPresignedUrl(key, file.mimeType);
 
-      links[file.type] = {
+      links[file.field] = {
         uploadUrl,
         key,
       };

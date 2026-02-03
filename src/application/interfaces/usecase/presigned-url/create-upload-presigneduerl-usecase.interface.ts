@@ -1,7 +1,9 @@
 export interface FileType {
-  type: "cover" | "audio" | "lrc";
-  mime: string;
+  field: "cover" | "audio" | "lrc";
+  fileName: string;
+  mimeType: string;
 }
+
 
 export interface UploadUrlItem {
   uploadUrl: string;
@@ -10,7 +12,7 @@ export interface UploadUrlItem {
 
 export interface UploadUrlResponse {
   uploadId: string;
-  links: Partial<Record<FileType["type"], UploadUrlItem>>;
+  links: Partial<Record<FileType["field"], UploadUrlItem>>;
 } 
 
 export interface ICreateSongUploadUrlsUsecase {

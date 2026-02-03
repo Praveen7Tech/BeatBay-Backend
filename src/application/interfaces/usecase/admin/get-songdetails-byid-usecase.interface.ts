@@ -1,5 +1,6 @@
-import { Song, SongNew } from "../../../../domain/entities/song.entity";
+
+import { AdminSongDetailsDTO } from "../../../dto/admin/songs/songDetails.dto";
 
 export interface IAdminGetSongDetailsByIdUseCase {
-    execute(songId: string): Promise<SongNew | null>;
+    execute(songId: string): Promise<AdminSongDetailsDTO | null>;
 }

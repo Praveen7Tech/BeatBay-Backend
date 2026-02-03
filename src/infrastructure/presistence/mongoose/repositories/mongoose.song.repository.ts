@@ -104,7 +104,7 @@ export class MongooseSongRepository implements ISongRepository{
         return songs as SongNew[];
     }
 
-    async getAllSongs(page: number, limit: number, query?: string): Promise<{songs: Song[], total: number}> {
+    async getAllSongs(page: number, limit: number, query?: string): Promise<{songs: SongNew[], total: number}> {
     const skip: number = (page - 1) * limit;
     
     // type-safe filter object using the Song interface
@@ -122,7 +122,7 @@ export class MongooseSongRepository implements ISongRepository{
                 .sort({ createdAt: -1 })
                 .skip(skip)
                 .limit(limit)
-                .lean<Song[]>() 
+                .lean<SongNew[]>() 
                 .exec(),
             SongModel.countDocuments(filter)
         ]);
@@ -170,7 +170,7 @@ export class MongooseSongRepository implements ISongRepository{
 
         const [songs, total] = await Promise.all([
             SongModel.find(filter)
-                .select('title genre coverImageUrl duration status likesCount createdAt') 
+                .select('title genre coverImageKey duration status likesCount createdAt') 
                 .sort(sortOption)
                 .skip(skip)
                 .limit(limit)

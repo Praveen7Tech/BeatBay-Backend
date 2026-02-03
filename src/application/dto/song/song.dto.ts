@@ -11,6 +11,9 @@
 //     lrcFilePath: string;
 //     lyricsPublicId: string; 
 //     duration: number;
+
+import { SongNew } from "../../../domain/entities/song.entity";
+
 // }
 export interface UploadSongDTO {
     uploadId: string
@@ -64,3 +67,19 @@ export interface SongResponseDTO {
   duration: number;
   audioUrl: string;
 }
+
+export type PreparedSong = {
+  song: SongNew;
+  coverImageUrl: string;
+  audioUrl: string;
+};
+
+export type PreparedTopResult = {
+  song: SongNew;
+  coverImageUrl: string;
+};
+
+export type PreparedAdminSong = SongNew & {
+  coverImageUrl: string;
+};
+

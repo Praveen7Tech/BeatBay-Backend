@@ -14,9 +14,9 @@ export class AlbumMapper {
       songs: album.songs.map((song) => ({
         id: song._id.toString(),
         title: song.title,
-        coverImageUrl: song.coverImageUrl,
+        coverImageUrl: song.coverImageUrl!,
         duration: song.duration,
-        audioUrl: song.audioUrl,
+        audioUrl: song.audioUrl!,
         isLiked: likedSongIds.has(song._id.toString())
       })),
     };

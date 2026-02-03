@@ -3,7 +3,7 @@ import { AlbumModel } from "../../presistence/mongoose/models/album.model";
 import { ArtistModel } from "../../presistence/mongoose/models/artist.model";    
 import { ISearchService } from "../../../domain/services/search.service";
 import { SearchResult } from "../../../domain/entities/search.entity";
-import { Song } from "../../../domain/entities/song.entity"; 
+import { Song, SongNew } from "../../../domain/entities/song.entity"; 
 import { Album } from "../../../domain/entities/album.entity";
 import { Artist } from "../../../domain/entities/arist.entity"; 
 
@@ -16,7 +16,7 @@ export class SearchResponseService implements ISearchService {
             this.searchArtists(query, 10),
         ]);
 
-        let topResult: Song | null = null;
+        let topResult: SongNew | null = null;
         if (songs.length > 0) {
             topResult = songs[0];
         }
@@ -72,7 +72,7 @@ export class SearchResponseService implements ISearchService {
         return await Model.aggregate(pipeline).exec();
     }
 
-    private async searchSongs(query: string, limit: number): Promise<Song[]> {
+    private async searchSongs(query: string, limit: number): Promise<SongNew[]> {
         return this.searchByAtlasSearch(SongModel, query, ['title', 'artistName', 'tags', 'genre', 'description'], limit); 
     }
 

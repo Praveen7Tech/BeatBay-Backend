@@ -19,6 +19,7 @@ export class ArtistSongDetailsMapper {
       audioUrl: urls.audioUrl,
       coverImageUrl: urls.coverImageUrl,
       lyricsUrl: urls.lyricsUrl,
+      createdAt: song.createdAt
     };
   }
 }

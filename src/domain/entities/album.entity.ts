@@ -1,4 +1,4 @@
-import { Song } from "./song.entity"
+import { SongNew } from "./song.entity"
 
 export interface Album{
     _id: string
@@ -15,6 +15,11 @@ export interface Album{
     updatedAt: Date;
 }
 
+interface ExtendedSong extends SongNew{
+    audioUrl?: string
+    coverImageUrl?: string
+}
+
 export interface AlbumWithSongs extends Omit<Album, "songs">{
-    songs: Song[]
+    songs: ExtendedSong[]
 }

@@ -4,10 +4,12 @@ import { AlbumDetailsDTO } from "../../../application/dto/album/album.response.d
 import { NotFoundError } from "../../../common/errors/common/common.errors";
 import { AlbumDetailsMapper } from "../../../application/mappers/artist/album/album-details.mapper";
 import { IGetAlbumDetailsByIdUseCase } from "../../../application/interfaces/usecase/album/artisgetalbum-detail-byid-usecase.interface";
+import { IAWSS3StorageService } from "../../../domain/services/aws/asw-s3.service";
 
 export class GetAlbumDetailsByIdUseCase implements IGetAlbumDetailsByIdUseCase{
     constructor(
-        private readonly _albumRepository: IAlbumRepository
+        private readonly _albumRepository: IAlbumRepository,
+        private readonly _awsStorageService: IAWSS3StorageService
     ){}
 
     async execute(albumId: string): Promise<AlbumDetailsDTO>{
@@ -17,6 +19,14 @@ export class GetAlbumDetailsByIdUseCase implements IGetAlbumDetailsByIdUseCase{
             throw new NotFoundError("album not found")
         }
 
-       return AlbumDetailsMapper.toResponse(album);
+        const songs = await Promise.all(
+            album.songs.map(async(s)=>({
+                id: s._id,
+                title: s.title,
+                coverImageUrl: await this._awsStorageService.getAccessPresignedUrl(s.coverImageKey)
+            }))
+        )
+
+       return AlbumDetailsMapper.toResponse(album, songs);
     }
 }

@@ -1,20 +1,21 @@
-import { Song, SongNew } from "../../../domain/entities/song.entity";
-import { SongResponseDTO } from "../../dto/song/song.dto";
+import { PreparedSong, SongResponseDTO } from "../../dto/song/song.dto";
 
 
 export class SearchSongMapper {
-  static toResponseDTO(song: SongNew): SongResponseDTO {
+  static toResponseDTO(prepared: PreparedSong): SongResponseDTO {
+    const song = prepared.song;
     return {
       id: song._id.toString(),
       title: song.title,
-      coverImageUrl: song.coverImageKey,
+      coverImageUrl: prepared.coverImageUrl, 
       artistName: song.artistName,
       duration: song.duration,
-      audioUrl: song.audioKey,
+      audioUrl: prepared.audioUrl, 
     };
   }
 
-  static toResponseDTOList(songs: SongNew[]): SongResponseDTO[] {
+  static toResponseDTOList(songs: PreparedSong[]): SongResponseDTO[] {
     return songs.map(this.toResponseDTO);
   }
 }
+

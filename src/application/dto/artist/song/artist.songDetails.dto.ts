@@ -8,4 +8,5 @@ export interface ArtistSongDetailsDTO{
     coverImageUrl:string;
     audioUrl:string;
     lyricsUrl:string;
+    createdAt:Date
 }

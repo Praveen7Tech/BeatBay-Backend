@@ -14,7 +14,7 @@ export interface ISongRepository{
     edit(songId: string, data: Partial<Song>, session?: ClientSession): Promise<Song | null>;
     delete(songId: string, session: ClientSession): Promise<boolean>
     findSongsByIds(ids: string[]): Promise<SongNew[]>;
-    getAllSongs(page: number, limit: number, query?: string): Promise<{songs: Song[], total: number}>
+    getAllSongs(page: number, limit: number, query?: string): Promise<{songs: SongNew[], total: number}>
     adminfindById(id: string): Promise<SongNew | null>
     admingetAllSongs(params: GetAllSongsRequest): Promise<{ songs: SongNew[], total: number }>;
     updateStatus(id: string, status: boolean): Promise<SongNew | null>;

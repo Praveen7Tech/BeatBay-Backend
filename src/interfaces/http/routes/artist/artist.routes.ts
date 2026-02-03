@@ -14,16 +14,13 @@ export default (container: AwilixContainer): Router=> {
 
     router.use(authMiddleware,authorizeRoles("artist"), ArtistStatusCheckMiddleware)
 
-    router.put('/edit-profile', uploadImage.single("profileImage"), artistController.editProfile)
+    //router.put('/edit-profile', uploadImage.single("profileImage"), artistController.editProfile)
     router.put('/change-password', artistController.changePassword)
 
     router.get('/fetch-songs',  artistController.fetchSongs)
     router.post('/create-album', uploadImage.single("coverImageUrl"), artistController.createAlbum)
     router.get('/fetch-albums', artistController.fetchAlbums)
     router.get('/get-song/:songId', artistController.getSongById)
-
-   
-    router.delete('/delete-song/:songId', artistController.deleteSong)
 
     router.get('/get-album/:albumId', artistController.getAlbumById)
     router.put('/edit-album/:albumId', uploadImage.single("coverImageUrl"), artistController.editAlbum)
@@ -37,6 +34,7 @@ export default (container: AwilixContainer): Router=> {
     router.post('/song/upload-urls', artistController.getUploadLink)
     router.post('/upload-song',  uploadSongMiddleware, artistController.upLoadSong)
     router.put('/edit-song/:songId', uploadSongMiddleware, artistController.editSong)
+    router.delete('/delete-song/:songId', artistController.deleteSong)
     
     return router
 }

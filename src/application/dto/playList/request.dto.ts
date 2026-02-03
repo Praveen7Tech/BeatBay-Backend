@@ -1,3 +1,5 @@
+import { SongNew } from "../../../domain/entities/song.entity"
+
 export interface CreatePlayListResponseDTO{
     id: string
     name:string
@@ -37,3 +39,10 @@ export interface PlayListResponseDTO {
   totalDuration:number
   songs: PlayListSongDTO[];
 }
+
+export type PreparedSong = {
+  song: SongNew; 
+  coverImageUrl: string;
+  audioUrl: string;
+};
+

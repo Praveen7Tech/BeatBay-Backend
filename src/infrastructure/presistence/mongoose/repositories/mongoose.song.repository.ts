@@ -6,15 +6,15 @@ import { GetAllSongsRequest } from "../../../../domain/interfaces/songRequest";
 import { AlbumModel } from "../models/album.model";
 
 export class MongooseSongRepository implements ISongRepository{
-    async create(songData: CreateSongData, session?:ClientSession): Promise<Song> {
+    async create(songData: CreateSongData, session?:ClientSession): Promise<SongNew> {
         const Song = new SongModel(songData)
 
         const cretedSong = await Song.save({session})
         return cretedSong.toObject() 
     }
 
-    async getAll(): Promise<Song[]> {
-        const songs = await SongModel.find({status:true})
+    async getAll(): Promise<SongNew[]> {
+        const songs = await SongModel.find({status:true}).lean<SongNew[]>()
         return songs
     }
 
@@ -59,7 +59,7 @@ export class MongooseSongRepository implements ISongRepository{
         return song;
     }
 
-    async searchByQuery(query: string, options?: { limit?: number; offset?: number; }): Promise<Song[]> {
+    async searchByQuery(query: string, options?: { limit?: number; offset?: number; }): Promise<SongNew[]> {
         const {limit = 20, offset = 0} = options || {}
         const SearchQury = {
             $or:[
@@ -97,11 +97,11 @@ export class MongooseSongRepository implements ISongRepository{
         return await SongModel.countDocuments()
     }
 
-    async findSongsByIds(ids: string[]): Promise<Song[]> {
+    async findSongsByIds(ids: string[]): Promise<SongNew[]> {
         const songs = await SongModel.find(
             { _id: { $in: ids } }
         ).lean().exec();
-        return songs as Song[];
+        return songs as SongNew[];
     }
 
     async getAllSongs(page: number, limit: number, query?: string): Promise<{songs: Song[], total: number}> {
@@ -134,7 +134,7 @@ export class MongooseSongRepository implements ISongRepository{
     }
 
     // admin song listing
-    async admingetAllSongs(params: GetAllSongsRequest): Promise<{ songs: Song[], total: number }> {
+    async admingetAllSongs(params: GetAllSongsRequest): Promise<{ songs: SongNew[], total: number }> {
         const { page, limit, search, status, genre, sort } = params;
         const skip = (page - 1) * limit;
 
@@ -181,7 +181,7 @@ export class MongooseSongRepository implements ISongRepository{
         return { songs, total };
     }
 
-    async updateStatus(id: string, status: boolean): Promise<Song | null> {
+    async updateStatus(id: string, status: boolean): Promise<SongNew | null> {
         return await SongModel.findByIdAndUpdate(
             id,
             { status: status }, 
@@ -189,7 +189,7 @@ export class MongooseSongRepository implements ISongRepository{
         ).lean();
     }
 
-    async adminfindById(id: string): Promise<Song | null> {
+    async adminfindById(id: string): Promise<SongNew | null> {
          return SongModel.findById(id)
         .lean().exec()
     }

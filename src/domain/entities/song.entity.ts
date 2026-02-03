@@ -28,6 +28,7 @@ export interface Song {
 
 export interface SongNew {
     _id: string;
+    uploadId: string;
     title: string;
     description: string;  
     genre: string;

@@ -2,7 +2,7 @@ import { ClientSession } from "mongoose";
 import { Artist } from "../../../../domain/entities/arist.entity";
 import { IArtistRepository } from "../../../../domain/repositories/artist.repository";
 import { ArtistModel } from "../models/artist.model"; 
-import { Song } from "../../../../domain/entities/song.entity";
+import { Song, SongNew } from "../../../../domain/entities/song.entity";
 import { PaginatedResult } from "../../../../domain/interfaces/paginatedResult.interface";
 import { ArtistPopulated } from "../../../../domain/interfaces/albumRequest";
 
@@ -47,9 +47,9 @@ export class MongooseArtistRepository implements IArtistRepository {
           )
       }
 
-      async fetchSongs(artistId: string): Promise<Song[]> {
+      async fetchSongs(artistId: string): Promise<SongNew[]> {
           const Songs = await ArtistModel.findById(artistId).populate('songs').lean()
-          return Songs ? Songs.songs as unknown as Song[] : []
+          return Songs ? Songs.songs as unknown as SongNew[] : []
       }
 
       async addAlbumIdToArtist(artistId: string, albumId: string, session: ClientSession): Promise<void> {

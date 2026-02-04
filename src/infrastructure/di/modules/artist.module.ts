@@ -38,6 +38,7 @@ import { GetArtistOnBoardingLinkUseCase } from "../../../usecases/artist/stripe/
 import { CreateSongUploadURLUsecase } from "../../../usecases/artist/song/presigned-url/create-songUploadUrl.UseCase";
 import { IAWSS3StorageService } from "../../../domain/services/aws/asw-s3.service";
 import { AWSS3StorageService } from "../../services/aws/asw-s3.storage.service";
+import { ArtistRevenueUseCase } from "../../../usecases/artist/revenue/getRevenue.UseCase";
 
 export const artistModule = {
 
@@ -89,7 +90,7 @@ export const artistModule = {
 
     // revenue onboard
     _getArtistOnBoardingLinkUsecase: asClass(GetArtistOnBoardingLinkUseCase).scoped(),
-    
+    _artistRevenueUsecase: asClass(ArtistRevenueUseCase).scoped(),
 
     // controller
     artistAuthController: asClass(artistAuthController).scoped(),

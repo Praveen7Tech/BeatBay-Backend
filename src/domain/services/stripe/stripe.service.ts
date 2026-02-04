@@ -19,5 +19,9 @@ export interface IStripeService{
     createOnBoardingLink(stripeConnectId: string): Promise<string>;
     
     getNetRevenue(startDate:Date, endDate:Date): Promise<number>
-    transferToArtist(amount: number, connectId: string, description: string): Promise<Stripe.Transfer>
+    transferToArtist(amount: number, connectId: string, description: string): Promise<Stripe.Transfer>;
+
+    getArtistWallet(connectId: string): Promise<Stripe.Balance>
+    getArtistCurrency(connectId: string): Promise<string>
+    createStripeLoginLink(connectId: string): Promise<string>
 }

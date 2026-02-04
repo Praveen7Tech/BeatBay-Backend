@@ -30,6 +30,7 @@ export default (container: AwilixContainer): Router=> {
     router.get('/dashboard', artistController.dashBoard)
 
     router.post('/payouts/onboard', artistController.payoutOnboarding)
+    router.get('/get-revenue', artistController.getRevenue)
 
     router.post('/song/upload-urls', artistController.getUploadLink)
     router.post('/upload-song',  uploadSongMiddleware, artistController.upLoadSong)

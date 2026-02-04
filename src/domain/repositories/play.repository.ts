@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 
 export interface MonthlyPlayStatus{
     totalPlays: number;

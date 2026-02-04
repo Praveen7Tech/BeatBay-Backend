@@ -27,7 +27,7 @@ export class MongooseSongRepository implements ISongRepository{
                 select: 'name profilePicture',
                 model: 'Artist'
             })
-            .lean<SongNew>() 
+            .lean() 
             .exec();
 
         return song

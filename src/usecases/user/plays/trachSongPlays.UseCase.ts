@@ -1,4 +1,5 @@
 import { ITrachSongPlayUseCase } from "../../../application/interfaces/usecase/song/trachSongPlays-usecase.interface";
+import { NotFoundError } from "../../../common/errors/common/common.errors";
 import { IPlayRepository } from "../../../domain/repositories/play.repository";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 
@@ -8,19 +9,23 @@ export class TrackSongPlaysUseCase implements ITrachSongPlayUseCase{
         private readonly _songRepository: ISongRepository
     ){}
 
-    async execute(userId: string, songId: string, artistId: string): Promise<void> {
+    async execute(userId: string, songId: string): Promise<void> {
+        const song = await this._songRepository.findById(songId);
+        if (!song) throw new NotFoundError("Song not found");
+        const artistId = song.artistId
+
+        // 1. Logic Change: Use song duration for the cooling period
+        // If song is 180s, don't allow another play for 180s.
+        const coolingPeriod = new Date(Date.now() - (song.duration * 1000));
         
-        const currentDate = new Date(Date.now() - 30000)
-        // check the user already played the songs in the last 30 seconds
-        const recentPlay =await this._playRepository.recentPlay(userId,songId,currentDate)
+        const recentPlay = await this._playRepository.recentPlay(userId, songId, coolingPeriod);
+        if (recentPlay) return;
 
-        if(recentPlay) return;
+        // 2. Register the legitimate play
+        await this._playRepository.create(userId, songId, artistId, new Date());
 
-        const newDate = new Date()
-        // create new play
-        await this._playRepository.create(userId, songId, artistId,newDate )
-
-        // update song count
-        await this._songRepository.updatePlayCount(songId)
+        // 3. Update song play count
+        await this._songRepository.updatePlayCount(songId);
     }
+
 }

@@ -3,13 +3,15 @@ export interface Song{
     title: string
     coverImageUrl: string;
     status: boolean;
+    duration: number
 }
 export interface Album{
     id: string;
     title: string;
     coverImageUrl: string; 
     status: boolean;
-    createAt: Date
+    createdAt: Date;
+    songsCount : number
 }
 
 export interface ArtistProfileDTO {
@@ -19,6 +21,7 @@ export interface ArtistProfileDTO {
   status: boolean;
   email: string;
   joinDate: Date;
+  followersCount: number
 
   songs: Song[]
   albums: Album[]

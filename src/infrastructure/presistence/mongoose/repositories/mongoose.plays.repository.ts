@@ -1,7 +1,6 @@
-import { count } from "console";
 import { IPlayRepository, MonthlyPlayStatus } from "../../../../domain/repositories/play.repository";
 import { PlayModel } from "../models/play.model";
-import { Types } from "mongoose";
+import { ObjectId, Types } from "mongoose";
 
 export class SongPlayRepository implements IPlayRepository{
 
@@ -10,18 +9,18 @@ export class SongPlayRepository implements IPlayRepository{
         const play = await PlayModel.findOne({
             userId,
             songId,
-            playedAt: {$gte: {date}}
+            playedAt: {$gte: date}
         })
 
         return !!play
     }
 
     async create(userId: string, songId: string, artistId: string, date: Date): Promise<void> {
-        
+    
         await PlayModel.create({
-            userId,
-            songId,
-            artistId,
+            userId: new Types.ObjectId(userId),
+            songId: new Types.ObjectId(songId),
+            artistId: artistId, 
             playedAt: date
         })
     }

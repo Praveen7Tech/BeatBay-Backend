@@ -145,4 +145,23 @@ export class StripeService implements IStripeService{
             description: description
         })
     }
+
+    async getArtistWallet(connectId: string): Promise<Stripe.Balance> {
+        const balance = await stripe.balance.retrieve({
+            stripeAccount: connectId
+        })
+
+        return balance
+    }
+
+    async getArtistCurrency(connectId: string): Promise<string> {
+        const account = await stripe.accounts.retrieve(connectId);
+        // Returns lowercase code like 'usd' or 'inr'
+        return account.default_currency || 'usd'; 
+    }
+
+    async createStripeLoginLink(connectId: string): Promise<string> {
+        const loginLink = await stripe.accounts.createLoginLink(connectId);
+        return loginLink.url; 
+    }
 }

@@ -29,6 +29,7 @@ import { IGetAllFansUseCase } from "../../../../application/interfaces/usecase/a
 import { IArtistDashBoardDataUseCase } from "../../../../application/interfaces/usecase/artist/dashboard/artist-dashboard-usecase.interface";
 import { IGetArtistOnBoardingLinkUseCase } from "../../../../application/interfaces/usecase/artist/revenue/getOnBoardLink-usecase.interface";
 import { ICreateSongUploadUrlsUsecase } from "../../../../application/interfaces/usecase/presigned-url/create-upload-presigneduerl-usecase.interface";
+import { IArtistRevenueUseCase } from "../../../../application/interfaces/usecase/artist/revenue/getRevenue-usecase.interface";
 
 export class ArtistController {
     constructor(
@@ -50,6 +51,7 @@ export class ArtistController {
         private readonly _artistDashBoardDataUsecase: IArtistDashBoardDataUseCase,
         private readonly _getArtistOnBoardingLinkUsecase: IGetArtistOnBoardingLinkUseCase,
         private readonly _createSongUploadUrlUsecase: ICreateSongUploadUrlsUsecase,
+        private readonly _artistRevenueUsecase: IArtistRevenueUseCase
     ){}
 
     // editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
@@ -424,6 +426,21 @@ export class ArtistController {
            const data = await this._getArtistOnBoardingLinkUsecase.execute(artistId)
 
            return res.status(StatusCode.OK).json({success: true, link: data.link})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    getRevenue = async(req:AuthRequest, res:Response,next:NextFunction)=>{
+        try {
+            const artistId = req.user?.id
+            if(!artistId){
+                return res.status(StatusCode.UNAUTHORIZED).json(MESSAGES.UNAUTHORIZED);
+            } 
+
+            const revenue = await this._artistRevenueUsecase.execute(artistId)
+            console.log("revenue", revenue)
+            return res.status(StatusCode.OK).json(revenue)
         } catch (error) {
             next(error)
         }

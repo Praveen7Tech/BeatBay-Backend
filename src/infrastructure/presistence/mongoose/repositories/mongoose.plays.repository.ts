@@ -1,6 +1,7 @@
 import { count } from "console";
 import { IPlayRepository, MonthlyPlayStatus } from "../../../../domain/repositories/play.repository";
 import { PlayModel } from "../models/play.model";
+import { Types } from "mongoose";
 
 export class SongPlayRepository implements IPlayRepository{
 
@@ -37,5 +38,47 @@ export class SongPlayRepository implements IPlayRepository{
         ])
 
         return statistics.length ? statistics[0] : null
+    }
+
+     async getArtistPlayCount(artistId: string, start: Date, end: Date): Promise<number> {
+        console.log("date ", start, end)
+        const count = await PlayModel.countDocuments({
+            artistId: new Types.ObjectId(artistId),
+            playedAt: { $gte: start, $lte: end }
+        });
+        return count;
+    }
+
+    // 2. Get total plays across the entire platform in a time range
+    async getTotalPlatformPlays(start: Date, end: Date): Promise<number> {
+        console.log("total play ", start, end)
+        const count = await PlayModel.countDocuments({
+            playedAt: { $gte: start, $lte: end }
+        });
+        return count;
+    }
+
+     async getSongWisePlays(artistId: string, start: Date, end: Date): Promise<{ songId: string, count: number }[]> {
+        return await PlayModel.aggregate([
+            { 
+                $match: { 
+                    artistId: new Types.ObjectId(artistId), 
+                    playedAt: { $gte: start, $lte: end } 
+                } 
+            },
+            { 
+                $group: { 
+                    _id: "$songId", 
+                    count: { $sum: 1 } 
+                } 
+            },
+            { 
+                $project: { 
+                    _id: 0, 
+                    songId: { $toString: "$_id" }, 
+                    count: 1 
+                } 
+            }
+        ]);
     }
 }

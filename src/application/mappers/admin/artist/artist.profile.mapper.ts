@@ -20,13 +20,15 @@ export class ArtistProfileMapper {
       status: artist.status!,
       email: artist.email,
       joinDate: artist.createdAt!,
+      followersCount: artist.followersCount!,
 
       // Mapping logic stays here, NOT in the UseCase
       songs: songs.map(s => ({
         id: s._id.toString(),
         title: s.title,
         coverImageUrl: s.signedCoverUrl,
-        status: s.status
+        status: s.status,
+        duration: s.duration
       })),
 
       albums: albums.map(a => ({
@@ -34,7 +36,8 @@ export class ArtistProfileMapper {
         title: a.title,
         coverImageUrl: a.coverImageUrl,
         status: a.isActive,
-        createAt: a.createdAt
+        createdAt: a.createdAt,
+        songsCount: a.songs.length
       })),
     };
   }

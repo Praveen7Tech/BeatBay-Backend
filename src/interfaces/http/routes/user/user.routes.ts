@@ -58,7 +58,7 @@ export default (container: AwilixContainer): Router=> {
     router.post('/subscription/cancel', userController.cancelSubscription)
     router.get('/subscription/history', userController.subscriptionHistory)
 
-    router.post('/analytics/track-play', userController.trackSongPlay)
+    router.post('/song/track-play', userController.trackSongPlay)
 
     return router
 }

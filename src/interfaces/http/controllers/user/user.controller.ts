@@ -639,13 +639,13 @@ export class UserController{
     trackSongPlay = async(req:AuthRequest, res:Response, next:NextFunction)=>{
         try {
             const userId = req.user?.id
-            const {songId, artistId} = req.body
-
-            if(!userId || !songId || !artistId){
+            const {songId} = req.body
+console.log("reach play", songId)
+            if(!userId || !songId ){
                 return res.status(StatusCode.BAD_REQUEST).json(MESSAGES.MISSING_FIELDS);
             }
 
-            await this._trackSongPlayUsecase.execute(userId, songId, artistId)
+            await this._trackSongPlayUsecase.execute(userId, songId)
 
             return res.status(StatusCode.OK).json({success: true})
         } catch (error) {

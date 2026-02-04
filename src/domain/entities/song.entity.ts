@@ -37,7 +37,7 @@ export interface SongNew {
     coverImageKey: string;
     lyricsKey: string;
 
-    artistId: string | ArtistDetails;
+    artistId: string ;
     artistName: string;
     status: boolean
     tags: string[];

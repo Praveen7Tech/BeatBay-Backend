@@ -1,6 +1,7 @@
 export interface ISongRevenue {
     songId: string;
     songTitle: string; 
+    coverImageUrl: string
     playCount: number;
     estimatedRevenue: number;
 }

@@ -21,7 +21,7 @@ export class TrackSongPlaysUseCase implements ITrachSongPlayUseCase{
         if (!song) throw new NotFoundError("Song not found");
         const artistId = song.artistId
 
-        // 1. Logic Change: Use song duration for the cooling period
+        // Use song duration for the cooling period
         // If song is 180s, don't allow another play for 180s.
         const coolingPeriod = new Date(Date.now() - (song.duration * 1000));
         

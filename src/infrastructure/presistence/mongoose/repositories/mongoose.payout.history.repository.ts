@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import { IPayoutHistoryRepository } from "../../../../domain/repositories/payoutHistory.repository";
 import { PayoutHistoryModel } from "../models/payout.history.model";
+import { payoutHistory } from "../../../../domain/entities/payoutHistory.entity";
 
 export class PayoutHistoryRepository implements IPayoutHistoryRepository{
 
@@ -15,8 +16,9 @@ export class PayoutHistoryRepository implements IPayoutHistoryRepository{
         return count > 0
     }
 
-    async create(data: any): Promise<void> {
-        await PayoutHistoryModel.create(data)
+    async create(data: any): Promise<payoutHistory> {
+        const payout = await PayoutHistoryModel.create(data)
+        return payout.toObject()
     }
 
 

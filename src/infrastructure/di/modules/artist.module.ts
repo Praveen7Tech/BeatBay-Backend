@@ -42,6 +42,10 @@ import { ArtistRevenueUseCase } from "../../../usecases/artist/revenue/getRevenu
 import { IArtistDailyAnalyticsRepository } from "../../../domain/repositories/artist.daily.analytics.repository";
 import { ArtistDailyAnalyticsRepository } from "../../presistence/mongoose/repositories/artist.daily.analytics.repository";
 import { GetArtistGrowthUseCase } from "../../../usecases/artist/dashboard/artistAnalyticsUseCase";
+import { GetSongPerformanceUseCase } from "../../../usecases/artist/song/songPerformence.UseCase";
+import { GetSongRevenueDashboardUseCase } from "../../../usecases/artist/song/revenue/songRevenueStatisticsUseCase";
+import { SongRevenueHistoryRepository } from "../../presistence/mongoose/repositories/song.revenue.history.repository";
+import { ISongRevenueHistoryRepository } from "../../../domain/repositories/song.revenue.history.repository";
 
 export const artistModule = {
 
@@ -51,6 +55,7 @@ export const artistModule = {
     _songRepository: asClass<ISongRepository>(MongooseSongRepository).scoped(),
     _albumRepository: asClass<IAlbumRepository>(MongooseAlbumRepository).scoped(),
     _playListRepository: asClass<IPlayListRepository>(MongoosePlayListRepository).scoped(),
+    _songRevenueRepository: asClass<ISongRevenueHistoryRepository>(SongRevenueHistoryRepository).scoped(),
 
     //daily analytics repository for artist
     _dailyAnalyticsRepository: asClass<IArtistDailyAnalyticsRepository>(ArtistDailyAnalyticsRepository).scoped(),
@@ -76,6 +81,8 @@ export const artistModule = {
     _artistsongDetailsUsecase: asClass(GetSongDetailsByIdUseCase).scoped(),
     _editSongUsecase: asClass(EditSongUseCase).scoped(),
     _artistDeleteSongUsecase: asClass(DeleteSongUseCase).scoped(),
+    _songPerFormanceUsecase: asClass(GetSongPerformanceUseCase).scoped(),
+    _songRevenueHistoryUsecase: asClass(GetSongRevenueDashboardUseCase).scoped(),
 
     // presigned-url setup
     _createSongUploadUrlUsecase: asClass(CreateSongUploadURLUsecase).scoped(),

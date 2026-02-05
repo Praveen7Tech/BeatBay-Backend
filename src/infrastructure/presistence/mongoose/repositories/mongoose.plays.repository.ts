@@ -1,7 +1,7 @@
 import { IPlayRepository, MonthlyPlayStatus } from "../../../../domain/repositories/play.repository";
 import { PlayModel } from "../models/play.model";
-import { ObjectId, Types } from "mongoose";
-import { SongModel } from "../models/song.model";
+import { Types } from "mongoose";
+import { SongPerformanceResult } from "../../../../application/dto/artist/song/song.performance.dto";
 
 export class SongPlayRepository implements IPlayRepository{
 
@@ -81,4 +81,27 @@ export class SongPlayRepository implements IPlayRepository{
             }
         ]);
     }
+
+    async getSongPerformance( songId: string,from: Date, to: Date,format: "%Y-%m-%d" | "%Y-%m"): Promise<SongPerformanceResult[]> {
+
+        const result = await PlayModel.aggregate([
+            {$match: {
+                songId: new Types.ObjectId(songId),
+                playedAt: { $gte: from, $lte: to }
+            }},
+            { $group: {
+                _id: {
+                $dateToString: { format, date: "$playedAt" }
+                },
+                count: { $sum: 1 }
+            }},
+            { $sort: { _id: 1 } }
+        ]);
+
+        return result.map(r => ({
+            label: r._id,
+            count: r.count
+        }));
+    }
+
 }

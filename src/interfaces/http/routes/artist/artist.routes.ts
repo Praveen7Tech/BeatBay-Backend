@@ -38,6 +38,8 @@ export default (container: AwilixContainer): Router=> {
     router.delete('/delete-song/:songId', artistController.deleteSong)
 
     router.get('/growth-analytics', artistController.growthAnalytics)
+    router.get('/song-performance/:songId', artistController.songPerformance)
+    router.get('/song-revenue/:songId', artistController.songRevenue)
     
     return router
 }

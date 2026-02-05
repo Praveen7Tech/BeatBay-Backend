@@ -22,6 +22,7 @@ export interface AlbumDetailsDTO{
   title: string;
   description: string;
   coverImageUrl: string;
+  totalPlays: number
   songs: { id: string; title: string; coverImageUrl: string }[];
 }
 

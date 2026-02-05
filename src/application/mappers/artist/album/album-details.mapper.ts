@@ -11,6 +11,7 @@ export class AlbumDetailsMapper {
     title: album.title,
     description: album.description,
     coverImageUrl: album.coverImageUrl,
+    totalPlays: album.playCount,
     songs,
   });
 }

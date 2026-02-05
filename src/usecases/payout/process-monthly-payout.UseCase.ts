@@ -3,6 +3,7 @@ import { IArtistDailyAnalyticsRepository } from "../../domain/repositories/artis
 import { IArtistRepository } from "../../domain/repositories/artist.repository";
 import { IPayoutHistoryRepository } from "../../domain/repositories/payoutHistory.repository";
 import { IPlayRepository } from "../../domain/repositories/play.repository";
+import { ISongRevenueHistoryRepository } from "../../domain/repositories/song.revenue.history.repository";
 import { IStripeService } from "../../domain/services/stripe/stripe.service";
 import logger from "../../infrastructure/utils/logger/logger";
 
@@ -12,7 +13,8 @@ export class ProcessMonthlyPayoutUseCase implements IProcessMontlyPayoutUseCase{
         private readonly _playRepository: IPlayRepository,
         private readonly _artistRepository: IArtistRepository,
         private readonly _payoutHistoryRepository: IPayoutHistoryRepository,
-        private readonly _dailyAnalyticsRepository: IArtistDailyAnalyticsRepository
+        private readonly _dailyAnalyticsRepository: IArtistDailyAnalyticsRepository,
+        private readonly _songRevenueRepository: ISongRevenueHistoryRepository
     ){}
 
     async execute(): Promise<void> {
@@ -58,7 +60,7 @@ export class ProcessMonthlyPayoutUseCase implements IProcessMontlyPayoutUseCase{
                 logger.info("payout transfer complete")
 
                 // save payout histoy
-                await this._payoutHistoryRepository.create({
+                const payout = await this._payoutHistoryRepository.create({
                     artistId: share.artistId,
                     stripeTransferId: transfer.id,
                     amount: amountToPay,
@@ -68,6 +70,30 @@ export class ProcessMonthlyPayoutUseCase implements IProcessMontlyPayoutUseCase{
                     totalPlaysInPeriod: share.count
                 })
                 logger.info("payout hitsory created")
+
+                // song wise revenue history creation
+                const songPlays = await this._playRepository.getSongWisePlays(
+                    share.artistId,
+                    start,
+                    end
+                );
+
+                const artistRevenueCents = Math.floor(amountToPay * 100);
+
+                const songRevenueDocs = songPlays.map(play => ({
+                    artistId: share.artistId,
+                    songId: play.songId,
+                    payoutId: payout._id.toString(),
+                    periodStart: start,
+                    periodEnd: end,
+                    playCount: play.count,
+                    revenueAmount: Math.floor(
+                        (play.count / share.count) * artistRevenueCents
+                    )
+                }));
+
+                await this._songRevenueRepository.createMany(songRevenueDocs);
+                logger.info("payout song hitsory created")
 
                 // analytics update
                 await this._dailyAnalyticsRepository.incrementField(share.artistId,today,"revenue",amountToPay)

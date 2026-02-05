@@ -39,6 +39,9 @@ import { CreateSongUploadURLUsecase } from "../../../usecases/artist/song/presig
 import { IAWSS3StorageService } from "../../../domain/services/aws/asw-s3.service";
 import { AWSS3StorageService } from "../../services/aws/asw-s3.storage.service";
 import { ArtistRevenueUseCase } from "../../../usecases/artist/revenue/getRevenue.UseCase";
+import { IArtistDailyAnalyticsRepository } from "../../../domain/repositories/artist.daily.analytics.repository";
+import { ArtistDailyAnalyticsRepository } from "../../presistence/mongoose/repositories/artist.daily.analytics.repository";
+import { GetArtistGrowthUseCase } from "../../../usecases/artist/dashboard/artistAnalyticsUseCase";
 
 export const artistModule = {
 
@@ -48,6 +51,9 @@ export const artistModule = {
     _songRepository: asClass<ISongRepository>(MongooseSongRepository).scoped(),
     _albumRepository: asClass<IAlbumRepository>(MongooseAlbumRepository).scoped(),
     _playListRepository: asClass<IPlayListRepository>(MongoosePlayListRepository).scoped(),
+
+    //daily analytics repository for artist
+    _dailyAnalyticsRepository: asClass<IArtistDailyAnalyticsRepository>(ArtistDailyAnalyticsRepository).scoped(),
 
     // aws s3 service
     _awsStorageService: asClass<IAWSS3StorageService>(AWSS3StorageService).singleton(),
@@ -87,6 +93,7 @@ export const artistModule = {
 
     //dashboard
     _artistDashBoardDataUsecase: asClass(ArtistDashBoardDataUseCase).scoped(),
+    _artistGrowthAnalyticsUsecase: asClass(GetArtistGrowthUseCase).scoped(),
 
     // revenue onboard
     _getArtistOnBoardingLinkUsecase: asClass(GetArtistOnBoardingLinkUseCase).scoped(),

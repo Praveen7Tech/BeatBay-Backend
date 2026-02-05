@@ -36,6 +36,8 @@ export default (container: AwilixContainer): Router=> {
     router.post('/upload-song',  uploadSongMiddleware, artistController.upLoadSong)
     router.put('/edit-song/:songId', uploadSongMiddleware, artistController.editSong)
     router.delete('/delete-song/:songId', artistController.deleteSong)
+
+    router.get('/growth-analytics', artistController.growthAnalytics)
     
     return router
 }

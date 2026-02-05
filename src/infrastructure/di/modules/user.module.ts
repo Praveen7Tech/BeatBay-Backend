@@ -2,7 +2,7 @@ import { asClass } from "awilix";
 import { UserController } from "../../../interfaces/http/controllers/user/user.controller";
 import { editProfileUsecase } from "../../../usecases/user/profile/editProfile.useCase"; 
 import { IUserRepository } from "../../../domain/repositories/user.repository";
-import { MongooseUserRepository } from "../../presistence/mongoose/repositories/mongoose.user.repository";
+import { userRepository } from "../../presistence/mongoose/repositories/mongoose.user.repository";
 import { ChangePasswordUsecase } from "../../../usecases/user/profile/changePassword.useCase"; 
 import { FetchSongsUsecase } from "../../../usecases/user/song/fetchSongs.useCase";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
@@ -55,7 +55,7 @@ import { SongPlayRepository } from "../../presistence/mongoose/repositories/mong
 
 export const userModule = {
     // Repository
-    _userReposistory: asClass<IUserRepository>(MongooseUserRepository).scoped(),
+    _userReposistory: asClass<IUserRepository>(userRepository).scoped(),
     _mongooseSongRepository: asClass<ISongRepository>(MongooseSongRepository).scoped(),
     _mongooseAlbumRepository: asClass<IAlbumRepository>(MongooseAlbumRepository).scoped(),
     _mongooseArtistRepository: asClass<IArtistRepository>(MongooseArtistRepository).scoped(),

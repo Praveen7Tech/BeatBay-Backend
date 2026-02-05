@@ -30,6 +30,7 @@ import { IArtistDashBoardDataUseCase } from "../../../../application/interfaces/
 import { IGetArtistOnBoardingLinkUseCase } from "../../../../application/interfaces/usecase/artist/revenue/getOnBoardLink-usecase.interface";
 import { ICreateSongUploadUrlsUsecase } from "../../../../application/interfaces/usecase/presigned-url/create-upload-presigneduerl-usecase.interface";
 import { IArtistRevenueUseCase } from "../../../../application/interfaces/usecase/artist/revenue/getRevenue-usecase.interface";
+import { IArtistGrowthAnalyticsUseCase } from "../../../../application/interfaces/usecase/artist/dashboard/artist.growth.analytics-usecase.interface";
 
 export class ArtistController {
     constructor(
@@ -51,7 +52,8 @@ export class ArtistController {
         private readonly _artistDashBoardDataUsecase: IArtistDashBoardDataUseCase,
         private readonly _getArtistOnBoardingLinkUsecase: IGetArtistOnBoardingLinkUseCase,
         private readonly _createSongUploadUrlUsecase: ICreateSongUploadUrlsUsecase,
-        private readonly _artistRevenueUsecase: IArtistRevenueUseCase
+        private readonly _artistRevenueUsecase: IArtistRevenueUseCase,
+        private readonly _artistGrowthAnalyticsUsecase: IArtistGrowthAnalyticsUseCase
     ){}
 
     // editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
@@ -441,6 +443,23 @@ export class ArtistController {
             const revenue = await this._artistRevenueUsecase.execute(artistId)
             console.log("revenue", revenue)
             return res.status(StatusCode.OK).json(revenue)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    growthAnalytics = async(req:AuthRequest,res:Response, next:NextFunction)=>{
+        try {
+            const artistId = req.user?.id
+            const days = Number(req.query.days)
+            if(!artistId || !days){
+                return res.status(StatusCode.UNAUTHORIZED).json(MESSAGES.UNAUTHORIZED);
+            } 
+
+            const data = await this._artistGrowthAnalyticsUsecase.execute(artistId,days)
+
+            return res.status(StatusCode.OK).json(data)
+
         } catch (error) {
             next(error)
         }

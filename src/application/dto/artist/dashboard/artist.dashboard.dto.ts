@@ -32,7 +32,7 @@ export interface ArtistDashboardResponseDTO{
     totalAlbums:number
     totalFans: number
     totalRevenue: number;
-    //topPlayedSongs: TopPlayedSongDTO[]
+    topPlayedSongs: TopPlayedSongDTO[]
     topPlayedAlbums: TopPlayedAlbumsDTO[]
 }
 

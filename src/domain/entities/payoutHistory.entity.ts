@@ -6,7 +6,7 @@ export interface Period{
 export type Status = "completed" | "failed"
 
 export interface payoutHistory{
-    id: string
+    _id: string
     artistId: string
     stripeTransferId: string
     amount: number

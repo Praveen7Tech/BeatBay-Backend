@@ -31,6 +31,10 @@ import { IGetArtistOnBoardingLinkUseCase } from "../../../../application/interfa
 import { ICreateSongUploadUrlsUsecase } from "../../../../application/interfaces/usecase/presigned-url/create-upload-presigneduerl-usecase.interface";
 import { IArtistRevenueUseCase } from "../../../../application/interfaces/usecase/artist/revenue/getRevenue-usecase.interface";
 import { IArtistGrowthAnalyticsUseCase } from "../../../../application/interfaces/usecase/artist/dashboard/artist.growth.analytics-usecase.interface";
+import { IGetSongPerformanceUseCase } from "../../../../application/interfaces/usecase/song/artist-song-perfomance-usecase.interface";
+import { NotFound } from "@aws-sdk/client-s3";
+import { BadRequestError } from "../../../../common/errors/common/common.errors";
+import { ISongRevenueHistoryUseCase } from "../../../../application/interfaces/usecase/artist/revenue/songRevenueHistory-usecase.interface";
 
 export class ArtistController {
     constructor(
@@ -53,7 +57,9 @@ export class ArtistController {
         private readonly _getArtistOnBoardingLinkUsecase: IGetArtistOnBoardingLinkUseCase,
         private readonly _createSongUploadUrlUsecase: ICreateSongUploadUrlsUsecase,
         private readonly _artistRevenueUsecase: IArtistRevenueUseCase,
-        private readonly _artistGrowthAnalyticsUsecase: IArtistGrowthAnalyticsUseCase
+        private readonly _artistGrowthAnalyticsUsecase: IArtistGrowthAnalyticsUseCase,
+        private readonly _songPerFormanceUsecase: IGetSongPerformanceUseCase,
+        private readonly _songRevenueHistoryUsecase: ISongRevenueHistoryUseCase
     ){}
 
     // editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
@@ -460,6 +466,36 @@ export class ArtistController {
 
             return res.status(StatusCode.OK).json(data)
 
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    songPerformance = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const filter = Number(req.query.filter);
+            const songId = req.params.songId
+    
+            if(!filter || !songId){
+                throw new BadRequestError("Invalid inputs!")
+            }
+
+            const result = await this._songPerFormanceUsecase.execute(songId,filter)
+
+            return res.status(StatusCode.OK).json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    songRevenue = async(req:AuthRequest,res:Response,next:NextFunction)=>{
+        try {
+            const { songId } = req.params;
+            const { year } = req.query;
+console.log("j ", songId, year)
+            const revenue = await this._songRevenueHistoryUsecase.execute(songId,Number(year))
+console.log("song rev ", revenue)
+            return res.status(StatusCode.OK).json(revenue)
         } catch (error) {
             next(error)
         }

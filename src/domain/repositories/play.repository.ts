@@ -1,4 +1,5 @@
 import { ObjectId } from "mongoose";
+import { SongPerformanceResult } from "../../application/dto/artist/song/song.performance.dto";
 
 export interface MonthlyPlayStatus{
     totalPlays: number;
@@ -15,4 +16,5 @@ export interface IPlayRepository{
     getArtistPlayCount(artistId: string, start: Date, end: Date): Promise<number>;
     getTotalPlatformPlays(start: Date, end: Date): Promise<number>;
     getSongWisePlays(artistId: string, start: Date, end: Date): Promise<{ songId: string, count: number }[]>
+    getSongPerformance( songId: string, from: Date,to: Date,format: "%Y-%m-%d" | "%Y-%m"): Promise<SongPerformanceResult[]>;
 }

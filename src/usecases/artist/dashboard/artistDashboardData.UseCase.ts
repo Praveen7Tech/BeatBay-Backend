@@ -18,19 +18,19 @@ export class ArtistDashBoardDataUseCase implements IArtistDashBoardDataUseCase{
         const totalAlbums = await this._dashBoarRepository.countDocuments("artistId",artistId,"albums")
         const totalFans = await this._dashBoarRepository.countDocuments("targetId",artistId,'followers')
         const totalRevenue = await this._payoutHistoryRepository.getLifetimeEarnings(artistId)
-        //const topSongs = await this._dashBoarRepository.findTopPlayedSongsByArtist(artistId,5)
+        const topSongs = await this._dashBoarRepository.findTopPlayedSongsByArtist(artistId,5)
         const topAlbums = await this._dashBoarRepository.topPlayedAlbumsByArtist(artistId, 5)
 
 
-        // const songWithUrls = await Promise.all(
-        //     topSongs.map(async(song)=>{
-        //         const coverImageUrl = await this._awsStorageService.getAccessPresignedUrl(song.coverImageKey)
+        const songWithUrls = await Promise.all(
+            topSongs.map(async(song)=>{
+                const coverImageUrl = await this._awsStorageService.getAccessPresignedUrl(song.coverImageKey)
 
-        //         return {song, coverImageUrl}
-        //     })
-        // )
+                return {song, coverImageUrl}
+            })
+        )
 
-        //const topPlayedSongs =  ArtistDashboardMapper.toDTOList(songWithUrls)
+        const topPlayedSongs =  ArtistDashboardMapper.toDTOList(songWithUrls)
         const topPlayedAlbums = ArtistDashboardMapper.toDTOAlbumList(topAlbums)
 
         return {
@@ -38,7 +38,7 @@ export class ArtistDashBoardDataUseCase implements IArtistDashBoardDataUseCase{
             totalAlbums,
             totalFans,
             totalRevenue: totalRevenue/100,
-            //topPlayedSongs,
+            topPlayedSongs,
             topPlayedAlbums
         }
     }

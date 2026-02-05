@@ -1,4 +1,5 @@
 import { IProcessMontlyPayoutUseCase } from "../../application/interfaces/usecase/payout/monthly-pyout-usecase.interface";
+import { IArtistDailyAnalyticsRepository } from "../../domain/repositories/artist.daily.analytics.repository";
 import { IArtistRepository } from "../../domain/repositories/artist.repository";
 import { IPayoutHistoryRepository } from "../../domain/repositories/payoutHistory.repository";
 import { IPlayRepository } from "../../domain/repositories/play.repository";
@@ -10,25 +11,26 @@ export class ProcessMonthlyPayoutUseCase implements IProcessMontlyPayoutUseCase{
         private readonly _stripeService: IStripeService,
         private readonly _playRepository: IPlayRepository,
         private readonly _artistRepository: IArtistRepository,
-        private readonly _payoutHistoryRepository: IPayoutHistoryRepository
+        private readonly _payoutHistoryRepository: IPayoutHistoryRepository,
+        private readonly _dailyAnalyticsRepository: IArtistDailyAnalyticsRepository
     ){}
 
     async execute(): Promise<void> {
-        console.log("monthly payout reach")
+        const today = new Date().toISOString().split("T")[0];
         const now = new Date()
         const month = now.getMonth()
         const year = now.getFullYear()
         const start = new Date(year, month, 1); 
         const end = new Date(year, month + 1, 0); 
         
-console.log("start, end", start, end)
+
         // get total monthly revenue
         const grossRevenue = await this._stripeService.getNetRevenue(start,end)
         const artistPool = grossRevenue * 0.90
-console.log("gross revenue", grossRevenue, artistPool)
+
         // aggregate total  plays for the monthe
         const stats = await this._playRepository.getMonthlyStatus(start, end);
-console.log("stats ", stats)
+
         if(!stats){
             logger.warn("No plays found for this month");
             return 
@@ -45,7 +47,7 @@ console.log("stats ", stats)
             if(alreadyPaid) continue;
 
             const amountToPay = (share.count / totalPlays) * artistPool;
-console.log("amt pay ", amountToPay)
+
             if(amountToPay >= 1){
                 // create transaction
                 const transfer = await this._stripeService.transferToArtist(
@@ -66,6 +68,9 @@ console.log("amt pay ", amountToPay)
                     totalPlaysInPeriod: share.count
                 })
                 logger.info("payout hitsory created")
+
+                // analytics update
+                await this._dailyAnalyticsRepository.incrementField(share.artistId,today,"revenue",amountToPay)
             }
 
         }

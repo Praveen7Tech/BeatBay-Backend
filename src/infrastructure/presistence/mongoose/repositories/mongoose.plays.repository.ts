@@ -1,6 +1,7 @@
 import { IPlayRepository, MonthlyPlayStatus } from "../../../../domain/repositories/play.repository";
 import { PlayModel } from "../models/play.model";
 import { ObjectId, Types } from "mongoose";
+import { SongModel } from "../models/song.model";
 
 export class SongPlayRepository implements IPlayRepository{
 

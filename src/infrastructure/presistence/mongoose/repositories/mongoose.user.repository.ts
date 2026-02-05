@@ -8,7 +8,7 @@ import { FollowedEntity } from '../../../../domain/interfaces/following';
 import { FollowerModel } from '../models/followers.model';
 import { DemoGraphics } from '../../../../application/dto/admin/dashboard/dashboard.dto';
 
-export class MongooseUserRepository implements IUserRepository {
+export class userRepository implements IUserRepository {
 
 
   async create(entity: User): Promise<User> {

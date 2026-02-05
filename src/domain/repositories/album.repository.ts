@@ -25,4 +25,5 @@ export interface IAlbumRepository{
     admingetAllAlbums(params: GetAllAlbumsRequest): Promise<PaginaterAlbumResult>;
     adminFindById(id: string): Promise<AlbumWithSongs | null>
     updateStatus(id: string, status: boolean): Promise<Album | null>
+    updateSongPlayCount(songId: string): Promise<void>
 }

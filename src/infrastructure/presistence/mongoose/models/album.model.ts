@@ -38,6 +38,9 @@ const AlbumSchema = new Schema({
     isActive: {
         type: Boolean,
         default: true
+    },
+    playCount:{
+        type: Number,
     }
 
 }, {timestamps:true})

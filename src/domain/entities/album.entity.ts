@@ -11,6 +11,7 @@ export interface Album{
     songs: string[]
     songTitles: string[]
     isActive: boolean
+    playCount: number
     createdAt: Date;
     updatedAt: Date;
 }

@@ -165,4 +165,11 @@ export class MongooseAlbumRepository implements IAlbumRepository {
             { new: true , runValidators: true }
         ).lean();
     }
+
+    async updateSongPlayCount(songId: string): Promise<void> {
+        await AlbumModel.updateMany(
+            {songs: songId},
+            {$inc : {playCount: 1}}
+        )
+    }
 }

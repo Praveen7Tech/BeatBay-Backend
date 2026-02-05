@@ -1,6 +1,10 @@
 import { DemoGraphics, EntityBreakdownCounts } from "../../../../application/dto/admin/dashboard/dashboard.dto";
+import { Album } from "../../../../domain/entities/album.entity";
+import { SongNew } from "../../../../domain/entities/song.entity";
 import { Entity, IDashBoardRepository } from "../../../../domain/repositories/demographics.repository";
 import { IDashboardModelMap } from "../models-listing/dashboard-models";
+import { AlbumModel } from "../models/album.model";
+import { SongModel } from "../models/song.model";
 
 export class MongooseDashBoardRepository implements IDashBoardRepository{
     constructor(
@@ -99,6 +103,24 @@ export class MongooseDashBoardRepository implements IDashBoardRepository{
         const model = this._dashBoardModels[entity]
 
         return model.countDocuments()
+    }
+
+    async findTopPlayedSongsByArtist(artistId: string, limit: number ): Promise<SongNew[]> {
+
+        return SongModel.find({ artistId, status: true, })
+        .sort({ playCount: -1 })
+        .limit(limit)
+        .select("title playCount coverImageKey")
+        .lean();
+    }
+
+    async topPlayedAlbumsByArtist(artistId: string, limit: number): Promise<Album[]> {
+        
+        return AlbumModel.find({artistId, isActive: true})
+        .sort({playCount: -1})
+        .limit(limit)
+        .select("title coverImageUrl playCount songs")
+        .lean()
     }
 
 }

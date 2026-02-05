@@ -1,5 +1,5 @@
 import {  asClass,  asValue,  } from 'awilix';
-import { MongooseUserRepository } from '../../presistence/mongoose/repositories/mongoose.user.repository'; 
+import { userRepository } from '../../presistence/mongoose/repositories/mongoose.user.repository'; 
 import { RedisCacheServive } from '../../cache/redis/redis-cache.service';
 import { PasswordService } from '../../services/password/password-service'; 
 import { SignupUsecase } from '../../../usecases/user/auth/signup.useCase';
@@ -28,7 +28,7 @@ export const authModule = {
       _clientId: asValue(process.env.GOOGLE_CLIENT_ID),
     
       // Infrastructure
-      _userRepository: asClass<IUserRepository>(MongooseUserRepository).scoped(),
+      _userRepository: asClass<IUserRepository>(userRepository).scoped(),
       _cacheService: asClass<ICacheService>(RedisCacheServive).singleton(),
       _passwordService: asClass<IPasswordService>(PasswordService).scoped(),
       _otpService: asClass<IOtpService>(OtpService).scoped(),

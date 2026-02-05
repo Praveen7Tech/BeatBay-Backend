@@ -5,16 +5,20 @@ import { ITransactionManager } from "../../../domain/services/transaction.servic
 import { CreateAlbumDTO } from "../../../application/dto/album/album.dto";
 import { ArtistCreateAlbumMapper } from "../../../application/mappers/artist/album/create-album.mapper";
 import { IArtistCreateAlbumUseCase } from "../../../application/interfaces/usecase/album/artist-create-album-usecase.interface";
+import { IArtistDailyAnalyticsRepository } from "../../../domain/repositories/artist.daily.analytics.repository";
 
 export class ArtistCreateAlbumUseCase implements IArtistCreateAlbumUseCase{
   constructor(
     private readonly _albumRepository: IAlbumRepository,
     private readonly _transactionManager: ITransactionManager,
     private readonly _artistRepository: IArtistRepository,
-    private readonly _songRepository: ISongRepository
+    private readonly _songRepository: ISongRepository,
+    private readonly _dailyAnalyticsRepository: IArtistDailyAnalyticsRepository
   ) {}
 
   async execute(artistId: string,request: CreateAlbumDTO ): Promise<{ success: boolean }> {
+
+    const today = new Date().toISOString().split("T")[0];
 
     await this._transactionManager.withTransaction(async session => {
       const artist = await this._artistRepository.findById(artistId);
@@ -36,6 +40,10 @@ export class ArtistCreateAlbumUseCase implements IArtistCreateAlbumUseCase{
         newAlbum._id,
         session
       );
+
+      // update analytics
+      await this._dailyAnalyticsRepository.incrementField(artistId,today,"albums",1)
+      
     });
 
     return { success: true };

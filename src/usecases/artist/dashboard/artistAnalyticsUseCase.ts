@@ -16,7 +16,6 @@ export class GetArtistGrowthUseCase implements IArtistGrowthAnalyticsUseCase {
         const fromStr = from.toISOString().split("T")[0];
 
         const records = await this._dailyAnalyticsRepository.getRange(artistId,fromStr,toStr );
-        console.log("recoreds", records)
 
         // map existing records
         const map = new Map(records.map(r => [r.date, r]));

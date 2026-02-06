@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import { PaymentHistoryDTO } from "../../../application/dto/premium/payment-history.dto";
 import { Subscription } from "../../entities/subscription.entity";
+import { PremiumPrice } from "../../../application/dto/premium/prices.dto";
 
 export interface CheckoutSessionResponse {
     id: string;
@@ -24,4 +25,5 @@ export interface IStripeService{
     getArtistWallet(connectId: string): Promise<Stripe.Balance>
     getArtistCurrency(connectId: string): Promise<string>
     createStripeLoginLink(connectId: string): Promise<string>
+    retrievePrice(priceId: string): Promise<Stripe.Price>;
 }

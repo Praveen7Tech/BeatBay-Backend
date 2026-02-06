@@ -7,6 +7,7 @@ import { GetPaymentHistoryUseCase } from "../../../usecases/user/premium/getPaym
 import { ProcessMonthlyPayoutUseCase } from "../../../usecases/payout/process-monthly-payout.UseCase";
 import { PayoutHistoryRepository } from "../../presistence/mongoose/repositories/mongoose.payout.history.repository";
 import { IPayoutHistoryRepository } from "../../../domain/repositories/payoutHistory.repository";
+import { GetPremiumPricesUseCase } from "../../../usecases/user/premium/get.prices.UseCase";
 
 export const subscriptionModule = {
 
@@ -16,5 +17,6 @@ export const subscriptionModule = {
     _getPaymentHistoryUsecase: asClass(GetPaymentHistoryUseCase).scoped(),
 
     processMonthlyPayoutUsecase: asClass(ProcessMonthlyPayoutUseCase).singleton(),
-    _payoutHistoryRepository: asClass<IPayoutHistoryRepository>(PayoutHistoryRepository).scoped()
+    _payoutHistoryRepository: asClass<IPayoutHistoryRepository>(PayoutHistoryRepository).scoped(),
+    _getPremiumPricesUsecase: asClass(GetPremiumPricesUseCase).scoped()
 }

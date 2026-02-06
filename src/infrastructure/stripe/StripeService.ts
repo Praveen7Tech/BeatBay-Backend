@@ -164,4 +164,8 @@ export class StripeService implements IStripeService{
         const loginLink = await stripe.accounts.createLoginLink(connectId);
         return loginLink.url; 
     }
+
+    async retrievePrice(priceId: string): Promise<Stripe.Price> {
+        return await stripe.prices.retrieve(priceId);
+    }
 }

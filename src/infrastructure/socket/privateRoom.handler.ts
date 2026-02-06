@@ -235,7 +235,7 @@ export class PrivateRoomHandler {
 
         // TIME DRIFT UPDATE
         socket.on("player_tick", ({ roomId, time, isPlaying }) => {
-            console.log("drift from host", time)
+            //console.log("drift from host", time)
             socket.to(roomId).emit("player_tick", { time, isPlaying });
         });
 

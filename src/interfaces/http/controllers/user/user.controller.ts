@@ -42,6 +42,8 @@ import { success } from "zod"
 import { ICancelSubscriptionUseCase } from "../../../../application/interfaces/usecase/premium/cancelSubscription-usecase.interface"
 import { IGetPaymentHistoryUseCase } from "../../../../application/interfaces/usecase/premium/getPaymentHistory-usecase.interface"
 import { ITrachSongPlayUseCase } from "../../../../application/interfaces/usecase/song/trachSongPlays-usecase.interface"
+import { IGetPremiumPricesUseCase } from "../../../../application/interfaces/usecase/premium/get-prices-usecase.interface"
+import logger from "../../../../infrastructure/utils/logger/logger"
 export class UserController{
     constructor(
         private readonly _editProfileUserUsecase: IEditProfileUseCase,
@@ -78,7 +80,8 @@ export class UserController{
         private readonly _toggleAutoRenewalUseCase: IToggleAutoRenewalUseCase,
         private readonly _cancelSubscriptionUseCase: ICancelSubscriptionUseCase,
         private readonly _getPaymentHistoryUsecase: IGetPaymentHistoryUseCase,
-        private readonly _trackSongPlayUsecase: ITrachSongPlayUseCase
+        private readonly _trackSongPlayUsecase: ITrachSongPlayUseCase,
+        private readonly _getPremiumPricesUsecase: IGetPremiumPricesUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction) =>{
@@ -640,7 +643,7 @@ export class UserController{
         try {
             const userId = req.user?.id
             const {songId} = req.body
-console.log("reach play", songId)
+            logger.info("play counting start")
             if(!userId || !songId ){
                 return res.status(StatusCode.BAD_REQUEST).json(MESSAGES.MISSING_FIELDS);
             }
@@ -648,6 +651,18 @@ console.log("reach play", songId)
             await this._trackSongPlayUsecase.execute(userId, songId)
 
             return res.status(StatusCode.OK).json({success: true})
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    getPrices = async(req:AuthRequest, res:Response,next:NextFunction)=>{
+        try {
+            const { priceIds } = req.body;
+            if (!priceIds || !priceIds.length) return res.status(StatusCode.BAD_REQUEST).json(MESSAGES.MISSING_FIELDS);
+
+            const prices = await this._getPremiumPricesUsecase.execute(priceIds);
+            return res.status(StatusCode.OK).json({ prices });
         } catch (error) {
             next(error)
         }

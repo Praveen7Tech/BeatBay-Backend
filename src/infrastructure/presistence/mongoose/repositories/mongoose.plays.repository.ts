@@ -41,7 +41,6 @@ export class SongPlayRepository implements IPlayRepository{
     }
 
      async getArtistPlayCount(artistId: string, start: Date, end: Date): Promise<number> {
-        console.log("date ", start, end)
         const count = await PlayModel.countDocuments({
             artistId: new Types.ObjectId(artistId),
             playedAt: { $gte: start, $lte: end }
@@ -49,9 +48,8 @@ export class SongPlayRepository implements IPlayRepository{
         return count;
     }
 
-    // 2. Get total plays across the entire platform in a time range
+    //  Get total plays across the entire platform in a time range
     async getTotalPlatformPlays(start: Date, end: Date): Promise<number> {
-        console.log("total play ", start, end)
         const count = await PlayModel.countDocuments({
             playedAt: { $gte: start, $lte: end }
         });

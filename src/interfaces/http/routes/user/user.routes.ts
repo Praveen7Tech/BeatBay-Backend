@@ -57,6 +57,7 @@ export default (container: AwilixContainer): Router=> {
     router.put('/auto-subscription-toggle', userController.autoSubscriptionToggle)
     router.post('/subscription/cancel', userController.cancelSubscription)
     router.get('/subscription/history', userController.subscriptionHistory)
+    router.post('/upgrade-subscription', userController.upgradeSubscriptionCheckout)
 
     router.post('/song/track-play', userController.trackSongPlay)
     router.post('/get-prices', userController.getPrices)

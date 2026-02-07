@@ -5,11 +5,14 @@ import logger from "../../../infrastructure/utils/logger/logger";
 import { PaymentType, PlanPeriod, SubscriptionStatus } from "../../../domain/entities/subscription.entity";
 import { stripe } from "../../../infrastructure/stripe/stripe.config";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
+import { IInvoiceHistoryRepository } from "../../../domain/repositories/invoice.Historyrepository";
+import { InvoiceStatus } from "../../../domain/entities/paymentHistory";
 
 export class HandleWebHookUseCase implements IHandleWebHookUsecase{
     constructor(
         private readonly _stripeService: IStripeService,
-        private readonly _artistRepository: IArtistRepository
+        private readonly _artistRepository: IArtistRepository,
+        private readonly _invoiceRepository: IInvoiceHistoryRepository
     ){}
 
     async execute(event: Stripe.Event): Promise<void> {
@@ -35,7 +38,10 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
                 const subscription = event.data.object as Stripe.Subscription;
                 const item = subscription.items.data[0]; 
                 const recurring = item.price.recurring;
+                const priceId = item.price.id
+                const userCurrency = subscription.currency.toLowerCase()
                 const periodEnd = new Date(item.current_period_end * 1000);
+
                 let paymentMethodDetails = 'N/A'
                 let paymentType = "unknown"
 
@@ -52,7 +58,7 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
                     }
                 }
 
-                 let planPeriod: PlanPeriod = 'Monthly';
+                let planPeriod: PlanPeriod = 'Monthly';
     
                 if (recurring?.interval === 'month') {
                     if (recurring.interval_count === 1) planPeriod = 'Monthly';
@@ -61,10 +67,20 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
                     planPeriod = 'Yearly';
                 }
 
+                const fullPrice = await this._stripeService.retrievePrice(priceId)
+                let localAmountDecimal = 0;
+
+                if(fullPrice.currency_options?.[userCurrency]?.unit_amount){
+                    localAmountDecimal = fullPrice.currency_options[userCurrency].unit_amount / 100 
+                }else{
+                    localAmountDecimal = (fullPrice.unit_amount || 0) / 100
+                }
+
+
                 const latestInvoice = await stripe.invoices.retrieve(subscription.latest_invoice as string);
 
                 const amountUSD = item.price.unit_amount || 0
-                const localAmount = latestInvoice.amount_paid / 100 || 0
+                const actualPaidToday = latestInvoice.amount_paid / 100 || 0
 
                 await this._stripeService.upsertSubscription({
                     userId: subscription.metadata.userId, 
@@ -76,7 +92,7 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
                     cancelAtPeriodEnd: subscription.cancel_at_period_end,
                     //datas
                     amountUSD: amountUSD,
-                    localAmount:localAmount,
+                    localAmount:localAmountDecimal,
                     currency: subscription.currency,
 
                     planPeriod: planPeriod,
@@ -84,7 +100,42 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
                     paymentMethodDetails: paymentMethodDetails
                 });
                 break;
-            }   
+            }
+            
+            case 'invoice.paid' : {
+                const invoice = event.data.object as Stripe.Invoice
+                let subscriptionId;
+
+                if (invoice.parent?.type === "subscription_details") {
+                    subscriptionId = invoice.parent.subscription_details?.subscription;
+                }
+
+                if (!subscriptionId) {
+                    console.log("no subscription found for invoice:", invoice.id);
+                    break;
+                }
+               
+                const subscription = await stripe.subscriptions.retrieve(subscriptionId as string);
+
+                const userId = subscription.metadata.userId
+              
+                if(userId){
+                     await this._invoiceRepository.createInvoice({
+                        userId: userId,
+                        stripeInvoiceId: invoice.id,
+                        amount:invoice.amount_paid / 100,
+                        currency: invoice.currency,
+                        status: invoice.status as InvoiceStatus,
+                        description: invoice.billing_reason === "subscription_update" ?
+                         "Plan Upgrade / Downgrade" : "Subscription Renewal",
+                        hostedInvoiceUrl: invoice.hosted_invoice_url as string,
+                        paidAt: new Date(invoice.status_transitions.paid_at! * 1000)
+                     })
+                }
+                logger.info("invoice created successfull!")
+
+                break;
+            }
 
             case 'invoice.payment_failed':{
 

@@ -44,6 +44,7 @@ import { IGetPaymentHistoryUseCase } from "../../../../application/interfaces/us
 import { ITrachSongPlayUseCase } from "../../../../application/interfaces/usecase/song/trachSongPlays-usecase.interface"
 import { IGetPremiumPricesUseCase } from "../../../../application/interfaces/usecase/premium/get-prices-usecase.interface"
 import logger from "../../../../infrastructure/utils/logger/logger"
+import { IUpgradeSubscriptionUseCase } from "../../../../application/interfaces/usecase/premium/upgrade-subscription-usecase.interface"
 export class UserController{
     constructor(
         private readonly _editProfileUserUsecase: IEditProfileUseCase,
@@ -81,7 +82,8 @@ export class UserController{
         private readonly _cancelSubscriptionUseCase: ICancelSubscriptionUseCase,
         private readonly _getPaymentHistoryUsecase: IGetPaymentHistoryUseCase,
         private readonly _trackSongPlayUsecase: ITrachSongPlayUseCase,
-        private readonly _getPremiumPricesUsecase: IGetPremiumPricesUseCase
+        private readonly _getPremiumPricesUsecase: IGetPremiumPricesUseCase,
+        private readonly _upgradeSubcriptionCheckOutUsecase: IUpgradeSubscriptionUseCase
     ){}
 
     editProfile = async(req:AuthRequest, res:Response, next: NextFunction) =>{
@@ -576,6 +578,21 @@ export class UserController{
         }
     }
 
+    upgradeSubscriptionCheckout = async(req:AuthRequest, res:Response,next:NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            if(!userId ){
+                return res.status(StatusCode.UNAUTHORIZED).json(MESSAGES.UNAUTHORIZED)
+            }
+
+            const result = await this._upgradeSubcriptionCheckOutUsecase.execute(userId)
+            return res.status(StatusCode.OK).json({url:result})
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
     subscription = async(req:AuthRequest, res:Response, next: NextFunction)=>{
         try {
             const userId = req.user?.id
@@ -659,10 +676,23 @@ export class UserController{
     getPrices = async(req:AuthRequest, res:Response,next:NextFunction)=>{
         try {
             const { priceIds } = req.body;
-            if (!priceIds || !priceIds.length) return res.status(StatusCode.BAD_REQUEST).json(MESSAGES.MISSING_FIELDS);
 
-            const prices = await this._getPremiumPricesUsecase.execute(priceIds);
-            return res.status(StatusCode.OK).json({ prices });
+            const countryHeader = req.headers['cloudfront-viewer-country'] ||
+            process.env.DEV_COUNTRY;
+      
+            let country: string;
+        
+            if (countryHeader) {
+                country = Array.isArray(countryHeader) ? countryHeader[0] : countryHeader;
+            } else {
+                country = process.env.DEV_COUNTRY!
+            }
+
+            if (!priceIds || !priceIds.length ) return res.status(StatusCode.BAD_REQUEST).json(MESSAGES.MISSING_FIELDS);
+
+            const prices = await this._getPremiumPricesUsecase.execute(priceIds,country);
+ 
+            return res.status(StatusCode.OK).json(prices);
         } catch (error) {
             next(error)
         }

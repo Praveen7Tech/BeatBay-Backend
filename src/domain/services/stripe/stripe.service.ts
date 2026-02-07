@@ -15,7 +15,6 @@ export interface IStripeService{
     deleteSubscription(stripeSubId: string): Promise<void>;
     toggleAutoRenewal(subscriptionId: string, autoRenew: boolean): Promise<void>;
     cancelSubscription(subscriptionId: string): Promise<void>;
-    getPaymentHistory(stripeCustomerId: string): Promise<Stripe.Invoice[]>;
     createConnectAccount(): Promise<Stripe.Account>
     createOnBoardingLink(stripeConnectId: string): Promise<string>;
     
@@ -26,4 +25,6 @@ export interface IStripeService{
     getArtistCurrency(connectId: string): Promise<string>
     createStripeLoginLink(connectId: string): Promise<string>
     retrievePrice(priceId: string): Promise<Stripe.Price>;
+
+    upgradeSubscriptionSession(stripeCustomerId: string): Promise<{url:string}>
 }

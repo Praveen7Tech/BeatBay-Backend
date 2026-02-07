@@ -8,13 +8,19 @@ import { ProcessMonthlyPayoutUseCase } from "../../../usecases/payout/process-mo
 import { PayoutHistoryRepository } from "../../presistence/mongoose/repositories/mongoose.payout.history.repository";
 import { IPayoutHistoryRepository } from "../../../domain/repositories/payoutHistory.repository";
 import { GetPremiumPricesUseCase } from "../../../usecases/user/premium/get.prices.UseCase";
+import { UpgradeSubscriptionCheckOutUseCase } from "../../../usecases/user/premium/upgradeSubscriptionCheckout.UseCase";
+import { IInvoiceHistoryRepository } from "../../../domain/repositories/invoice.Historyrepository";
+import { InvoiceHistoryRepository } from "../../presistence/mongoose/repositories/invoice.history.repository";
 
 export const subscriptionModule = {
+
+    _invoiceRepository: asClass<IInvoiceHistoryRepository>(InvoiceHistoryRepository).scoped(),
 
     _subscriptionRepository: asClass<ISubscriptionRepository>(SubscriptionRepository).scoped(),
     _getUserSubscriptionDataUsecase: asClass(UserSubscriptionDataUseCase).scoped(),
     _cancelSubscriptionUseCase: asClass(CancelSubscriptionUseCase).scoped(),
     _getPaymentHistoryUsecase: asClass(GetPaymentHistoryUseCase).scoped(),
+    _upgradeSubcriptionCheckOutUsecase: asClass(UpgradeSubscriptionCheckOutUseCase).scoped(),
 
     processMonthlyPayoutUsecase: asClass(ProcessMonthlyPayoutUseCase).singleton(),
     _payoutHistoryRepository: asClass<IPayoutHistoryRepository>(PayoutHistoryRepository).scoped(),

@@ -1,6 +1,6 @@
-export type PremiumPrice = {
+export type   PremiumPrice = {
   priceId: string;
-  amount: number;      
-  currency: string;  
-  recurring: string | null;
+  amount: number;     
+  currency: string;   
+  displayPrice: string;
 };

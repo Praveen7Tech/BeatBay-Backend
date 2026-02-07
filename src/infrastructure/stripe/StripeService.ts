@@ -88,14 +88,6 @@ export class StripeService implements IStripeService{
         await stripe.subscriptions.cancel(subscriptionId)
     }
 
-    async getPaymentHistory(stripeCustomerId: string): Promise<Stripe.Invoice[]> {
-        const invoices = await stripe.invoices.list({
-            customer: stripeCustomerId,
-            limit: 20 // Best practice: limit history
-        });
-        return invoices.data;
-    }
-
 
     async createConnectAccount(): Promise<Stripe.Account> {
         const account = await stripe.accounts.create({
@@ -166,6 +158,17 @@ export class StripeService implements IStripeService{
     }
 
     async retrievePrice(priceId: string): Promise<Stripe.Price> {
-        return await stripe.prices.retrieve(priceId);
+        return await stripe.prices.retrieve(priceId,{
+            expand: ["currency_options"]
+        });
+    }
+
+    async upgradeSubscriptionSession(stripeCustomerId: string): Promise<{ url: string; }> {
+        const session = await stripe.billingPortal.sessions.create({
+            customer: stripeCustomerId,
+            return_url: `${CLIENT_URL}/premium/details`
+        })
+
+        return {url:session.url}
     }
 }

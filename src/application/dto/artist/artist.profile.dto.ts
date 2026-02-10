@@ -20,3 +20,10 @@ export interface ArtistDetailsResponseDTO {
   albums: AlbumResponseDTO[];
   songs: SongResponseDTO[];
 }
+
+export interface ProfileResponse{
+  id:string
+  name: string
+  profilePicture:string
+}
+

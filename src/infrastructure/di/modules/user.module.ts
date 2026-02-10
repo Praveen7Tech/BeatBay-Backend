@@ -1,6 +1,6 @@
 import { asClass } from "awilix";
 import { UserController } from "../../../interfaces/http/controllers/user/user.controller";
-import { editProfileUsecase } from "../../../usecases/user/profile/editProfile.useCase"; 
+import { EditProfileUsecase } from "../../../usecases/user/profile/editProfile.useCase"; 
 import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { userRepository } from "../../presistence/mongoose/repositories/mongoose.user.repository";
 import { ChangePasswordUsecase } from "../../../usecases/user/profile/changePassword.useCase"; 
@@ -37,7 +37,6 @@ import { GetUserFriendsUseCase } from "../../../usecases/user/friends/getFriends
 import { FetchAllSongsUsecase } from "../../../usecases/user/song/allSongs.UseCase";
 import { FetchAllAlbumsUsecase } from "../../../usecases/user/album/allAlbums.UseCase";
 import { GetProfileFollowersPreviewUseCase } from "../../../usecases/user/followers/getUserFollowers.UseCase";
-import { SongHydrationUseCase } from "../../../usecases/user/song/songHydration.UseCase";
 import { ToggleSongLikeStatusUseCase } from "../../../usecases/user/song/toggleSongLike.UseCase";
 import { IMongooseLikesRepository } from "../../../domain/repositories/Likes.repository";
 import { MongooseLikesRepository } from "../../presistence/mongoose/repositories/mongoose.likes.repository";
@@ -52,6 +51,8 @@ import { ToggleAutoRenewalUseCase } from "../../../usecases/user/premium/toggleA
 import { TrackSongPlaysUseCase } from "../../../usecases/user/plays/trachSongPlays.UseCase";
 import { IPlayRepository } from "../../../domain/repositories/play.repository";
 import { SongPlayRepository } from "../../presistence/mongoose/repositories/mongoose.plays.repository";
+import { ICloudinaryStorageService } from "../../../domain/services/cloudinary.storage.service";
+import { CloudinaryStorageService } from "../../services/storage/cloudinary.storage.service";
 
 export const userModule = {
     // Repository
@@ -67,9 +68,10 @@ export const userModule = {
     // services
     _recommendationService: asClass<IRecomentationService>(SongRecommentationService).scoped(),
     _searchService: asClass<ISearchService>(SearchResponseService).singleton(),
+    _storageServiceRepository: asClass<ICloudinaryStorageService>(CloudinaryStorageService).singleton(),
 
     //useCases
-    _editProfileUserUsecase: asClass(editProfileUsecase).scoped(),
+    _editProfileUserUsecase: asClass(EditProfileUsecase).scoped(),
     _changePasswordUsecase: asClass(ChangePasswordUsecase).scoped(),
     _fetchSongsUsecase: asClass(FetchSongsUsecase).scoped(),
     _fetchAlbumsUsecase: asClass(FetchAlbumsUsecase).scoped(),
@@ -82,7 +84,6 @@ export const userModule = {
     _songDetailsUsecase: asClass(SongDetailsUseCase).scoped(),
     _albumDetailsUsecase: asClass(AlbumDetailsUseCase).scoped(),
     _artistDetailsUsecase: asClass(ArtistDetailsUseCase).scoped(),
-    _songHydrationUsecase:asClass(SongHydrationUseCase).scoped(),
 
     // follow/unfollow
     _checkFollowStatusUsecase: asClass(CheckFollowStatusUseCase).scoped(),

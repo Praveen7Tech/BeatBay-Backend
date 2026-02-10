@@ -14,7 +14,7 @@ export default (container: AwilixContainer): Router=> {
 
     router.use(authMiddleware,authorizeRoles("artist"), ArtistStatusCheckMiddleware)
 
-    //router.put('/edit-profile', uploadImage.single("profileImage"), artistController.editProfile)
+    router.put('/edit-profile', uploadImage.single("profileImage"), artistController.editProfile)
     router.put('/change-password', artistController.changePassword)
 
     router.get('/fetch-songs',  artistController.fetchSongs)

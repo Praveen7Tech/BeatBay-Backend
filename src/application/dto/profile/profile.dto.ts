@@ -9,10 +9,6 @@ export interface EditProfileRequestDTO {
   profileImagePublicId?:string
 }
 
-export interface EditProfileResponseDTO {
-  user: User | Artist;
-}
-
 export interface ChangePasswordRequestDTO{
   currentPassword : string
   newPassword: string

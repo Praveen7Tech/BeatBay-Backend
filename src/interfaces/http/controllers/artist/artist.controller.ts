@@ -32,7 +32,6 @@ import { ICreateSongUploadUrlsUsecase } from "../../../../application/interfaces
 import { IArtistRevenueUseCase } from "../../../../application/interfaces/usecase/artist/revenue/getRevenue-usecase.interface";
 import { IArtistGrowthAnalyticsUseCase } from "../../../../application/interfaces/usecase/artist/dashboard/artist.growth.analytics-usecase.interface";
 import { IGetSongPerformanceUseCase } from "../../../../application/interfaces/usecase/song/artist-song-perfomance-usecase.interface";
-import { NotFound } from "@aws-sdk/client-s3";
 import { BadRequestError } from "../../../../common/errors/common/common.errors";
 import { ISongRevenueHistoryUseCase } from "../../../../application/interfaces/usecase/artist/revenue/songRevenueHistory-usecase.interface";
 
@@ -62,48 +61,26 @@ export class ArtistController {
         private readonly _songRevenueHistoryUsecase: ISongRevenueHistoryUseCase
     ){}
 
-    // editProfile = async(req:AuthRequest, res:Response, next: NextFunction)=>{
-    //     try {
-    //         const artistId = req.user?.id
-    //         const existArtist = await this._getArtistDetailsUsecase.execute(artistId!)
+    editProfile = async (req: AuthRequest, res: Response, next: NextFunction) => {
+        try {
+            const artistId = req.user?.id;
+            if (!artistId) return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });
 
-    //         if(!artistId || !existArtist){
-    //             return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
-    //         }
+            // Validation (Zod)
+            const dto = EditProfileSchema.parse(req.body);
 
-    //         let profileImageUrl : string | undefined;
-    //         let profileImagePublicId : string | undefined
+            const result = await this._artistEditProfileUsecase.execute( artistId, dto, 
+                req.file ? { buffer: req.file.buffer, mimeType: req.file.mimetype } : undefined
+            );
 
-    //         const existingPublicId = existArtist.profileImagePublicId
-    //         const ARTIST_FOLDER = `/artist_profile/${artistId}`
-            
-    //         if(req.file){
-    //             const dataURL = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
-
-    //             const editOption : uploadOptionsType={
-    //                 resource_type:"image",
-    //                 public_id: existingPublicId,
-    //                 invalidate: true,
-    //                 folder: !existingPublicId ? ARTIST_FOLDER : undefined
-    //             }
-
-    //             const uploadImage = await cloudinary.uploader.upload(dataURL, editOption)
-
-    //             profileImageUrl = uploadImage.secure_url;
-    //             profileImagePublicId = uploadImage.public_id
-
-    //         }
-    //         logger.info("artistId r")
-    //         const dto : EditProfileRequestDTO = EditProfileSchema.parse({...req.body, profileImage:profileImageUrl}) 
-    //         if(profileImagePublicId) dto.profileImagePublicId = profileImagePublicId
-
-    //         const result = await this._artistEditProfileUsecase.execute(artistId,dto)
-
-    //         return res.status(StatusCode.OK).json({user:result.user,message:MESSAGES.PROFILE_UPDATED})            
-    //     } catch (error) {
-    //         next(error)
-    //     }
-    // }
+            return res.status(StatusCode.OK).json({ 
+                user: result, 
+                message: MESSAGES.PROFILE_UPDATED 
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
     
     changePassword = async(req:AuthRequest, res:Response, next: NextFunction) =>{
         try {

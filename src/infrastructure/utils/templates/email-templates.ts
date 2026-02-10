@@ -23,7 +23,7 @@ export const EmailFormat = {
         <hr style="border:none;border-top:1px solid #2a2a2a;margin:30px 0;" />
 
         <p style="font-size:12px;color:#888;">
-          If you didn’t request this, you can safely ignore this email.
+          If you didn't request this, you can safely ignore this email.
         </p>
 
       </div>

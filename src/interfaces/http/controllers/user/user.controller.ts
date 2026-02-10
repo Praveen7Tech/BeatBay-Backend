@@ -12,7 +12,6 @@ import { IChangePasswordUsecase } from "../../../../application/interfaces/useca
 import { IFetchSongsUsecase } from "../../../../application/interfaces/usecase/song/fetch-songs-usecase.interface"
 import { IFetchAlbumsUsecase } from "../../../../application/interfaces/usecase/album/fetch-albums-usecase.interface"
 import { ISongDetailsUseCase } from "../../../../application/interfaces/usecase/song/song-details-usecaase.interface"
-import { ISongHydrationUseCase } from "../../../../application/interfaces/usecase/song/song-hydration-useace.interface"
 import { IAlbumDetailsUseCase } from "../../../../application/interfaces/usecase/album/album-details-usecase.interface"
 import { IArtistDetailsUseCase } from "../../../../application/interfaces/usecase/artist-features/artist-details-usecase.interface"
 import { ICheckFollowStatusUseCase } from "../../../../application/interfaces/usecase/following/check-follow-status-usecase.interface"
@@ -45,6 +44,7 @@ import { ITrachSongPlayUseCase } from "../../../../application/interfaces/usecas
 import { IGetPremiumPricesUseCase } from "../../../../application/interfaces/usecase/premium/get-prices-usecase.interface"
 import logger from "../../../../infrastructure/utils/logger/logger"
 import { IUpgradeSubscriptionUseCase } from "../../../../application/interfaces/usecase/premium/upgrade-subscription-usecase.interface"
+import { UploadFile } from "../../../../application/interfaces/usecase/artist-features/edit-profile-usecase.interface"
 export class UserController{
     constructor(
         private readonly _editProfileUserUsecase: IEditProfileUseCase,
@@ -73,7 +73,6 @@ export class UserController{
         private readonly _fetchAllSongsUsecase: IFetchAllSongsUsecase,
         private readonly _fetchallAlbumsUsecase: IFetchAllAlbumsUsecase,
         private readonly _followersUsecase: IGetProfileFollowersPreviewUseCase,
-        private readonly _songHydrationUsecase: ISongHydrationUseCase,
         private readonly _toggleSongLikeUsecase: IToggleSongLikeUseCase,
         private readonly _userLikedSongsUsecase: IUserLikedSongsUseCase,
         private readonly _premiumSubScriptionUsecase: IPremiumSubScriptionUsecase,
@@ -86,43 +85,28 @@ export class UserController{
         private readonly _upgradeSubcriptionCheckOutUsecase: IUpgradeSubscriptionUseCase
     ){}
 
-    editProfile = async(req:AuthRequest, res:Response, next: NextFunction) =>{
+    editProfile = async (req: AuthRequest, res: Response, next: NextFunction) => {
         try {
-            const userId = req.user?.id
-            const existingUser = await this._getUserDetailsUsecase.execute(userId!)
-            if(!userId || !existingUser){
-                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
+            const userId = req.user?.id;
+            if (!userId) {
+                return res.status(StatusCode.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED });
             }
 
-            const existingPublicId = existingUser.profileImagePublicId
-            const USER_FOLDER = `/user_profile/${userId}`
+            const dto: EditProfileRequestDTO = EditProfileSchema.parse(req.body);
 
-            let profileImageUrl : string | undefined;
-            let profileImagePublicId : string | undefined
-            if(req.file){
-                const dataURL = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+            const file: UploadFile | undefined = req.file ? {
+                buffer: req.file.buffer,
+                mimeType: req.file.mimetype
+            } : undefined;
 
-                const uploadImageOption : uploadOptionsType ={
-                    resource_type: "image",
-                    public_id: existingPublicId || undefined,
-                    invalidate: true,
-                    folder: !existingPublicId ? USER_FOLDER: undefined
-                }
+            const result = await this._editProfileUserUsecase.execute(userId, dto, file);
 
-                const uploadImage = await cloudinary.uploader.upload(dataURL,uploadImageOption)
-
-                profileImageUrl = uploadImage.secure_url;
-                profileImagePublicId = uploadImage.public_id
-            }
-
-            const dto : EditProfileRequestDTO = EditProfileSchema.parse({...req.body, profileImage: profileImageUrl}) 
-            if(profileImagePublicId) dto.profileImagePublicId = profileImagePublicId
-
-            const result = await this._editProfileUserUsecase.execute(userId,dto)
-
-            return res.status(StatusCode.OK).json({user:result.user,message:MESSAGES.PROFILE_UPDATED})
+            return res.status(StatusCode.OK).json({ 
+                user: result, 
+                message: MESSAGES.PROFILE_UPDATED 
+            });
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
 
@@ -180,22 +164,6 @@ export class UserController{
             const result =  await this._songDetailsUsecase.execute(songId, userId)
 
             return res.status(StatusCode.OK).json(result)
-        } catch (error) {
-            next(error)
-        }
-    }
-
-     songHydration = async(req:AuthRequest, res:Response, next:NextFunction)=>{
-        try {
-            const userId = req.user?.id
-            const songId = req.params.id
-            if(!userId || !songId){
-                return res.status(StatusCode.UNAUTHORIZED).json({message: MESSAGES.UNAUTHORIZED})
-            }
-
-            const result =  await this._songHydrationUsecase.execute(songId)
-
-            return res.status(StatusCode.OK).json({songs:result})
         } catch (error) {
             next(error)
         }

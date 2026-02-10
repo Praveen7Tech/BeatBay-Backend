@@ -4,11 +4,11 @@ import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { ICacheService } from "../../../domain/services/cache.service";
 import { IEmailService } from "../../../domain/services/mail.service";
 import { ITokenService } from "../../../domain/services/token.service";
-import { passwordResetFormat } from "../../../infrastructure/services/email/email-format";
 import { VerifyEmailRequestDTO } from "../../../application/dto/auth/request.dto";
 import { IVerifyEmailUsecase } from "../../../application/interfaces/usecase/user-auth/verify-email-usecase.interface";
+import { passwordResetFormat } from "../../../infrastructure/utils/templates/email-templates";
 
-
+const CLIENT_URL = process.env.FRONTEND_URL
 export class VerifyEmailUsecase implements IVerifyEmailUsecase {
     constructor(
         private readonly _userRepository: IUserRepository,
@@ -29,7 +29,7 @@ export class VerifyEmailUsecase implements IVerifyEmailUsecase {
         
         await this._cacheService.storeResetToken(userIdString,token,10*60)
         
-        const restLink = `http://localhost:5173/reset-password?token=${token}`
+        const restLink = `${CLIENT_URL}/reset-password?token=${token}`
         const restMail = passwordResetFormat.link(restLink)
         
         await this._emailService.sendMail(request.email, restMail.subject, restMail.text, restMail.html)

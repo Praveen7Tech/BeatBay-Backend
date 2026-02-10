@@ -4,11 +4,11 @@ import { IArtistRepository } from "../../../domain/repositories/artist.repositor
 import { ICacheService } from "../../../domain/services/cache.service";
 import { IEmailService } from "../../../domain/services/mail.service";
 import { IOtpService } from "../../../domain/services/otp.service";
-import { EmailFormat } from "../../../infrastructure/services/email/email-format";
 import logger from "../../../infrastructure/utils/logger/logger";
 import { SignupRequestDTO } from "../../../application/dto/auth/request.dto";
 import { SignupResponseDTO } from "../../../application/dto/auth/response.dto";
 import { IArtistSignupUsecase } from "../../../application/interfaces/usecase/artist/artist-signup-usecase.interface";
+import { EmailFormat } from "../../../infrastructure/utils/templates/email-templates";
 
 export class ArtistSignupUsecase implements IArtistSignupUsecase{
     constructor(

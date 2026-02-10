@@ -3,9 +3,9 @@ import { IArtistRepository } from "../../../domain/repositories/artist.repositor
 import { ICacheService } from "../../../domain/services/cache.service"
 import { IEmailService } from "../../../domain/services/mail.service"
 import { ITokenService } from "../../../domain/services/token.service"
-import { passwordResetFormat } from "../../../infrastructure/services/email/email-format"
 import { VerifyEmailRequestDTO } from "../../../application/dto/auth/request.dto"
 import { IArtistVerifyEmailUsecase } from "../../../application/interfaces/usecase/artist/artist-verify-email-usecase.interface"
+import { passwordResetFormat } from "../../../infrastructure/utils/templates/email-templates"
 
 export class ArtistVerifyEmailUsecase implements IArtistVerifyEmailUsecase{
     constructor(

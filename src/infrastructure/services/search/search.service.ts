@@ -3,7 +3,7 @@ import { AlbumModel } from "../../presistence/mongoose/models/album.model";
 import { ArtistModel } from "../../presistence/mongoose/models/artist.model";    
 import { ISearchService } from "../../../domain/services/search.service";
 import { SearchResult } from "../../../domain/entities/search.entity";
-import { Song, SongNew } from "../../../domain/entities/song.entity"; 
+import { SongNew } from "../../../domain/entities/song.entity"; 
 import { Album } from "../../../domain/entities/album.entity";
 import { Artist } from "../../../domain/entities/arist.entity"; 
 

@@ -1,11 +1,11 @@
 import { ICacheService } from "../../../domain/services/cache.service"
 import { IEmailService } from "../../../domain/services/mail.service"
 import { IOtpService } from "../../../domain/services/otp.service"
-import { EmailFormat } from "../../../infrastructure/services/email/email-format"
 import logger from "../../../infrastructure/utils/logger/logger"
 import { ResendOtpRequestDTO } from "../../../application/dto/auth/request.dto"
 import { ResendOtpResponseDTO } from "../../../application/dto/auth/response.dto"
 import { IArtistResendOtpUseCase } from "../../../application/interfaces/usecase/artist/artist-resend-otp-usecase.interface"
+import { EmailFormat } from "../../../infrastructure/utils/templates/email-templates"
 
 export class ArtistResendOtpUseCase implements IArtistResendOtpUseCase{
     constructor(

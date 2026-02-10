@@ -1,26 +1,42 @@
 import { NotFoundError } from "../../../common/errors/common/common.errors";
 import { Artist } from "../../../domain/entities/arist.entity";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
-import { EditProfileRequestDTO, EditProfileResponseDTO } from "../../../application/dto/profile/profile.dto";
-import { IArtistEditProfileUsecase } from "../../../application/interfaces/usecase/artist-features/edit-profile-usecase.interface";
+import { EditProfileRequestDTO } from "../../../application/dto/profile/profile.dto";
+import { IArtistEditProfileUsecase, UploadFile } from "../../../application/interfaces/usecase/artist-features/edit-profile-usecase.interface";
+import { ICloudinaryStorageService } from "../../../domain/services/cloudinary.storage.service";
+import {  ProfileResponse } from "../../../application/dto/artist/artist.profile.dto";
+import { AuthMapper } from "../../../application/mappers/user/auth/auth.mapper";
 
 export class ArtistEditProfileUsecase implements IArtistEditProfileUsecase{
     constructor(
         private readonly _artistRepository: IArtistRepository,
+        private readonly _storageServiceRepository: ICloudinaryStorageService
     ){}
 
-    async execute(userId: string,request:EditProfileRequestDTO): Promise<EditProfileResponseDTO>{
-        const {name,bio, profileImage, profileImagePublicId} = request
+    async execute(artistId: string,request:EditProfileRequestDTO,file?:UploadFile): Promise<ProfileResponse>{
 
-        const updateData : Partial<Artist> = {}
-        if(name !== undefined) updateData.name = name;
-        if(profileImage !== undefined) updateData.profilePicture = profileImage;
-        if(bio !== undefined) updateData.bio = bio
-        if(profileImagePublicId) updateData.profileImagePublicId = profileImagePublicId
+        const existArtist = await this._artistRepository.findById(artistId)
+        if (!existArtist) throw new NotFoundError("Artist not found");
 
-        const updatedArtist = await this._artistRepository.update(userId,updateData)
-        if(!updatedArtist) throw new NotFoundError("Artist not found for edit")
+        const updateData: Partial<Artist> ={
+            name: request.name,
+            bio: request.bio
+        }
 
-        return {user:updatedArtist}
+        if (file) {
+            const folder = `artist_profile/${artistId}`;
+            const upload = await this._storageServiceRepository.uploadImage(file.buffer, file.mimeType, {
+                folder,
+                publicId: existArtist.profileImagePublicId!
+            });
+            updateData.profilePicture = upload.url;
+            updateData.profileImagePublicId = upload.publicId;
+        }
+
+        const updatedArtist = await this._artistRepository.update(artistId, updateData);
+        if (!updatedArtist) throw new NotFoundError("Update failed");
+
+        return AuthMapper.toAuthArtistDTO(updatedArtist)
+       
     }        
 }

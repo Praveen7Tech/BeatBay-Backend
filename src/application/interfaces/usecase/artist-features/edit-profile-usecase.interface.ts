@@ -1,5 +1,5 @@
-import { ArtistProfileResponse } from "../../../dto/artist/artist.profile.dto";
-import { EditProfileRequestDTO, EditProfileResponseDTO } from "../../../dto/profile/profile.dto";
+import {  ProfileResponse } from "../../../dto/artist/artist.profile.dto";
+import { EditProfileRequestDTO } from "../../../dto/profile/profile.dto";
 
 export interface UploadFile {
   buffer: Buffer;
@@ -7,5 +7,5 @@ export interface UploadFile {
 }
 
 export interface IArtistEditProfileUsecase {
-    execute(userId: string,request: EditProfileRequestDTO,file?:UploadFile): Promise<ArtistProfileResponse>;
+    execute(userId: string,request: EditProfileRequestDTO,file?:UploadFile): Promise<ProfileResponse>;
 }

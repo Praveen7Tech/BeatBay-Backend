@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { ArtistDailyAnalytics } from "../../../../domain/entities/artist.daily.analytics.entity";
 import { IArtistDailyAnalyticsRepository } from "../../../../domain/repositories/artist.daily.analytics.repository";
 import { ArtistDailyAnalyticsModel } from "../models/artist.daily.analytics.model";

@@ -1,4 +1,3 @@
-import { Song, SongNew } from "../../../../domain/entities/song.entity";
 import { AdminSongListItemDTO } from "../../../dto/admin/songs/song-listing.dto";
 import { PreparedAdminSong } from "../../../dto/song/song.dto";
 

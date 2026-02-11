@@ -1,4 +1,4 @@
-import { Song, SongNew } from "../../../domain/entities/song.entity";
+import { SongNew } from "../../../domain/entities/song.entity";
 import { IRecomentationService } from "../../../domain/services/recomentation.service";
 import { LikeModel } from "../../presistence/mongoose/models/likes.model";
 import { SongModel } from "../../presistence/mongoose/models/song.model";

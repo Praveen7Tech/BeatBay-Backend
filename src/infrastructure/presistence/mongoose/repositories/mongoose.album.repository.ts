@@ -4,7 +4,7 @@ import { IAlbumRepository, PaginaterAlbumResult } from "../../../../domain/repos
 import { AlbumModel } from "../models/album.model";
 import { GetAllAlbumsRequest } from "../../../../domain/interfaces/albumRequest";
 import { EditAlbumDetailsDTO } from "../../../../application/dto/album/album.dto";
-import { Song, SongNew } from "../../../../domain/entities/song.entity";
+import { SongNew } from "../../../../domain/entities/song.entity";
 
 export class MongooseAlbumRepository implements IAlbumRepository {
     async create(albumData: Album, session: ClientSession): Promise<Album> {

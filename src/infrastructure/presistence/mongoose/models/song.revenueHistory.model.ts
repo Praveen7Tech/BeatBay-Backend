@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, Types, HydratedDocument, Model } from "mongoose";
+import mongoose, { Schema, Types, HydratedDocument, Model } from "mongoose";
 import { SongRevenueHistory } from "../../../../domain/entities/song.revenue.history";
 
 export type SongDocument = HydratedDocument<SongRevenueHistory>;

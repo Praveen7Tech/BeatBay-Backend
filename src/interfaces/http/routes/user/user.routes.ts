@@ -5,7 +5,6 @@ import { authMiddleware } from "../../../middleware/auth/authMiddleware"
 import { statusCheckMiddleware } from "../../../middleware/status/statusCheckMiddleware"
 import { uploadImage } from "../../../middleware/uploads/uploadImage"
 import { authorizeRoles } from "../../../middleware/auth/autharizeRole.middleware"
-import { route } from "awilix-express"
 
 export default (container: AwilixContainer): Router=> {
     const router = Router()

@@ -14,8 +14,8 @@ import logger from './infrastructure/utils/logger/logger';
 import adminFeaturesRouterFactory from './interfaces/http/routes/admin/admin.features.routes'
 import artistRouterFactory from './interfaces/http/routes/artist/artist.routes'
 import { createSocketServer } from './infrastructure/config/socket';
-import { registerSocketHandler } from './infrastructure/socket/socket.handler';
 import { PayoutCronJob } from './infrastructure/cron/payout.cron';
+import { registerSocketHandlers } from './interfaces/socket/config/registerSocketHandler';
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ async function startServer() {
     const httpServer = http.createServer(app)
     const io = createSocketServer(httpServer)
 
-    registerSocketHandler(io)
+    registerSocketHandlers(io)
     
     app.use(loggerMiddleware);
 

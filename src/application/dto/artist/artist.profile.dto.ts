@@ -17,6 +17,7 @@ export interface ArtistDetailsResponseDTO {
   name: string;
   profilePicture: string;
   bio: string;
+  fans: number;
   albums: AlbumResponseDTO[];
   songs: SongResponseDTO[];
 }

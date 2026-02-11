@@ -1,5 +1,5 @@
 
-import { Song, SongNew } from "../../../domain/entities/song.entity";
+import { SongNew } from "../../../domain/entities/song.entity";
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { ITransactionManager } from "../../../domain/services/transaction.service";

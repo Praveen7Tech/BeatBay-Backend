@@ -9,6 +9,7 @@ export class ArtistDetailsMapper {
       name: artist.name,
       profilePicture: artist.profilePicture || "",
       bio: artist.bio || "",
+      fans: artist.followersCount,
 
       albums: artist.albums?.map((album) => ({
         id: album._id.toString(),

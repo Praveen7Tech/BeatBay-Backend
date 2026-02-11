@@ -2,7 +2,6 @@ import { AlbumDetailsResponseDTO } from "../../../application/dto/album/album.re
 import { IAlbumDetailsUseCase } from "../../../application/interfaces/usecase/album/album-details-usecase.interface";
 import { AlbumMapper } from "../../../application/mappers/album/album-details.mapper";
 import { NotFoundError } from "../../../common/errors/common/common.errors";
-import { SongNew } from "../../../domain/entities/song.entity";
 import { IAlbumRepository } from "../../../domain/repositories/album.repository";
 import { IMongooseLikesRepository } from "../../../domain/repositories/Likes.repository";
 import { IAWSS3StorageService } from "../../../domain/services/aws/asw-s3.service";

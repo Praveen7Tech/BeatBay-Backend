@@ -39,7 +39,7 @@ export interface FriendsGlobalStatus{
     hasUserRoom: boolean
 }
 
-export type FriendActivityStatus = "connected" | "received" | "pending" | "none";
+export type FriendActivityStatus = "connected" | "recieved" | "pending" | "none";
 
 export interface FriendStatusQueryResult {
     friendId: string;

@@ -40,7 +40,7 @@ export interface PlayListResponseDTO {
   songs: PlayListSongDTO[];
 }
 
-export type PreparedSong = {
+export interface PreparedSong {
   song: SongNew; 
   coverImageUrl: string;
   audioUrl: string;

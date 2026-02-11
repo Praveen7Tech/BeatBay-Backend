@@ -9,7 +9,7 @@ export interface ISongRepository{
     create(songData: CreateSongData, session?:ClientSession): Promise<SongNew>;
     getAll(): Promise<SongNew[]>
     findById(id: string): Promise<SongNew | null>
-    songHydration(id: string): Promise<Song | null>
+    //songHydration(id: string): Promise<Song | null>
     searchByQuery(query: string, options?: {limit?: number; offset?: number}): Promise<SongNew[]>
     edit(songId: string, data: Partial<Song>, session?: ClientSession): Promise<Song | null>;
     delete(songId: string, session: ClientSession): Promise<boolean>

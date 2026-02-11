@@ -1,4 +1,4 @@
-import mongoose, { HydratedDocument, Model, Schema, model } from "mongoose";
+import mongoose, { HydratedDocument, Model, Schema } from "mongoose";
 import { ArtistDailyAnalytics } from "../../../../domain/entities/artist.daily.analytics.entity";
 
 export type ArtistAnalyticsDocument = HydratedDocument<ArtistDailyAnalytics>

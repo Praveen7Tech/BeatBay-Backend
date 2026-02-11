@@ -1,5 +1,5 @@
 import { Album } from "./album.entity";import { Artist } from "./arist.entity";
-import { Song, SongNew } from "./song.entity";
+import { SongNew } from "./song.entity";
 
 export interface SearchResult{
     topResult: SongNew | null;

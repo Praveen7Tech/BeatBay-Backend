@@ -2,7 +2,6 @@ import { ArtistProfileDTO } from "../../../application/dto/admin/artist/artist.p
 import { IGetArtistByIdUseCase } from "../../../application/interfaces/usecase/artist-features/get-artist-byid-usecase.interface"
 import { ArtistProfileMapper, EnrichedSong } from "../../../application/mappers/admin/artist/artist.profile.mapper"
 import { Album } from "../../../domain/entities/album.entity"
-import { Artist } from "../../../domain/entities/arist.entity"
 import { SongNew } from "../../../domain/entities/song.entity"
 import { IArtistRepository } from "../../../domain/repositories/artist.repository"
 import { IAWSS3StorageService } from "../../../domain/services/aws/asw-s3.service"

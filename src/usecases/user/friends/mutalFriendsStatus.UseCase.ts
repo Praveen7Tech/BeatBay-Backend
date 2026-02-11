@@ -23,7 +23,7 @@ export class MutualFriendsStatusUseCase implements IMutualFriendsStatusUseCase {
             if (res.inActiveRoom && !inviteToMe) {
                 inviteStatusMap[res.friendId] = "connected";
             } else if (inviteToMe && inviteToMe.hostId === res.friendId) {
-                inviteStatusMap[res.friendId] = "received";
+                inviteStatusMap[res.friendId] = "recieved";
             } else if (res.isInvitedByMe) {
                 inviteStatusMap[res.friendId] = "pending";
             } else {

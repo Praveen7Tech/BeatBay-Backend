@@ -30,6 +30,7 @@ export interface ArtistPopulated {
   name: string;
   profilePicture: string | null;
   bio: string | null;
+  followersCount: number
   albums?: AlbumPopulated[];
   songs?: SongPopulated[];
 }

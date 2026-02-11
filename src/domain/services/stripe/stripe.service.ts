@@ -1,7 +1,5 @@
 import Stripe from "stripe";
-import { PaymentHistoryDTO } from "../../../application/dto/premium/payment-history.dto";
 import { Subscription } from "../../entities/subscription.entity";
-import { PremiumPrice } from "../../../application/dto/premium/prices.dto";
 
 export interface CheckoutSessionResponse {
     id: string;

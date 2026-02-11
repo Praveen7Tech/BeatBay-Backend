@@ -1,5 +1,5 @@
 import { IToggleSongStatusUseCase } from "../../../application/interfaces/usecase/admin/toggle-song-status-usecase.interface";
-import { Song, SongNew } from "../../../domain/entities/song.entity";
+import { SongNew } from "../../../domain/entities/song.entity";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 
 export class ToggleSongStatusUseCase implements IToggleSongStatusUseCase{

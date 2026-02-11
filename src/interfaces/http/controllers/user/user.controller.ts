@@ -1,4 +1,4 @@
-import { NextFunction, Request, response, Response } from "express"
+import { NextFunction, Request, Response } from "express"
 import { StatusCode } from "../../../../common/constants/status.enum"
 import { MESSAGES } from "../../../../common/constants/constants.message"
 import { AuthRequest } from "../../../middleware/auth/authMiddleware"
@@ -37,7 +37,6 @@ import { IDeletePlayListUseCase } from "../../../../application/interfaces/useca
 import { IPremiumSubScriptionUsecase } from "../../../../application/interfaces/usecase/premium/subscription-usecase.interface"
 import { IUserSubscriptionDataUseCase } from "../../../../application/interfaces/usecase/premium/subscription-data-usecase.interface"
 import { IToggleAutoRenewalUseCase } from "../../../../application/interfaces/usecase/premium/toggle-auto-renewal-usecase.interface"
-import { success } from "zod"
 import { ICancelSubscriptionUseCase } from "../../../../application/interfaces/usecase/premium/cancelSubscription-usecase.interface"
 import { IGetPaymentHistoryUseCase } from "../../../../application/interfaces/usecase/premium/getPaymentHistory-usecase.interface"
 import { ITrachSongPlayUseCase } from "../../../../application/interfaces/usecase/song/trachSongPlays-usecase.interface"
@@ -601,7 +600,7 @@ export class UserController{
                 return res.status(StatusCode.BAD_REQUEST).json(MESSAGES.MISSING_FIELDS);
             }
 
-            const data = await this._cancelSubscriptionUseCase.execute(subscriptionId)
+             await this._cancelSubscriptionUseCase.execute(subscriptionId)
 
             return res.status(StatusCode.OK).json({success: true})
         } catch (error) {

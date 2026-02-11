@@ -1,4 +1,3 @@
-import { ObjectId } from "mongoose";
 import { SongPerformanceResult } from "../../application/dto/artist/song/song.performance.dto";
 
 export interface MonthlyPlayStatus{

@@ -1,7 +1,7 @@
 import { ClientSession } from "mongoose";
 import { Artist } from "../entities/arist.entity";
 import { IBaseRepository } from "./base.repository";
-import { Song, SongNew } from "../entities/song.entity";
+import { SongNew } from "../entities/song.entity";
 import { ArtistPopulated } from "../interfaces/albumRequest";
 
 export interface IArtistRepository extends IBaseRepository<Artist> {

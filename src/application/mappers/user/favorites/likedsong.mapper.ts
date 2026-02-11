@@ -1,4 +1,4 @@
-import { LikedSongDetails, LikedSongs, LikedSongsResponseDTO, PreparedLikedSong } from "../../../dto/favorites/favourites.response.dto";
+import { LikedSongs, LikedSongsResponseDTO, PreparedLikedSong } from "../../../dto/favorites/favourites.response.dto";
 
 
 export class LikedSongMapper {

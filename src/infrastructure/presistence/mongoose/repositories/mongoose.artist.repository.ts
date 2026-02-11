@@ -2,7 +2,7 @@ import { ClientSession } from "mongoose";
 import { Artist } from "../../../../domain/entities/arist.entity";
 import { IArtistRepository } from "../../../../domain/repositories/artist.repository";
 import { ArtistModel } from "../models/artist.model"; 
-import { Song, SongNew } from "../../../../domain/entities/song.entity";
+import { SongNew } from "../../../../domain/entities/song.entity";
 import { PaginatedResult } from "../../../../domain/interfaces/paginatedResult.interface";
 import { ArtistPopulated } from "../../../../domain/interfaces/albumRequest";
 

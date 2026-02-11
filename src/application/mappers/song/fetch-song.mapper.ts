@@ -1,4 +1,4 @@
-import { Song, SongNew } from "../../../domain/entities/song.entity";
+import { SongNew } from "../../../domain/entities/song.entity";
 import { FetchSongItemDTO } from "../../dto/song/song.response.dto";
 
 export class FetchSongMapper {

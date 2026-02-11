@@ -1,4 +1,4 @@
-import { Song, SongNew } from "../../../domain/entities/song.entity";
+import { SongNew } from "../../../domain/entities/song.entity";
 
 export interface LikedSongs {
   id: string;
@@ -24,7 +24,7 @@ export interface LikedSongDetails {
   songDetails: SongNew;    
 }
 
-export type PreparedLikedSong = {
+export interface PreparedLikedSong {
   raw: LikedSongDetails;
   coverImageUrl: string;
   audioUrl: string;

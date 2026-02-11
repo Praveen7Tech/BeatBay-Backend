@@ -1,5 +1,5 @@
 import { ObjectId } from "mongoose"
-import { Song, SongNew } from "./song.entity"
+import { SongNew } from "./song.entity"
 
 export interface PlayList{
     _id: ObjectId

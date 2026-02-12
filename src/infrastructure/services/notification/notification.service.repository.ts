@@ -4,8 +4,8 @@ import { NotificationModel } from "../../presistence/mongoose/models/notificatio
 
 export class NotificationService implements INotificationService{
 
-    async create(data: Notification): Promise<void> {
-        const noti = new NotificationModel(data)
-        await noti.save()
+    async create(data: Partial<Notification>): Promise<Notification> {
+        const noti = await NotificationModel.create(data)
+        return noti.toObject()
     }
 }

@@ -11,6 +11,7 @@ import { IRemoveUserUseCase } from "../../../application/interfaces/usecase/priv
 import { IPlayerActionUseCase } from "../../../application/interfaces/usecase/private-room/player-action-usecase.interface";
 import { IAddToQueueUseCase } from "../../../application/interfaces/usecase/private-room/addTo-queue-usecase.interface";
 import { IRemoveFromQueueUseCase } from "../../../application/interfaces/usecase/private-room/removeFrmon-queueu.interface";
+import { ISendNotificationsUseCase } from "../../../application/interfaces/usecase/notifications/send-notifications-usecase.interface";
 
 export class RoomController {
     constructor(
@@ -23,17 +24,27 @@ export class RoomController {
         private readonly _addToQueueUsecase: IAddToQueueUseCase,
         private readonly _removeFromQueueUsecase: IRemoveFromQueueUseCase,
         private readonly _notifyFriendsStatusUsecase: INotifyFriendsStatusUseCase,
-        private readonly _friendsStatusUsecase: IMutualFriendsStatusUseCase
+        private readonly _friendsStatusUsecase: IMutualFriendsStatusUseCase,
+        private readonly _sendNotificationUsecase: ISendNotificationsUseCase
     ) {}
 
     async onInviteSend(io: Server, socket: Socket, payload: InviteSendEvent) {
        
         const {room } = await this._inviteUserUsecase.execute(payload);
 
+        const notification = await this._sendNotificationUsecase.execute({
+            recipientId: payload.toUserId,
+            senderId: payload.fromUserId,
+            senderName: payload.fromUserName,
+            type: "INVITE",
+            roomId: room.roomId
+        })
+
         socket.join(room.roomId);   
 
         socket.emit("room_created", room);
         io.to(payload.toUserId).emit("invite_received", payload.fromUserId);
+        io.to(payload.toUserId).emit("notification_recieved", notification)
 
         await this._notifyFriendsStatusUsecase.execute(io, {
             userId: payload.fromUserId,
@@ -44,9 +55,18 @@ export class RoomController {
     async onAcceptInvite(io: Server, socket: Socket, data: AcceptInviteEvent) {
         const room = await this._acceptInviteUsecase.execute(data.roomId, data.guestData);
 
+        const notification = await this._sendNotificationUsecase.execute({
+            recipientId: data.guestData.id,
+            senderId: room.roomId,
+            senderName: data.guestData.name,
+            type: "JOINED",
+            roomId: room.roomId
+        })
+
         socket.join(room!.roomId);
 
         io.to(room!.roomId).emit("room_members_updated", "join", room);
+        io.to(room!.roomId).emit("notification_recieved", notification)
 
         await this._notifyFriendsStatusUsecase.execute(io, {
             userId: data.guestData.id,
@@ -58,7 +78,16 @@ export class RoomController {
     async onRejectInvite(io: Server, socket: Socket, data: RejectInviteEvent) {
         await this._rejectInviteUsecase.execute(data.hostId, data.guestId);
 
+        const notification = await this._sendNotificationUsecase.execute({
+            recipientId: data.hostId,
+            senderId: data.guestId,
+            type: "REJECT",
+            senderName: " A friend",
+            roomId: data.hostId
+        })
+
         io.to(data.hostId).emit("invite_rejected", { guestId: data.guestId });
+        io.to(data.hostId).emit("notification_recieved", notification)
 
        await this._notifyFriendsStatusUsecase.execute(io, {
             userId: data.guestId,
@@ -70,21 +99,31 @@ export class RoomController {
         const result = await this._leaveRoomUsecase.execute(data.userId, data.roomId);
 
         if (result.type === "ROOM_DELETED") {
-            io.to(data.roomId).emit("room_deleted");
+            io.to(data.roomId).emit("notification_recieved", result.message);
+
+            // remove ALL sockets from this room
+            const sockets = await io.in(data.roomId).fetchSockets();      
+            for (const s of sockets) {
+                s.leave(data.roomId);
+                s.emit("room_deleted");
+            }
         }
 
         if (result.type === "MEMBER_LEFT") {
             io.to(data.roomId).emit(
-            "room_members_updated",
-            "left",
-            result.room,
-            data.userId
+                "room_members_updated",
+                "left",
+                result.room,
+                data.userId
             );
 
+            io.to(data.roomId).emit("notification_recieved", result.message);
+
+            // remove only this user's socket from the room
+            socket.leave(data.roomId);
             socket.emit("room_deleted");
         }
 
-        socket.leave(data.roomId);
         socket.join(data.userId);
 
         await this._notifyFriendsStatusUsecase.execute(io, {
@@ -98,9 +137,24 @@ export class RoomController {
 
     async onRemoveUser(io: Server, socket: Socket, data: RemoveUserEvent) {
 
-        const updatedRoom = await this._removeuserUsecase.execute(data.userId, data.roomId);
+        const { updatedRoom, message } =
+            await this._removeuserUsecase.execute(data.userId, data.roomId);
 
-        io.to(data.roomId).emit("room_members_updated", "remove", updatedRoom, data.userId);
+        io.to(data.roomId).emit("notification_recieved", message);
+        io.to(data.roomId).emit(
+            "room_members_updated",
+            "remove",
+            updatedRoom,
+            data.userId
+        );
+
+        //  remove removed user's sockets from room
+        const userSockets = await io.in(data.userId).fetchSockets();
+        for (const s of userSockets) {
+            s.leave(data.roomId);
+            s.emit("room_deleted");
+            s.emit("notification_recieved", "You were removed from the room by host!");
+        }
 
         await this._notifyFriendsStatusUsecase.execute(io, {
             userId: data.userId,

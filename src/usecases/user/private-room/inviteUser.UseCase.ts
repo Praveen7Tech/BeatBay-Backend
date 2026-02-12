@@ -7,11 +7,11 @@ export class InviteUserUseCase implements IInviteUserUseCase {
   constructor(private readonly _socketCacheService: ISocketCacheService) {}
 
   async execute(data: InviteSendEvent): Promise<InviteUserResponseDTO> {
+    
     const activeRoom = await this._socketCacheService.getUserActiveRooms(data.fromUserId);
     const roomId = activeRoom || data.fromUserId;
 
     let room = await this._socketCacheService.getRoom(roomId);
-
     if (!room) {
       const host: RoomMember = {
         id: data.fromUserId,
@@ -20,7 +20,7 @@ export class InviteUserUseCase implements IInviteUserUseCase {
         role: "host",
       };
 
-      await this._socketCacheService.createRoom(roomId, data.fromUserId, host);
+      await this._socketCacheService.createRoom(roomId, data.fromUserId, host);  
       await this._socketCacheService.setUserActiveRoom(data.fromUserId, roomId);
 
       room = await this._socketCacheService.getRoom(roomId);
@@ -31,7 +31,7 @@ export class InviteUserUseCase implements IInviteUserUseCase {
 
     await this._socketCacheService.setInvite(
       data.toUserId,
-      { roomId, hostId: room!.hostId },
+      { roomId, hostId: room.hostId },
       600
     );
 

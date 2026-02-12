@@ -13,11 +13,15 @@ import { NotifyFriendsStatusUseCase } from "../../../usecases/user/private-room/
 import { RemoveUserUseCase } from "../../../usecases/user/private-room/remove-userFromRoom.UseCase";
 import { AddToQueueUseCase } from "../../../usecases/user/private-room/addTo-queue.UseCase";
 import { RemoveFromQueueUseCase } from "../../../usecases/user/private-room/removeFrom-queue.UseCase";
+import { SendNotificationUseCase } from "../../../usecases/user/notifications/sendNotifications.UseCase";
+import { INotificationService } from "../../../domain/services/notification/notification.service";
+import { NotificationService } from "../../services/notification/notification.service.repository";
 
 export const socketModule = {
   _socketCacheService: asClass(SocketCacheService).singleton(),
   _friendsStatusUsecase: asClass(MutualFriendsStatusUseCase).singleton(),
   _cacheRoomService: asClass(SocketCacheService).singleton(),
+  _notificationService: asClass<INotificationService>(NotificationService).singleton(),
 
   _registerUserUsecase: asClass(RegisterUserUseCase).singleton(),
   _inviteUserUsecase: asClass(InviteUserUseCase).singleton(),
@@ -29,6 +33,9 @@ export const socketModule = {
   _addToQueueUsecase: asClass(AddToQueueUseCase).singleton(),
   _removeFromQueueUsecase: asClass(RemoveFromQueueUseCase).singleton(),
   _notifyFriendsStatusUsecase: asClass(NotifyFriendsStatusUseCase).singleton(),
+
+  // notification usecase
+  _sendNotificationUsecase: asClass(SendNotificationUseCase).singleton(),
 
   connectionController: asClass(ConnectionController).singleton(),
   roomController: asClass(RoomController).singleton(),

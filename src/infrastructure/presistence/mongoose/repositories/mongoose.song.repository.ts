@@ -32,32 +32,6 @@ export class MongooseSongRepository implements ISongRepository{
         return song
     }
 
-    // async songHydration(id: string): Promise<Song | null> {
-       
-    //     const song = await SongModel.findOne({ _id: id, status: true })
-    //         .populate({
-    //             path: 'artistId',
-    //             select: 'name profilePicture',
-    //             model: 'Artist'
-    //         })
-    //         .lean<Song>()
-    //         .exec();
-
-    //     if (!song) return null;
-
-    //     const blockedAlbum = await AlbumModel.findOne({
-    //         songs: id,         
-    //         isActive: false    
-    //     }).select('_id').lean();
-
-    //     if (blockedAlbum) {
-    //         console.log(`Access Denied: Song ${id} belongs to Blocked Album ${blockedAlbum._id}`);
-    //         return null; 
-    //     }
-
-    //     return song;
-    // }
-
     async searchByQuery(query: string, options?: { limit?: number; offset?: number; }): Promise<SongNew[]> {
         const {limit = 20, offset = 0} = options || {}
         const SearchQury = {

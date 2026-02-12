@@ -1,9 +1,10 @@
+import { IPlayerActionUseCase } from "../../../application/interfaces/usecase/private-room/player-action-usecase.interface";
 import { ISocketCacheService, SongData } from "../../../domain/services/redis/jamCache.service";
 
-export class PlayerActionUseCase {
-  constructor(private readonly socketCacheService: ISocketCacheService) {}
+export class PlayerActionUseCase implements IPlayerActionUseCase {
+  constructor(private readonly _socketCacheService: ISocketCacheService) {}
 
-  async execute(roomId: string, song: SongData) {
-    await this.socketCacheService.updateRoomSongData(roomId, song);
+  async execute(roomId: string, song: SongData): Promise<void> {
+    await this._socketCacheService.updateRoomSongData(roomId, song);
   }
 }

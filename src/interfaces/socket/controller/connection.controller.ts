@@ -1,16 +1,16 @@
 import { Server, Socket } from "socket.io";
-import { RegisterUserUseCase } from "../../../usecases/user/private-room/registerRoom.UseCase";
+import { IRegisterUserUseCase } from "../../../application/interfaces/usecase/private-room/register-user-usecase.interface";
 
 export class ConnectionController {
   constructor(
-    private readonly registerUserUseCase: RegisterUserUseCase
+    private readonly _registerUserUsecase: IRegisterUserUseCase
   ) {}
 
   async onRegister(io: Server, socket: Socket, userId: string) {
 
     socket.join(userId);
 
-    const { roomData, friendsMap } = await this.registerUserUseCase.execute(userId);
+    const { roomData, friendsMap } = await this._registerUserUsecase.execute(userId);
 
     if (roomData) {
       socket.join(roomData.roomId);

@@ -1,13 +1,15 @@
 import { Server } from "socket.io";
 import { IMutualFriendsStatusUseCase } from "../../../application/interfaces/usecase/mutual-friends/mutual-friends-status-usecase.interface";
+import { NotifyFriendsStatusDTO } from "../../../application/dto/private-room/notify-friends.dto";
+import { INotifyFriendsStatusUseCase } from "../../../application/interfaces/usecase/private-room/friends-status-usecase.interface";
 
-export class NotifyFriendsStatusUseCase {
+export class NotifyFriendsStatusUseCase implements INotifyFriendsStatusUseCase {
   constructor(
-    private readonly friends: IMutualFriendsStatusUseCase
+    private readonly _friendsStatusUsecase: IMutualFriendsStatusUseCase
   ) {}
 
-  async execute(io: Server, userId: string, newState: "connected" | "none") {
-    const friendsStatusMap = await this.friends.execute(userId);
+  async execute(io: Server, data: NotifyFriendsStatusDTO): Promise<void> {
+    const friendsStatusMap = await this._friendsStatusUsecase.execute(data.userId);
 
     const friendIds = Object.keys(friendsStatusMap).filter(
       (fid) => friendsStatusMap[fid] === "none"
@@ -15,9 +17,10 @@ export class NotifyFriendsStatusUseCase {
 
     friendIds.forEach((fid) => {
       io.to(fid).emit("friend_status_changed", {
-        friendId: userId,
-        status: newState,
+        friendId: data.userId,
+        status: data.newState,
       });
     });
   }
 }
+

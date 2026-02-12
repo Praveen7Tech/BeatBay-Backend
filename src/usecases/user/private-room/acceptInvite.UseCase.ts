@@ -1,14 +1,19 @@
-import { ISocketCacheService, RoomMember } from "../../../domain/services/redis/jamCache.service";
+import { IAcceptInviteUseCase } from "../../../application/interfaces/usecase/private-room/accept-invite-usecase.interface";
+import { ISocketCacheService, RoomData, RoomMember } from "../../../domain/services/redis/jamCache.service";
 
-export class AcceptInviteUseCase {
-  constructor(private readonly socketCacheService: ISocketCacheService) {}
+export class AcceptInviteUseCase implements IAcceptInviteUseCase {
+  constructor(
+    private readonly _socketCacheService: ISocketCacheService
+  ) {}
 
-  async execute(roomId: string, guestData:  Omit<RoomMember, "role">) {
-    
-    const activeRoomId = await this.socketCacheService.getUserActiveRooms(roomId);
+  async execute(roomId: string,guestData: Omit<RoomMember, "role">): Promise<RoomData> {
+
+    const activeRoomId = await this._socketCacheService.getUserActiveRooms(roomId);
+
     if (!activeRoomId) throw new Error("Room not found");
 
-    const invite = await this.socketCacheService.getInvite(guestData.id);
+    const invite = await this._socketCacheService.getInvite(guestData.id);
+
     if (!invite || invite.roomId !== activeRoomId) {
       throw new Error("Invite expired");
     }
@@ -18,12 +23,18 @@ export class AcceptInviteUseCase {
       role: "guest",
     };
 
-    await this.socketCacheService.addMembersToRoom(roomId, member);
+    await this._socketCacheService.addMembersToRoom(roomId, member);
+    await this._socketCacheService.setUserActiveRoom(guestData.id, activeRoomId);
+    await this._socketCacheService.deleteInvite(guestData.id);
+    await this._socketCacheService.removePendingInviteFromRoom(
+      activeRoomId,
+      guestData.id
+    );
 
-    await this.socketCacheService.setUserActiveRoom(guestData.id, activeRoomId);
-    await this.socketCacheService.deleteInvite(guestData.id);
-    await this.socketCacheService.removePendingInviteFromRoom(activeRoomId, guestData.id);
+    const room = await this._socketCacheService.getRoom(activeRoomId);
 
-    return await this.socketCacheService.getRoom(activeRoomId);
+    if (!room) throw new Error("Room corrupted"); 
+
+    return room;
   }
 }

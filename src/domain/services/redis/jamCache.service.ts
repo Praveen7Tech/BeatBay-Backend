@@ -29,7 +29,7 @@ export interface RoomData{
 
 export interface SetData{
     roomId:string
-    hostId?:string
+    hostId:string
 }
 
 export type RedisPipeLineResult = (string|number|boolean|null)

@@ -25,8 +25,6 @@ export const registerSocketHandlers = (io: Server) => {
     socket.on("removeFromQueue", (data: RemoveFromQueueEvent) => roomCtrl.onRemoveQueue(io, data));
     socket.on("player_tick", (data: PlayerTickEvent) => roomCtrl.onPlayerTick(socket, data));
 
-    socket.on("disconnect", () => {
-      logger.info(`Socket disconnected: ${socket.id}`);
-    });
+    socket.on("disconnect", () => connectionCtrl.Disconnect(io, socket));
   });
 };

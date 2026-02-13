@@ -1,6 +1,6 @@
-import { RoomData } from "../../../domain/services/redis/jamCache.service";
+// import { RoomData } from "../../../domain/services/redis/jamCache.service";
 
-export interface RegisterUserResponseDTO {
-  roomData: RoomData | null;
-  friendsMap: Record<string, | string>;
-}
+// export interface RegisterUserResponseDTO {
+//   roomData: RoomData | null;
+//   friendsMap: Record<string, | string>;
+// }

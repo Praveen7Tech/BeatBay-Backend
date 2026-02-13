@@ -11,6 +11,7 @@ export class SocketCacheService implements ISocketCacheService{
     private getUserPointer = (userId:string) => `user_active_room_:${userId}`
     private getInviteKey= (userId: string)=> `pending_invite_:${userId}`
     private pendingGuestKey=(roomId:string) => `room_:${roomId}_pending_guest`
+    private StatusKey = (userId:string) => `presence_:${userId}`
 
     // create initial room for host
     async createRoom(roomId: string, hostId: string, hostData: RoomMember): Promise<void> {
@@ -151,6 +152,7 @@ export class SocketCacheService implements ISocketCacheService{
         const userRoomId = await this.getUserActiveRooms(userId);
 
         friendIds.forEach(fId => {
+            pipeline.exists(this.StatusKey(fId))
             pipeline.get(this.getUserPointer(fId));    // Result [0]
             pipeline.get(this.getInviteKey(userId));   // Result [1]
             if (userRoomId) {
@@ -160,16 +162,16 @@ export class SocketCacheService implements ISocketCacheService{
 
         const rawResults = (await pipeline.exec()) as unknown as RedisPipeLineResult[];
         const hasUserRoom = !!userRoomId;
-        const step = hasUserRoom ? 3 : 2;
+        const step = hasUserRoom ? 4 : 3; 
 
         const mappedResults: FriendStatusQueryResult[] = friendIds.map((fId, index) => {
             const offset = index * step;
             return {
                 friendId: fId,
-                inActiveRoom: !!rawResults[offset],
-                inviteToMeRaw: rawResults[offset + 1] as string | null,
-                // Redis sIsMember returns 1 for true, 0 for false
-                isInvitedByMe: hasUserRoom ? rawResults[offset + 2] === 1 : false, 
+                isOnline: rawResults[offset] === 1,
+                inActiveRoom: !!rawResults[offset + 1],
+                inviteToMeRaw: rawResults[offset + 2] as string | null,
+                isInvitedByMe: userRoomId ? rawResults[offset + 3] === 1 : false,
             };
         });
 
@@ -195,6 +197,28 @@ export class SocketCacheService implements ISocketCacheService{
         }
 
         await this.client.expire(key, 86400);
+    }
+
+    async setUserOnline(userId: string): Promise<void> {
+        const key = this.StatusKey(userId)
+
+        await this.client.set(key, "1", {EX: 60 * 5})
+    }
+
+    async setUserOffline(userId: string): Promise<void> {
+        const key = this.StatusKey(userId)
+
+        await this.client.del(key)
+    }
+
+    async getOnlineFriends(friendsIds: string[]): Promise<string[]> {
+        if(friendsIds.length == 0) return []
+
+        const keys = friendsIds.map((id)=> this.StatusKey(id))
+
+        const statuses = await this.client.mGet(keys)
+
+        return friendsIds.filter((_,index)=> statuses[index] !== null)
     }
 
     

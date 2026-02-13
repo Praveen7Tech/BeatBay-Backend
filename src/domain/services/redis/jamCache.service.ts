@@ -39,10 +39,11 @@ export interface FriendsGlobalStatus{
     hasUserRoom: boolean
 }
 
-export type FriendActivityStatus = "connected" | "recieved" | "pending" | "none";
+export type FriendActivityStatus = "connected" | "recieved" | "pending" | "none" | "offline";
 
 export interface FriendStatusQueryResult {
     friendId: string;
+    isOnline: boolean
     inActiveRoom: boolean;
     inviteToMeRaw: string | null;
     isInvitedByMe: boolean;
@@ -78,5 +79,9 @@ export interface ISocketCacheService{
 
     updateRoomQueue(roomId: string, queue: SongData[]): Promise<void>;
     updateRoomSongData(roomId: string, songData: SongData | null): Promise<void>;
+
+    setUserOnline(userId:string): Promise<void>
+    setUserOffline(userId:string): Promise<void>
+    getOnlineFriends(friendsIds: string[]): Promise<string[]>
 
 }

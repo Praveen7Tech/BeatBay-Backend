@@ -20,14 +20,17 @@ export class MutualFriendsStatusUseCase implements IMutualFriendsStatusUseCase {
         results.forEach((res) => {
             const inviteToMe = res.inviteToMeRaw ? JSON.parse(res.inviteToMeRaw) : null;
 
-            if (res.inActiveRoom && !inviteToMe) {
-                inviteStatusMap[res.friendId] = "connected";
+            if (!res.isOnline) {
+                inviteStatusMap[res.friendId] = "offline"; // If the presence key doesn't exist, they are       strictly offline
             } else if (inviteToMe && inviteToMe.hostId === res.friendId) {
                 inviteStatusMap[res.friendId] = "recieved";
             } else if (res.isInvitedByMe) {
                 inviteStatusMap[res.friendId] = "pending";
+            } else if (res.inActiveRoom) {
+                inviteStatusMap[res.friendId] = "connected";
             } else {
-                inviteStatusMap[res.friendId] = "none";
+                // User is online - but has no active invites or rooms
+                inviteStatusMap[res.friendId] = "none"; 
             }
         });
 

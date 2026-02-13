@@ -16,6 +16,8 @@ import { RemoveFromQueueUseCase } from "../../../usecases/user/private-room/remo
 import { SendNotificationUseCase } from "../../../usecases/user/notifications/sendNotifications.UseCase";
 import { INotificationService } from "../../../domain/services/notification/notification.service";
 import { NotificationService } from "../../services/notification/notification.service.repository";
+import { IUnRegisterSocketUseCase } from "../../../application/interfaces/usecase/socket/unRegister-socket-usecase.interface";
+import { UnregisterSocketUseCase } from "../../../usecases/user/socket/unRegister.socket.UseCase";
 
 export const socketModule = {
   _socketCacheService: asClass(SocketCacheService).singleton(),
@@ -33,6 +35,7 @@ export const socketModule = {
   _addToQueueUsecase: asClass(AddToQueueUseCase).singleton(),
   _removeFromQueueUsecase: asClass(RemoveFromQueueUseCase).singleton(),
   _notifyFriendsStatusUsecase: asClass(NotifyFriendsStatusUseCase).singleton(),
+  _unRegisterUserSocketUsecase: asClass<IUnRegisterSocketUseCase>(UnregisterSocketUseCase).singleton(),
 
   // notification usecase
   _sendNotificationUsecase: asClass(SendNotificationUseCase).singleton(),

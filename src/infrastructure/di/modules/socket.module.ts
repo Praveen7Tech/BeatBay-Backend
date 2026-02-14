@@ -19,6 +19,8 @@ import { NotificationService } from "../../services/notification/notification.se
 import { IUnRegisterSocketUseCase } from "../../../application/interfaces/usecase/socket/unRegister-socket-usecase.interface";
 import { UnregisterSocketUseCase } from "../../../usecases/user/socket/unRegister.socket.UseCase";
 import { GetNotificationsUseCase } from "../../../usecases/user/notifications/getNotifications.UseCase";
+import { DeleteNotificationUseCase } from "../../../usecases/user/notifications/deleteNotitfications.UseCase";
+import { DeleteAllNotificationsUseCase } from "../../../usecases/user/notifications/deleteAllNotification.UseCase";
 
 export const socketModule = {
   _socketCacheService: asClass(SocketCacheService).singleton(),
@@ -41,6 +43,8 @@ export const socketModule = {
   // notification usecase
   _sendNotificationUsecase: asClass(SendNotificationUseCase).singleton(),
   _notificationsUsecase: asClass(GetNotificationsUseCase).scoped(),
+  _deleteNotificationUsecase: asClass(DeleteNotificationUseCase).scoped(),
+  _deleteAllNotificationUsecase: asClass(DeleteAllNotificationsUseCase).scoped(),
 
   connectionController: asClass(ConnectionController).singleton(),
   roomController: asClass(RoomController).singleton(),

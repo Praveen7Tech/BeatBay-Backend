@@ -15,4 +15,15 @@ export class NotificationService implements INotificationService{
         .sort({createdAt: -1})
         .lean()
     }
+
+    async deleteNotification(userId: string, notificationId: string): Promise<void> {
+         await NotificationModel.deleteOne({
+            _id:notificationId,
+            recipientId: userId,
+         })
+    }
+
+    async delteAll(userId: string): Promise<void> {
+        await NotificationModel.deleteMany({recipientId: userId})
+    }
 }

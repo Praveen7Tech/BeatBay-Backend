@@ -61,5 +61,8 @@ export default (container: AwilixContainer): Router=> {
     router.post('/song/track-play', userController.trackSongPlay)
     router.post('/get-prices', userController.getPrices)
 
+    router.delete('/notification/:id', userController.deleteNotification)
+    router.delete('/delete-all/notifications', userController.deleteAllNotifications)
+
     return router
 }

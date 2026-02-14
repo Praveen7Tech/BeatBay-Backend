@@ -44,6 +44,8 @@ import { IGetPremiumPricesUseCase } from "../../../../application/interfaces/use
 import logger from "../../../../infrastructure/utils/logger/logger"
 import { IUpgradeSubscriptionUseCase } from "../../../../application/interfaces/usecase/premium/upgrade-subscription-usecase.interface"
 import { UploadFile } from "../../../../application/interfaces/usecase/artist-features/edit-profile-usecase.interface"
+import { IDeleteNotificationUseCase } from "../../../../application/interfaces/usecase/notifications/delete-notification-usecase.interface"
+import { IDeleteAllNotificationsUseCase } from "../../../../application/interfaces/usecase/notifications/delete-all-notifications-usecase.interface"
 export class UserController{
     constructor(
         private readonly _editProfileUserUsecase: IEditProfileUseCase,
@@ -81,7 +83,9 @@ export class UserController{
         private readonly _getPaymentHistoryUsecase: IGetPaymentHistoryUseCase,
         private readonly _trackSongPlayUsecase: ITrachSongPlayUseCase,
         private readonly _getPremiumPricesUsecase: IGetPremiumPricesUseCase,
-        private readonly _upgradeSubcriptionCheckOutUsecase: IUpgradeSubscriptionUseCase
+        private readonly _upgradeSubcriptionCheckOutUsecase: IUpgradeSubscriptionUseCase,
+        private readonly _deleteNotificationUsecase: IDeleteNotificationUseCase,
+        private readonly _deleteAllNotificationUsecase: IDeleteAllNotificationsUseCase
     ){}
 
     editProfile = async (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -660,6 +664,39 @@ export class UserController{
             const prices = await this._getPremiumPricesUsecase.execute(priceIds,country);
  
             return res.status(StatusCode.OK).json(prices);
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    deleteNotification = async(req:AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            const notificationId = req.params.id
+            if(!userId || !notificationId){
+                return res.status(StatusCode.BAD_REQUEST).json(MESSAGES.MISSING_FIELDS);
+            }
+
+            const response = await this._deleteNotificationUsecase.execute(userId,notificationId)
+
+            return res.status(StatusCode.OK).json(response)
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    deleteAllNotifications = async(req:AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            if(!userId ){
+                return res.status(StatusCode.UNAUTHORIZED).json(MESSAGES.MISSING_FIELDS);
+            }
+
+            const response = await this._deleteAllNotificationUsecase.execute(userId)
+
+            return res.status(StatusCode.OK).json(response)
+
         } catch (error) {
             next(error)
         }

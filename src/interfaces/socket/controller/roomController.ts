@@ -12,6 +12,7 @@ import { IPlayerActionUseCase } from "../../../application/interfaces/usecase/pr
 import { IAddToQueueUseCase } from "../../../application/interfaces/usecase/private-room/addTo-queue-usecase.interface";
 import { IRemoveFromQueueUseCase } from "../../../application/interfaces/usecase/private-room/removeFrmon-queueu.interface";
 import { ISendNotificationsUseCase } from "../../../application/interfaces/usecase/notifications/send-notifications-usecase.interface";
+import logger from "../../../infrastructure/utils/logger/logger";
 
 export class RoomController {
     constructor(
@@ -35,7 +36,6 @@ export class RoomController {
         const notification = await this._sendNotificationUsecase.execute({
             recipientId: payload.toUserId,
             senderId: payload.fromUserId,
-            senderName: payload.fromUserName,
             type: "INVITE",
             roomId: room.roomId
         })
@@ -58,15 +58,20 @@ export class RoomController {
         const notification = await this._sendNotificationUsecase.execute({
             recipientId: data.guestData.id,
             senderId: room.roomId,
-            senderName: data.guestData.name,
             type: "JOINED",
             roomId: room.roomId
         })
 
         socket.join(room!.roomId);
 
+        socket.to(room.roomId).emit("notification_recieved", notification);
+
+        socket.emit("notification_recieved", {
+            message: `You joined the room!`,
+            isTemp: true
+        });
+
         io.to(room!.roomId).emit("room_members_updated", "join", room);
-        io.to(room!.roomId).emit("notification_recieved", notification)
 
         await this._notifyFriendsStatusUsecase.execute(io, {
             userId: data.guestData.id,
@@ -82,7 +87,6 @@ export class RoomController {
             recipientId: data.hostId,
             senderId: data.guestId,
             type: "REJECT",
-            senderName: " A friend",
             roomId: data.hostId
         })
 
@@ -99,7 +103,10 @@ export class RoomController {
         const result = await this._leaveRoomUsecase.execute(data.userId, data.roomId);
 
         if (result.type === "ROOM_DELETED") {
-            io.to(data.roomId).emit("notification_recieved", result.message);
+            io.to(data.roomId).emit("notification_recieved",{
+                message: result.message,
+                isTemp: true
+            });
 
             // remove ALL sockets from this room
             const sockets = await io.in(data.roomId).fetchSockets();      
@@ -117,7 +124,10 @@ export class RoomController {
                 data.userId
             );
 
-            io.to(data.roomId).emit("notification_recieved", result.message);
+            io.to(data.roomId).emit("notification_recieved", {
+                message: result.message,
+                isTemp: true
+            });
 
             // remove only this user's socket from the room
             socket.leave(data.roomId);
@@ -137,10 +147,12 @@ export class RoomController {
 
     async onRemoveUser(io: Server, socket: Socket, data: RemoveUserEvent) {
 
-        const { updatedRoom, message } =
-            await this._removeuserUsecase.execute(data.userId, data.roomId);
+        const { updatedRoom, message } = await this._removeuserUsecase.execute(data.userId, data.roomId);
 
-        io.to(data.roomId).emit("notification_recieved", message);
+        io.to(data.roomId).emit("notification_recieved", {
+            message: message,
+            isTemp: true
+        });
         io.to(data.roomId).emit(
             "room_members_updated",
             "remove",
@@ -153,7 +165,10 @@ export class RoomController {
         for (const s of userSockets) {
             s.leave(data.roomId);
             s.emit("room_deleted");
-            s.emit("notification_recieved", "You were removed from the room by host!");
+            s.emit("notification_recieved", {
+                message: "You were removed from the room by host!",
+                isTemp: true
+            });
         }
 
         await this._notifyFriendsStatusUsecase.execute(io, {
@@ -167,14 +182,46 @@ export class RoomController {
         io.to(data.roomId).emit("player_action", data.songData);
     }
 
-    async onAddQueue(io: Server, data: AddToQueueEvent) {
-        await this._addToQueueUsecase.execute(data.roomId, data.song);
+    async onAddQueue(io: Server,socket: Socket, data: AddToQueueEvent) {
+
+        const userId = socket.data.userId
+        if (!userId) {
+            return logger.error("Attempted to add to queue without registration");
+        }
+
+        const {message} = await this._addToQueueUsecase.execute(data.roomId, data.song, userId);
+
         io.to(data.roomId).emit("queue_updated", data.song);
+        socket.to(data.roomId).emit("notification_recieved", {
+            message: message,
+            isTemp: true
+        });
+
+        // 3. Feedback: Tell ONLY the adder it was successful
+        socket.emit("notification_recieved", {
+            message: `You added "${data.song.title}" to the queue!`,
+            isTemp: true
+        });
     }
 
-    async onRemoveQueue(io: Server, data: RemoveFromQueueEvent) {
-        await this._removeFromQueueUsecase.execute(data.roomId, data.songId);
+    async onRemoveQueue(io: Server,socket: Socket, data: RemoveFromQueueEvent) {
+
+        const userId = socket.data.userId;
+         if (!userId) {
+            return logger.error("Attempted to add to queue without registration");
+        }
+
+        const {message, songName} = await this._removeFromQueueUsecase.execute(data.roomId, data.songId, userId);
         io.to(data.roomId).emit("song_removed", data.songId);
+
+        socket.to(data.roomId).emit("notification_recieved", {
+            message: message,
+            isTemp: true
+        })
+        socket.emit("notification_recieved", {
+            message: `You removed ${songName} from queue`,
+            isTemp: true
+        })
     }
 
     onPlayerTick(socket: Socket, data: PlayerTickEvent) {

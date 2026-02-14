@@ -8,4 +8,11 @@ export class NotificationService implements INotificationService{
         const noti = await NotificationModel.create(data)
         return noti.toObject()
     }
+
+    async getNotifications(userId: string): Promise<Notification[]> {
+        return await NotificationModel.find({recipientId: userId})
+        .populate("senderId", "name profilePicture")
+        .sort({createdAt: -1})
+        .lean()
+    }
 }

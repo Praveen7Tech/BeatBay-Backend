@@ -1,43 +1,56 @@
-import { NotificationSendData } from "../../../application/dto/notifications/send.notification.dto";
+import { NotFound } from "@aws-sdk/client-s3";
+import { NotificationResponse, NotificationSendData } from "../../../application/dto/notifications/send.notification.dto";
 import { ISendNotificationsUseCase } from "../../../application/interfaces/usecase/notifications/send-notifications-usecase.interface";
+import { NotificationMapper } from "../../../application/mappers/user/notifications/user.notification.mapper";
+import { IUserRepository } from "../../../domain/repositories/user.repository";
 import { INotificationService } from "../../../domain/services/notification/notification.service";
+import { NotFoundError } from "../../../common/errors/common/common.errors";
 
 export class SendNotificationUseCase implements ISendNotificationsUseCase {
     constructor(
-        private readonly _notificationService: INotificationService
+        private readonly _notificationService: INotificationService,
+        private readonly _userRepository: IUserRepository
     ){}
 
-    async execute(data: NotificationSendData): Promise<string> {
+    async execute(data: NotificationSendData): Promise<NotificationResponse> {
+
+        const sender = await this._userRepository.findById(data.senderId)
+        if(!sender) throw new NotFoundError("sender not found")
         
         let message = "";
         switch (data.type){
             case "INVITE" :{
-                message = `${data.senderName} invited you in a room`;
+                message = `${sender.name} invited you in a room`;
                 break
             }
             case "JOINED" :{
-                message = `${data.senderName} joined the room.`
+                message = `${sender.name} joined the room.`
                 break;
             }
             case "REJECT" :{
-                message = `${data.senderName} declined your invitation.`
+                message = `${sender.name} declined your invitation.`
                 break;
             }
             case "REMOVE" :{
-                message = `you were removed from the room by hst!`
+                message = `You were removed from the room by hsot ${sender.name} !`
                 break;
             }
         }
 
+
         const notify = await this._notificationService.create({
             recipientId: data.recipientId,
             senderId: data.senderId,
+            senderName: sender.name,
+            senderImage: sender.profilePicture,
             roomId: data.roomId,
             message,
             type: data.type,
             isRead: false,
         })
 
-        return notify.message
+        const notificationData = NotificationMapper.toResponse(notify,sender.name)
+
+        return notificationData
     }
 }

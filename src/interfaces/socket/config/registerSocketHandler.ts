@@ -21,9 +21,9 @@ export const registerSocketHandlers = (io: Server) => {
     socket.on("left_room", (data: LeaveRoomEvent) => roomCtrl.onLeaveRoom(io, socket, data));
     socket.on("remove_user", (data: RemoveUserEvent) => roomCtrl.onRemoveUser(io, socket, data));
     socket.on("player_action", (data: PlayerActionEvent) => roomCtrl.onPlayerAction(io, data));
-    socket.on("addTo_queue", (data: AddToQueueEvent) => roomCtrl.onAddQueue(io, data));
-    socket.on("removeFromQueue", (data: RemoveFromQueueEvent) => roomCtrl.onRemoveQueue(io, data));
-    socket.on("player_tick", (data: PlayerTickEvent) => roomCtrl.onPlayerTick(socket, data));
+    socket.on("addTo_queue", (data: AddToQueueEvent) => roomCtrl.onAddQueue(io,socket, data));
+    socket.on("removeFromQueue", (data: RemoveFromQueueEvent) => roomCtrl.onRemoveQueue(io,socket, data));
+    //socket.on("player_tick", (data: PlayerTickEvent) => roomCtrl.onPlayerTick(socket, data));
 
     socket.on("disconnect", () => connectionCtrl.Disconnect(io, socket));
   });

@@ -2,8 +2,6 @@ import { RoomMember, SongData } from "../../../domain/services/redis/jamCache.se
 
 export interface InviteSendEvent {
   fromUserId: string;
-  fromUserName: string;
-  fromUserImage: string;
   toUserId: string;
 }
 

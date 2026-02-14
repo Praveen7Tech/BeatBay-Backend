@@ -12,6 +12,13 @@ const notificationSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },
+    senderName: {
+        type: String
+    },
+    senderImage:{
+        type: String,
+        default: null
+    },
     type: {
         type: String,
         enum: ["INVITE", "REJECT", "JOINED", "REMOVE"]

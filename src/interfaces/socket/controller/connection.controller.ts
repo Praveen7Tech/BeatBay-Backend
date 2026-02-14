@@ -3,12 +3,14 @@ import { IRegisterUserUseCase } from "../../../application/interfaces/usecase/pr
 import { IUnRegisterSocketUseCase } from "../../../application/interfaces/usecase/socket/unRegister-socket-usecase.interface";
 import logger from "../../../infrastructure/utils/logger/logger";
 import { IMutualFriendsStatusUseCase } from "../../../application/interfaces/usecase/mutual-friends/mutual-friends-status-usecase.interface";
+import { INotificationsUsecase } from "../../../application/interfaces/usecase/notifications/get-notifications-usecase.interface";
 
 export class ConnectionController {
   constructor(
     private readonly _registerUserUsecase: IRegisterUserUseCase,
     private readonly _unRegisterUserSocketUsecase: IUnRegisterSocketUseCase,
     private readonly _friendsStatusUsecase: IMutualFriendsStatusUseCase,
+    private readonly _notificationsUsecase: INotificationsUsecase
   ) {}
 
   private disconnectionTimers = new Map<string, NodeJS.Timeout>()
@@ -20,6 +22,7 @@ export class ConnectionController {
 
     const roomData = await this._registerUserUsecase.execute(userId);
     const friendsMap  = await this._friendsStatusUsecase.execute(userId);
+    const notifications = await this._notificationsUsecase.execute(userId)
 
     if(this.disconnectionTimers.has(userId)){
       clearTimeout(this.disconnectionTimers.get(userId))
@@ -40,6 +43,9 @@ export class ConnectionController {
     if (roomData) {
       socket.join(roomData.roomId);
       socket.emit("restore_room_state", roomData);
+    }
+    if(notifications.length){
+      socket.emit("update_notifications", notifications)
     }
 
     socket.emit("sync_friends_status", friendsMap);

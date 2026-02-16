@@ -21,7 +21,7 @@ const notificationSchema = new Schema({
     },
     type: {
         type: String,
-        enum: ["INVITE", "REJECT", "JOINED", "REMOVE"]
+        enum: ["INVITE", "REJECT", "JOINED", "REMOVE", "SONG_UPLOAD"]
     },
     roomId: {
         type: String

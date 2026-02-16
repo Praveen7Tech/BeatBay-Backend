@@ -1,4 +1,4 @@
-export type NotifyType = "INVITE" | "REJECT" | "JOINED" | "REMOVE"
+export type NotifyType = "INVITE" | "REJECT" | "JOINED" | "REMOVE" | "SONG_UPLOAD"
 
 export interface Notification{
     _id: string

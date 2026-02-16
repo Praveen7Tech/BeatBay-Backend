@@ -26,4 +26,8 @@ export class NotificationService implements INotificationService{
     async delteAll(userId: string): Promise<void> {
         await NotificationModel.deleteMany({recipientId: userId})
     }
+
+    async bulkCreate(notifications: Partial<Notification>[]): Promise<void> {
+        await NotificationModel.insertMany(notifications, {ordered: false})
+    }
 }

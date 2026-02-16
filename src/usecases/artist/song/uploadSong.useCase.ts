@@ -6,18 +6,22 @@ import { NotFoundError } from "../../../common/errors/common/common.errors";
 import { IUploadSongUseCase } from "../../../application/interfaces/usecase/song/artist-upload-song-usecase.interface";
 import { SongNew } from "../../../domain/entities/song.entity";
 import { IArtistDailyAnalyticsRepository } from "../../../domain/repositories/artist.daily.analytics.repository";
+import { IJobQueueService } from "../../../domain/services/notification/job-queue.service";
+import logger from "../../../infrastructure/utils/logger/logger";
 
 export class UploadSongUseCase implements IUploadSongUseCase{
     constructor(
         private readonly _songRepository: ISongRepository,
         private readonly _artistRepository: IArtistRepository,
         private readonly _transactionManager: ITransactionManager,
-        private readonly _dailyAnalyticsRepository: IArtistDailyAnalyticsRepository
+        private readonly _dailyAnalyticsRepository: IArtistDailyAnalyticsRepository,
+        private readonly _jobQueuService: IJobQueueService
     ){}
 
     async execute(artistId:string,request: UploadSongDTO): Promise<{success: boolean}>{
 
         const today = new Date().toISOString().split("T")[0];
+        let artistName;
 
         await this._transactionManager.withTransaction(async(session)=>{
 
@@ -25,6 +29,7 @@ export class UploadSongUseCase implements IUploadSongUseCase{
             if(!artist){
                 throw new NotFoundError("Artist not found")
             }
+            artistName = artist.name
             
             const songData: Partial<SongNew> = {
                 uploadId: request.uploadId,
@@ -50,6 +55,11 @@ export class UploadSongUseCase implements IUploadSongUseCase{
         await this._dailyAnalyticsRepository.incrementField(artistId,today,"songs",1)
 
         })
+
+        const message = `${artistName} uploaded  a new song ${request.title}`
+ 
+        // set notitification job queue
+        await this._jobQueuService.addNotificationJob(artistId,message)
 
         return {success: true}
         

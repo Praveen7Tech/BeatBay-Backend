@@ -1,4 +1,4 @@
-import { asClass } from "awilix";
+import { asClass, asValue } from "awilix";
 import { ConnectionController } from "../../../interfaces/socket/controller/connection.controller";
 import { RoomController } from "../../../interfaces/socket/controller/roomController";
 import { PlayerActionUseCase } from "../../../usecases/user/private-room/playerAction.UseCase";
@@ -21,12 +21,20 @@ import { UnregisterSocketUseCase } from "../../../usecases/user/socket/unRegiste
 import { GetNotificationsUseCase } from "../../../usecases/user/notifications/getNotifications.UseCase";
 import { DeleteNotificationUseCase } from "../../../usecases/user/notifications/deleteNotitfications.UseCase";
 import { DeleteAllNotificationsUseCase } from "../../../usecases/user/notifications/deleteAllNotification.UseCase";
+import { BullMqJobService } from "../../services/notification/bullmq.service.repository";
+import { IJobQueueService } from "../../../domain/services/notification/job-queue.service";
+import { NotificationWorker } from "../../workers/notification.worker";
+import { queueConnection } from "../../config/redis-queue.config";
 
 export const socketModule = {
   _socketCacheService: asClass(SocketCacheService).singleton(),
   _friendsStatusUsecase: asClass(MutualFriendsStatusUseCase).singleton(),
   _cacheRoomService: asClass(SocketCacheService).singleton(),
   _notificationService: asClass<INotificationService>(NotificationService).singleton(),
+  _jobQueuService: asClass<IJobQueueService>(BullMqJobService).singleton(),
+
+  notificationWorker: asClass(NotificationWorker).singleton(),
+  queueConnection: asValue(queueConnection),
 
   _registerUserUsecase: asClass(RegisterUserUseCase).singleton(),
   _inviteUserUsecase: asClass(InviteUserUseCase).singleton(),

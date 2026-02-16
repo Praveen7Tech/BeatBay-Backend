@@ -16,6 +16,7 @@ import artistRouterFactory from './interfaces/http/routes/artist/artist.routes'
 import { createSocketServer } from './infrastructure/config/socket';
 import { PayoutCronJob } from './infrastructure/cron/payout.cron';
 import { registerSocketHandlers } from './interfaces/socket/config/registerSocketHandler';
+import { asValue } from 'awilix';
 
 dotenv.config();
 
@@ -28,6 +29,11 @@ async function startServer() {
 
     const httpServer = http.createServer(app)
     const io = createSocketServer(httpServer)
+
+    container.register({
+      io: asValue(io) 
+    });
+
 
     registerSocketHandlers(io)
     
@@ -52,6 +58,9 @@ async function startServer() {
     //logger.log("Container resolved authController:", container.resolve('authController'))
 
     app.use(errorHandlerMiddleware)
+
+    // resolve Notification worker
+    container.resolve('notificationWorker');
     
     // monthly payout cron
     PayoutCronJob(container)

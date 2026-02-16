@@ -5,4 +5,5 @@ export interface INotificationService{
     getNotifications(userId: string): Promise<Notification[]>;
     deleteNotification(userId:string, notificationId: string): Promise<void>;
     delteAll(userId: string): Promise<void>
+    bulkCreate(notifications: Partial<Notification>[]): Promise<void>
 }

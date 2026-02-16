@@ -33,4 +33,12 @@ export class MongooseFolloersRepository implements IFollowersRepository{
 
         return { followers, total };
     }
+
+   getFollowersIdsStream(targetId: string): AsyncIterable<{ followerId: string }> {
+        return FollowerModel.find({ targetId })
+            .select("followerId")
+            .batchSize(100)
+            .lean()
+            .cursor() as unknown as AsyncIterable<{ followerId: string }>;
+    }
 }

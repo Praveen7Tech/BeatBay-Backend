@@ -8,6 +8,10 @@ import stripeWebhookRouter from "../../interfaces/http/routes/stripe/stripe.webh
 
 const app = express()
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // stripe webhook route
 app.use('/stripe', stripeWebhookRouter(container))
 

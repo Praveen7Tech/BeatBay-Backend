@@ -78,7 +78,6 @@ export class ProcessMonthlyPayoutUseCase implements IProcessMontlyPayoutUseCase{
                     end
                 );
 
-                const artistRevenueCents = Math.floor(amountToPay * 100);
 
                 const songRevenueDocs = songPlays.map(play => ({
                     artistId: share.artistId,
@@ -87,9 +86,7 @@ export class ProcessMonthlyPayoutUseCase implements IProcessMontlyPayoutUseCase{
                     periodStart: start,
                     periodEnd: end,
                     playCount: play.count,
-                    revenueAmount: Math.floor(
-                        (play.count / share.count) * artistRevenueCents
-                    )
+                    revenueAmount: Math.floor( (play.count / share.count) * amountToPay)
                 }));
 
                 await this._songRevenueRepository.createMany(songRevenueDocs);

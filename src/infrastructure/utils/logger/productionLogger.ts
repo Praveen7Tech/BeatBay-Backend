@@ -4,7 +4,7 @@ import DailyRotateFile from "winston-daily-rotate-file";
 
 const { combine, timestamp, json } = winston.format;
 
-const logDirectory = path.resolve("logs");
+const logDirectory = path.join(__dirname, "logs")
 
 const ProductionLogger = winston.createLogger({
   level: 'info',

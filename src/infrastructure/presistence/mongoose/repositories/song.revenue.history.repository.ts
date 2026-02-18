@@ -54,7 +54,7 @@ export class SongRevenueHistoryRepository implements ISongRevenueHistoryReposito
   }[]> {
 
     const docs = await SongRevenueHistoryModel.find({ songId: new Types.ObjectId(songId) })
-      .populate("payoutId", "_id period amount stripeTransferId")
+      // .populate("payoutId", "_id period amount stripeTransferId")
       .lean<SongRevenueHistoryLean[]>();
 
     return docs.map(d => ({

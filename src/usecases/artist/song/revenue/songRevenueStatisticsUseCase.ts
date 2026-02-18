@@ -11,7 +11,7 @@ export class GetSongRevenueDashboardUseCase implements ISongRevenueHistoryUseCas
   async execute(songId: string, year: number): Promise<SongRevenueDashboardResponseDTO> {
 
     // Lifetime revenue in dollars
-    const lifetimeRevenue = await this._songRevenueRepository.getLifetimeRevenue(songId) / 100;
+    const lifetimeRevenue = await this._songRevenueRepository.getLifetimeRevenue(songId) ;
 
     // Yearly revenue aggregated by month
     const yearlyData = await this._songRevenueRepository.getYearlyRevenue(songId, year);
@@ -37,7 +37,7 @@ export class GetSongRevenueDashboardUseCase implements ISongRevenueHistoryUseCas
     }));
 
     return {
-      lifetimeRevenue,
+      lifetimeRevenue:lifetimeRevenue / 100,
       thisYearRevenue,
       monthlyChart: yearlyChart,
       payouts

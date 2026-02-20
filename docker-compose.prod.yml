@@ -12,16 +12,6 @@ services:
     depends_on:
       - redis
 
-  worker:
-    container_name: beatbay-worker
-    build: .
-    command: npm run worker
-    restart: always
-    env_file:
-      - .env
-    depends_on:
-      - redis
-
   redis:
     image: redis:7-alpine
     container_name: beatbay-redis

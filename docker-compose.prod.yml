@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  api:
+    container_name: beatbay-api
+    build: .
+    restart: always
+    ports:
+      - "127.0.0.1:5000:5000"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+
+  worker:
+    container_name: beatbay-worker
+    build: .
+    command: npm run worker
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7-alpine
+    container_name: beatbay-redis
+    restart: always
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:

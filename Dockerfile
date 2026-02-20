@@ -6,6 +6,10 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
+
+# Increase Node memory for TypeScript build
+ENV NODE_OPTIONS=--max-old-space-size=1024
+
 RUN npm run build
 
 # Stage 2: Production

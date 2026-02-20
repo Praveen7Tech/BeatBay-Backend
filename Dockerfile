@@ -2,8 +2,6 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-ENV NODE_OPTIONS="--max-old-space-size=2048"
-
 COPY package*.json ./
 RUN npm ci
 
@@ -19,10 +17,10 @@ RUN npm ci --omit=dev
 
 COPY --from=builder /app/dist ./dist
 
-RUN mkdir -p /app/logs
-
 ENV NODE_ENV=production
+
+RUN mkdir -p /app/logs
 
 EXPOSE 5000
 
-CMD ["npm", "run", "start"]
+CMD ["node", "dist/src/server.js"]

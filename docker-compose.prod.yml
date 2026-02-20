@@ -11,6 +11,10 @@ services:
       - .env
     depends_on:
       - redis
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   redis:
     image: redis:7-alpine

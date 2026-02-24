@@ -55,6 +55,9 @@ export class RoomController {
     async onAcceptInvite(io: Server, socket: Socket, data: AcceptInviteEvent) {
         const room = await this._acceptInviteUsecase.execute(data.roomId, data.guestData);
 
+        socket.join(room!.roomId);
+        socket.emit("room_created", room)
+
         const notification = await this._sendNotificationUsecase.execute({
             recipientId: data.guestData.id,
             senderId: room.roomId,
@@ -62,7 +65,6 @@ export class RoomController {
             roomId: room.roomId
         })
 
-        socket.join(room!.roomId);
 
         socket.to(room.roomId).emit("notification_recieved", notification);
 

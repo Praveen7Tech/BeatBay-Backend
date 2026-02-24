@@ -57,6 +57,13 @@ export class ConnectionController {
 
     logger.info(`User ${userId} socket disconnected. Waiting for refresh...`);
 
+    // manage the private room when host disconnect
+    const room = await this._registerUserUsecase.execute(userId)
+    if(room && room.hostId === userId){
+      io.to(room.roomId).emit("host_playback_pause")
+      logger.info(`Host ${userId} disconnected → pausing playback`)
+    }
+
     const timer = setTimeout(async () => {
       await this._unRegisterUserSocketUsecase.execute(userId);
       

@@ -81,7 +81,7 @@ export class AuthController {
   async authStatus(req: Request, res: Response, next: NextFunction) {
      try {
           const refreshToken = req.cookies?.refreshToken;
-logger.info("refresh token", refreshToken)          
+          logger.info(`refresh token :  ${refreshToken}`)          
           if (!refreshToken) {
               return res.status(StatusCode.OK).json({ user: null, accessToken: null });
           }

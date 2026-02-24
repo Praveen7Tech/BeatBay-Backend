@@ -4,6 +4,7 @@ import { CheckoutSessionResponse, IStripeService } from "../../domain/services/s
 import { SubscriptionModel } from "../presistence/mongoose/models/subscription.model";
 import { UserModel } from "../presistence/mongoose/models/user.model";
 import { stripe } from "./stripe.config";
+import logger from "../utils/logger/logger";
 
 const CLIENT_URL = process.env.FRONTEND_URL
 
@@ -129,7 +130,7 @@ export class StripeService implements IStripeService{
     }
 
     async transferToArtist(amount: number, connectId: string, description: string): Promise<Stripe.Transfer> {
-   console.log("payment amount", amount, connectId)     
+        logger.info(`payment amount  ${amount}, ${connectId}`)
         return await stripe.transfers.create({
             amount: Math.round(amount),
             currency: 'usd',

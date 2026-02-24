@@ -4,7 +4,6 @@ import logger from "../utils/logger/DevLogger";
 let redisClient: RedisClientType;
 
 export const connectRedis = async (): Promise<void> => {
-    console.log("redis ", process.env.REDIS_URL)
     try {
         redisClient = createClient({
             url: process.env.REDIS_URL

@@ -468,9 +468,7 @@ export class ArtistController {
         try {
             const { songId } = req.params;
             const { year } = req.query;
-console.log("j ", songId, year)
             const revenue = await this._songRevenueHistoryUsecase.execute(songId,Number(year))
-console.log("song rev ", revenue)
             return res.status(StatusCode.OK).json(revenue)
         } catch (error) {
             next(error)

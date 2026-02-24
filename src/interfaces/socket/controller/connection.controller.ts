@@ -32,7 +32,6 @@ export class ConnectionController {
 
     }else{
       const friendsIds = Object.keys(friendsMap)
-
       friendsIds.forEach(fid=>{
         io.to(fid).emit("friend_status_changed",{
           friendId: userId, status: roomData ? "connected" : "none"

@@ -15,7 +15,7 @@ const ProductionLogger = winston.createLogger({
       dirname: logDirectory,
       filename: "production-%DATE%.log",
       datePattern: "YYYY-MM-DD",
-      maxFiles: "14d",
+      maxFiles: "1d",
       level: "info",
       zippedArchive: true 
     }),
@@ -24,7 +24,7 @@ const ProductionLogger = winston.createLogger({
       dirname: logDirectory,
       filename: "error-%DATE%.log",
       datePattern: "YYYY-MM-DD",
-      maxFiles: "30d",
+      maxFiles: "1d",
       level: "error",
       zippedArchive: true
     }),

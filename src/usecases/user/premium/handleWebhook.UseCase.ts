@@ -21,6 +21,8 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
             case 'checkout.session.completed': {
             const session = event.data.object as Stripe.Checkout.Session;
             // only use session to link user ID and customer ID
+
+            logger.info("checkout session event triggerd")
          
             if (session.metadata?.userId) {
                 await this._stripeService.upsertSubscription({
@@ -35,6 +37,9 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
 
             case 'customer.subscription.created':
             case 'customer.subscription.updated': {
+
+                logger.info("subscription session event triggerd")
+
                 const subscription = event.data.object as Stripe.Subscription;
                 const item = subscription.items.data[0]; 
                 const recurring = item.price.recurring;
@@ -99,10 +104,15 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
                     paymentMethodType:paymentType as PaymentType,
                     paymentMethodDetails: paymentMethodDetails
                 });
+
+                logger.info("subscription creted successfully!")
                 break;
             }
             
             case 'invoice.paid' : {
+
+                logger.info("invoice paid event trigger")
+
                 const invoice = event.data.object as Stripe.Invoice
                 let subscriptionId;
 
@@ -139,6 +149,8 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
 
             case 'invoice.payment_failed':{
 
+                logger.info("invoice failed event trigger")
+
                  const invoice = event.data.object as Stripe.Invoice;
                  const subscriptionId = (invoice as any).subscription as string;
               
@@ -159,6 +171,9 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
             }
 
             case 'account.updated' : {
+
+                logger.info("account update session event trigger")
+
                 const account = event.data.object as Stripe.Account
 
                 if(account.payouts_enabled && account.details_submitted){

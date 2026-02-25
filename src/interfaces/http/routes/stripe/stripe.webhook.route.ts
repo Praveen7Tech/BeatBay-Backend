@@ -5,11 +5,9 @@ import { WebHookController } from "../../controllers/stripe/stripe.webhook.contr
 export default (container: AwilixContainer): Router=> {
   const router = express.Router()
 
-  const webhookController =
-    container.resolve<WebHookController>('webHookController')
+  const webhookController = container.resolve<WebHookController>('webHookController')
 
-  router.post('/webhook', express.raw({ type: 'application/json' }), 
-  webhookController.stripeWebHookHandle)
+  router.post('/webhook', express.raw({ type: 'application/json' }), webhookController.stripeWebHookHandle)
 
   return router
 }

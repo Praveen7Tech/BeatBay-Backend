@@ -4,8 +4,10 @@ import { stripe } from "../../../../infrastructure/stripe/stripe.config";
 import { IHandleWebHookUsecase } from "../../../../application/interfaces/usecase/premium/handleWebHook-usecase.interface";
 import { StatusCode } from "../../../../common/constants/status.enum";
 import logger from "../../../../infrastructure/utils/logger/logger";
+import Stripe from "stripe";
 
-const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET_KEY
+const PLATFORM_SECRET = process.env.STRIPE_WEBHOOK_SECRET_PLATFORM!;
+const CONNECT_SECRET = process.env.STRIPE_WEBHOOK_SECRET_CONNECT!;
 
 export class WebHookController{
     constructor(
@@ -19,16 +21,25 @@ export class WebHookController{
             logger.info(`stripe event reach webhook`)
 
              // Debug which secret is loaded
-            logger.info(`Webhook secret loaded: ${WEBHOOK_SECRET?.slice(0,10)}...`)
-            logger.info(`Stripe signature header present: ${!!signature}`)
+            logger.info(`Webhook secret loaded: ${PLATFORM_SECRET?.slice(0,10)}...`)
           
-            let event ;
+            let event : Stripe.Event;
             try {
-                event = stripe.webhooks.constructEvent(req.body, signature, WEBHOOK_SECRET!)
+               try {
+                    event = stripe.webhooks.constructEvent(req.body, signature, PLATFORM_SECRET);
+                    logger.info("Webhook verified with PLATFORM secret");
+                } catch {
+                    // If failed, try connect webhook
+                    event = stripe.webhooks.constructEvent(req.body, signature, CONNECT_SECRET);
+                    logger.info("Webhook verified with CONNECT secret");
+                }
             } catch (error) {
                 next(error)
                 return res.status(StatusCode.BAD_REQUEST).send(`Webhook Error: ${error}`);
             }
+
+            logger.info(`Event type: ${event.type}`);
+            logger.info(`Event account: ${event.account ?? "platform"}`);
    
             try {
                 logger.info("handle webhook usecase reach")
@@ -39,6 +50,6 @@ export class WebHookController{
                 next(error)
             }
     
-            res.status(StatusCode.OK).json({success: true})
+            //res.status(StatusCode.OK).json({success: true})
         }
 }

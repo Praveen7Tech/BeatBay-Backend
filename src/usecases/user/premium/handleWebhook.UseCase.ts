@@ -121,7 +121,7 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
                 }
 
                 if (!subscriptionId) {
-                    console.log("no subscription found for invoice:", invoice.id);
+                    logger.info(`no subscription found for invoice: ${invoice.id}`);
                     break;
                 }
                

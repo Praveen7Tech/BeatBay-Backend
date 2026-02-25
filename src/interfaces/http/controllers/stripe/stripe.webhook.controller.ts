@@ -17,6 +17,7 @@ export class WebHookController{
             const siggnature = req.headers['stripe-signature'] as string
 
             logger.info(`stripe evnt reach webhook`)
+            logger.info(`Webhook secret loaded: ${WEBHOOK_SECRET?.slice(0,10)}`)
           
             let event ;
             try {

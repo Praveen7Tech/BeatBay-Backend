@@ -54,9 +54,12 @@ export class RoomController {
 
     async onAcceptInvite(io: Server, socket: Socket, data: AcceptInviteEvent) {
         const room = await this._acceptInviteUsecase.execute(data.roomId, data.guestData);
+        if(!room) return;
 
-        socket.join(room!.roomId);
+        socket.join(room.roomId);
         socket.emit("room_created", room)
+
+        io.to(room.roomId).emit("room_members_updated", "join", room);
 
         const notification = await this._sendNotificationUsecase.execute({
             recipientId: data.guestData.id,
@@ -71,9 +74,7 @@ export class RoomController {
         socket.emit("notification_recieved", {
             message: `You joined the room!`,
             isTemp: true
-        });
-
-        io.to(room!.roomId).emit("room_members_updated", "join", room);
+        });    
 
         await this._notifyFriendsStatusUsecase.execute(io, {
             userId: data.guestData.id,

@@ -35,6 +35,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd ~/BeatBay-Deploy
+            # 1. Pull the specific new image
             docker compose pull
-            docker compose down
-            docker compose up -d
+            # 2. Update with ZERO downtime (removes 'down')
+            docker compose up -d --remove-orphans
+            # 3. Clean up old, unused images to save disk space
+            docker image prune -f

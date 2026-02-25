@@ -59,8 +59,6 @@ export class RoomController {
         socket.join(room.roomId);
         socket.emit("room_created", room)
 
-        io.to(room.roomId).emit("room_members_updated", "join", room);
-
         const notification = await this._sendNotificationUsecase.execute({
             recipientId: data.guestData.id,
             senderId: room.roomId,
@@ -68,6 +66,7 @@ export class RoomController {
             roomId: room.roomId
         })
 
+        io.to(room.roomId).emit("room_members_updated", "join", room);
 
         socket.to(room.roomId).emit("notification_recieved", notification);
 

@@ -5,20 +5,22 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-COPY . .
+COPY tsconfig*.json ./
+COPY src ./src
 
 RUN npm run build
+
 
 # Stage 2: Production
 FROM node:20-alpine
 WORKDIR /app
 
+ENV NODE_ENV=production
+
 COPY package*.json ./
 RUN npm ci --omit=dev
 
 COPY --from=builder /app/dist ./dist
-
-ENV NODE_ENV=production
 
 RUN mkdir -p /app/logs
 

@@ -14,13 +14,17 @@ export class WebHookController{
 
     stripeWebHookHandle = async(req:AuthRequest, res:Response, next:NextFunction)=>{
            
-            const siggnature = req.headers['stripe-signature'] as string
+            const signature = req.headers['stripe-signature'] as string
 
-            logger.info(`stripe evnt reach webhook`)
+            logger.info(`stripe event reach webhook`)
+
+             // Debug which secret is loaded
+            logger.info(`Webhook secret loaded: ${WEBHOOK_SECRET?.slice(0,10)}...`)
+            logger.info(`Stripe signature header present: ${!!signature}`)
           
             let event ;
             try {
-                event = stripe.webhooks.constructEvent(req.body, siggnature, WEBHOOK_SECRET!)
+                event = stripe.webhooks.constructEvent(req.body, signature, WEBHOOK_SECRET!)
             } catch (error) {
                 next(error)
                 return res.status(StatusCode.BAD_REQUEST).send(`Webhook Error: ${error}`);

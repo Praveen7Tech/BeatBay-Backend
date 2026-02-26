@@ -23,6 +23,7 @@ export class SongDetailsMapper {
       audioUrl: urls.audioUrl,
       lyricsUrl: urls.lyricsUrl,
       duration: song.duration,
+      streams: song.playCount,
       isLiked,
       artist: {
         id: song.artistId._id.toString(),
@@ -51,6 +52,7 @@ export class SongDetailsMapper {
       lyricsUrl: "", 
       duration: song.duration,
       isLiked,
+      streams: song.playCount,
       artist: {
         id: song.artistId._id.toString(),
         name: song.artistId.name,

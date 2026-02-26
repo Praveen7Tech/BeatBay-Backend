@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { IPayoutHistoryRepository } from "../../../../domain/repositories/payoutHistory.repository";
+import { IPayoutHistoryRepository, Last12MonthsRevenueItem } from "../../../../domain/repositories/payoutHistory.repository";
 import { PayoutHistoryModel } from "../models/payout.history.model";
 import { payoutHistory } from "../../../../domain/entities/payoutHistory.entity";
 
@@ -37,30 +37,35 @@ export class PayoutHistoryRepository implements IPayoutHistoryRepository{
         return result.length > 0 ? result[0].total : 0;
     }
 
-    async getYearlyHistory(artistId: string): Promise<{ month: number; year: number; amount: number }[]> {
-        const twelveMonthsAgo = new Date();
-        twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
+    async getLast12MonthsHistory( artistId: string): Promise<Last12MonthsRevenueItem[]> {
+        const now = new Date();
+        const start = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+        const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
         return await PayoutHistoryModel.aggregate([
-            { $match: { 
-                artistId: new Types.ObjectId(artistId),
-                status: 'completed',
-                createdAt: { $gte: twelveMonthsAgo }
-            }},
-            { $group: { 
-                _id: { 
-                    month: "$period.month", 
-                    year: "$period.year" 
-                }, 
-                amount: { $sum: "$amount" } 
-            }},
-            { $project: { 
-                _id: 0, 
-                month: "$_id.month", 
-                year: "$_id.year", 
-                amount: 1 
-            }},
-            { $sort: { year: 1, month: 1 } }
+            {
+                $match: {
+                    artistId: new Types.ObjectId(artistId),
+                    createdAt: { $gte: start, $lte: end },
+                    status: "completed"
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                    year: { $year: "$createdAt" },
+                    month: { $month: "$createdAt" }
+                    },
+                    amount: { $sum: "$amount" },
+                    totalPlaysInPeriod: { $sum: "$totalPlaysInPeriod" }
+                }
+            },
+            {
+                $sort: {
+                    "_id.year": 1,
+                    "_id.month": 1
+                }
+            }
         ]);
     }
 

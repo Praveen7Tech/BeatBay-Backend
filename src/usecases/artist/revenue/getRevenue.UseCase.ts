@@ -2,7 +2,7 @@ import { IArtistRevenueDashboard, ISongRevenue } from "../../../application/dto/
 import { IArtistRevenueUseCase } from "../../../application/interfaces/usecase/artist/revenue/getRevenue-usecase.interface";
 import { NotFoundError } from "../../../common/errors/common/common.errors";
 import { IArtistRepository } from "../../../domain/repositories/artist.repository";
-import { IPayoutHistoryRepository } from "../../../domain/repositories/payoutHistory.repository";
+import { IPayoutHistoryRepository, Last12MonthsRevenueItem } from "../../../domain/repositories/payoutHistory.repository";
 import { IPlayRepository } from "../../../domain/repositories/play.repository";
 import { ISongRepository } from "../../../domain/repositories/song.repository";
 import { IAWSS3StorageService } from "../../../domain/services/aws/asw-s3.service";
@@ -66,10 +66,10 @@ export class ArtistRevenueUseCase implements IArtistRevenueUseCase {
         );
 
         // payout history related data
-        const [rawHistory, lifetimeCents, yearlyHistory] = await Promise.all([
+        const [rawHistory, lifetimeCents, last12MonthsHistory] = await Promise.all([
             this._payoutHistoryRepository.getAllPayouts(artistId),
             this._payoutHistoryRepository.getLifetimeEarnings(artistId),
-            this._payoutHistoryRepository.getYearlyHistory(artistId)
+            this._payoutHistoryRepository.getLast12MonthsHistory(artistId)
         ]);
 
         const totalEstRevenue = totalPlatformPlays > 0 
@@ -84,7 +84,7 @@ export class ArtistRevenueUseCase implements IArtistRevenueUseCase {
                 nextPayoutDate: new Date(now.getFullYear(), now.getMonth() + 1, 1).toISOString(),
                 currency: currency.toUpperCase()
             },
-            chartData: this._formatYearlyData(yearlyHistory),
+            chartData: this._formatLast12Months(last12MonthsHistory),
             songStats,
             payOutsHistory: rawHistory.map(p => ({
                 id: p._id.toString(),
@@ -98,16 +98,28 @@ export class ArtistRevenueUseCase implements IArtistRevenueUseCase {
         };
     }
 
-    private _formatYearlyData(history: any[]) {
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        return months.map((m, index) => {
-            const record = history.find(h => h.month === index + 1);
-            return { 
-                month: m, 
-                revenue: record ? record.amount / 100 : 0, 
-                streams: record ? record.totalPlaysInPeriod : 0 
-            };
-        });
+    private _formatLast12Months(history: Last12MonthsRevenueItem[]) {
+        const now = new Date();
+        const result: { month: string; revenue: number; streams: number }[] = [];
+
+        for (let i = 11; i >= 0; i--) {
+            const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+
+            const record = history.find(
+                (h) => h._id.year === year && h._id.month === month
+            );
+
+            result.push({
+                month: date.toLocaleString("en-US", { month: "short" }),
+                revenue: record ? record.amount / 100 : 0,
+                streams: record ? record.totalPlaysInPeriod : 0
+            });
+        }
+
+        return result;
     }
 }
 

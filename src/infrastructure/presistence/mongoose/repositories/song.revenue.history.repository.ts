@@ -18,31 +18,37 @@ export class SongRevenueHistoryRepository implements ISongRevenueHistoryReposito
     return result[0]?.total || 0;
   }
 
-  async getYearlyRevenue(songId: string, year: number): Promise<{ month: number; total: number }[]> {
+  async getLast12MonthsRevenue(songId: string, startDate: Date,endDate: Date): Promise<{ year: number; month: number; total: number }[]> {
     return SongRevenueHistoryModel.aggregate([
       {
         $match: {
           songId: new Types.ObjectId(songId),
           periodStart: {
-            $gte: new Date(`${year}-01-01`),
-            $lte: new Date(`${year}-12-31`)
+            $gte: startDate,
+            $lte: endDate
           }
         }
       },
       {
         $group: {
-          _id: { $month: "$periodStart" },
+          _id: {
+            year: { $year: "$periodStart" },
+            month: { $month: "$periodStart" }
+          },
           total: { $sum: "$revenueAmount" }
         }
       },
       {
         $project: {
-          month: "$_id",
+          year: "$_id.year",
+          month: "$_id.month",
           total: 1,
           _id: 0
         }
       },
-      { $sort: { month: 1 } }
+      {
+        $sort: { year: 1, month: 1 }
+      }
     ]);
   }
 

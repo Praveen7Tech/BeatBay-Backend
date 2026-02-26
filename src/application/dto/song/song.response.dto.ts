@@ -28,6 +28,7 @@ export interface SongDetailsDTO {
   audioUrl: string;
   lyricsUrl?: string;
   duration: number;
+  streams: number
   isLiked?: boolean;
   artist: ArtistDTO;
 }

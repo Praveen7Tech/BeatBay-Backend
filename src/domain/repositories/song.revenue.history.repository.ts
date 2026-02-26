@@ -12,8 +12,8 @@ export type SongRevenueHistoryLean = {
 
 export interface ISongRevenueHistoryRepository {
   createMany(data: SongRevenueHistory[]): Promise<void>;
+  getLast12MonthsRevenue(songId: string, startDate: Date,endDate: Date): Promise<{ year: number; month: number; total: number }[]>
   getLifetimeRevenue(songId: string): Promise<number>;
-  getYearlyRevenue(songId: string, year: number): Promise<{ month: number; total: number }[]>;
   getPayoutHistory(songId: string): Promise<{
     payoutId: string;
     revenue: number;

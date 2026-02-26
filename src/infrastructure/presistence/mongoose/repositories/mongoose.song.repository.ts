@@ -13,7 +13,10 @@ export class MongooseSongRepository implements ISongRepository{
     }
 
     async getAll(): Promise<SongNew[]> {
-        const songs = await SongModel.find({status:true}).lean<SongNew[]>()
+        const songs = await SongModel.find({status:true})
+        .sort({createdAt:-1})
+        .limit(6)
+        .lean<SongNew[]>()
         return songs
     }
 

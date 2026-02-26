@@ -86,7 +86,7 @@ export class ProcessMonthlyPayoutUseCase implements IProcessMontlyPayoutUseCase{
                     periodStart: start,
                     periodEnd: end,
                     playCount: play.count,
-                    revenueAmount: Math.floor( (play.count / share.count) * amountToPay)
+                    revenueAmount: Math.round( (play.count / share.count) * amountToPay)
                 }));
 
                 await this._songRevenueRepository.createMany(songRevenueDocs);

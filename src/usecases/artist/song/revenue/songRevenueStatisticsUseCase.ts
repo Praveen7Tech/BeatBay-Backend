@@ -1,45 +1,63 @@
-
-import { SongRevenueDashboardResponseDTO, SongRevenueChartItemDTO, SongPayoutHistoryDTO } from "../../../../application/dto/artist/revenue/song.revenue.history.dto";
+import {SongRevenueDashboardResponseDTO,SongRevenueChartItemDTO,SongPayoutHistoryDTO } from "../../../../application/dto/artist/revenue/song.revenue.history.dto";
 import { ISongRevenueHistoryUseCase } from "../../../../application/interfaces/usecase/artist/revenue/songRevenueHistory-usecase.interface";
 import { ISongRevenueHistoryRepository } from "../../../../domain/repositories/song.revenue.history.repository";
 
-export class GetSongRevenueDashboardUseCase implements ISongRevenueHistoryUseCase {
+export class GetSongRevenueDashboardUseCase
+  implements ISongRevenueHistoryUseCase
+{
   constructor(
     private readonly _songRevenueRepository: ISongRevenueHistoryRepository
   ) {}
 
-  async execute(songId: string, year: number): Promise<SongRevenueDashboardResponseDTO> {
+  async execute(songId: string,year: number): Promise<SongRevenueDashboardResponseDTO> {
 
-    // Lifetime revenue in dollars
-    const lifetimeRevenue = await this._songRevenueRepository.getLifetimeRevenue(songId) ;
+    // lifetime revenue
+    const lifetimeRevenue = await this._songRevenueRepository.getLifetimeRevenue(songId);
 
-    // Yearly revenue aggregated by month
-    const yearlyData = await this._songRevenueRepository.getYearlyRevenue(songId, year);
+    // last 12 months range
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setMonth(endDate.getMonth() - 11);
+    startDate.setDate(1);
 
-    const monthMap = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    // aggregated revenue from last one year
+    const revenueData = await this._songRevenueRepository.getLast12MonthsRevenue(songId, startDate,endDate);
 
-    const yearlyChart: SongRevenueChartItemDTO[] = monthMap.map((monthLabel, index) => {
-      const monthData = yearlyData.find(y => y.month === index + 1);
-      return {
-        label: monthLabel,
-        revenue: monthData ? monthData.total / 100 : 0
-      };
-    });
+    const monthlyChart: SongRevenueChartItemDTO[] = [];
 
-    const thisYearRevenue = yearlyChart.reduce((sum, y) => sum + y.revenue, 0);
+    for (let i = 0; i < 12; i++) {
+      const date = new Date(startDate);
+      date.setMonth(startDate.getMonth() + i);
 
-    // Payout history
+      const month = date.getMonth() + 1;
+      const yearValue = date.getFullYear();
+
+      const found = revenueData.find(r => r.month === month && r.year === yearValue);
+
+      monthlyChart.push({
+        label: `${date.toLocaleString("default", { month: "short" })} ${yearValue}`,
+        revenue: found ? found.total / 100 : 0
+      });
+    }
+
+    // total of last 12 months
+    const thisYearRevenue = monthlyChart.reduce((sum, m) => sum + m.revenue,0);
+
+    // payout history
     const payoutsRaw = await this._songRevenueRepository.getPayoutHistory(songId);
+
     const payouts: SongPayoutHistoryDTO[] = payoutsRaw.map(p => ({
       payoutId: p.payoutId,
       revenue: p.revenue,
-      period: `${monthMap[p.periodStart.getMonth()]} ${p.periodStart.getFullYear()}`
+      period: `${p.periodStart.toLocaleString("default", {
+        month: "short"
+      })} ${p.periodStart.getFullYear()}`
     }));
 
     return {
-      lifetimeRevenue:lifetimeRevenue / 100,
+      lifetimeRevenue: lifetimeRevenue / 100,
       thisYearRevenue,
-      monthlyChart: yearlyChart,
+      monthlyChart,
       payouts
     };
   }

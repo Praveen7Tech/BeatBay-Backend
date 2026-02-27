@@ -3,6 +3,8 @@ import { Types } from "mongoose";
 import { SongRevenueHistory } from "../../../../domain/entities/song.revenue.history";
 import { ISongRevenueHistoryRepository, SongRevenueHistoryLean } from "../../../../domain/repositories/song.revenue.history.repository";
 import { SongRevenueHistoryModel } from "../models/song.revenueHistory.model";
+import { TopSongDTO } from "../../../../application/dto/admin/revenue/revenue-dashboard.dto";
+import { SongModel } from "../models/song.model";
 
 export class SongRevenueHistoryRepository implements ISongRevenueHistoryRepository {
 
@@ -70,4 +72,52 @@ export class SongRevenueHistoryRepository implements ISongRevenueHistoryReposito
       periodEnd: d.periodEnd
     }));
   }
+
+
+    async getTopSongsByRevenue(limit = 5): Promise<TopSongDTO[]> {
+      const result = await SongRevenueHistoryModel.aggregate([
+        {
+          $group: {
+            _id: "$songId",
+            revenue: { $sum: "$revenueAmount" },
+            streams: { $sum: "$playCount" }
+          }
+        },
+
+        { $sort: { revenue: -1 } },
+
+        { $limit: limit },
+
+        {
+          $lookup: {
+            from: SongModel.collection.name,
+            localField: "_id",
+            foreignField: "_id",
+            as: "song"
+          }
+        },
+
+        { $unwind: "$song" },
+
+        {
+          $project: {
+            _id: 0,
+            songId: { $toString: "$_id" },
+            revenue: {
+              $round: [
+                { $divide: ["$revenue", 100] },
+                2
+              ]
+            },
+            streams: 1,
+            title: "$song.title",
+          }
+        }
+      ]);
+
+      return result.map((song, index) => ({
+        ...song,
+        rank: index + 1
+      })) as TopSongDTO[];
+    }
 }

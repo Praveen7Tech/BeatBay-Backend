@@ -1,6 +1,7 @@
 
 import { Types } from "mongoose";
 import { SongRevenueHistory } from "../entities/song.revenue.history";
+import { TopSongDTO } from "../../application/dto/admin/revenue/revenue-dashboard.dto";
 
 // Lean type after populate
 export type SongRevenueHistoryLean = {
@@ -20,4 +21,5 @@ export interface ISongRevenueHistoryRepository {
     periodStart: Date;
     periodEnd: Date;
   }[]>;
+  getTopSongsByRevenue(limit?: number): Promise<TopSongDTO[]>
 }

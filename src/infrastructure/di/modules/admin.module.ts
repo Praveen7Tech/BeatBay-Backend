@@ -22,6 +22,9 @@ import { IDashBoardRepository } from "../../../domain/repositories/demographics.
 import { MongooseDashBoardRepository } from "../../presistence/mongoose/repositories/mongoose.dashBoard.repository";
 import { dashBoardModels } from "../../presistence/mongoose/models-listing/dashboard-models";
 import { DashBoardEntityBreakDownUseCase } from "../../../usecases/admin/dashboard/adminEntityBreakdown.UseCase";
+import { RevenueDashboardStatisticsUseCase } from "../../../usecases/admin/revenue/revenueDashboradDetails.UseCase";
+import { RevenueDashboardChartUseCase } from "../../../usecases/admin/revenue/revenueDashboardChart.UseCase";
+import { RevenuePayoutHistoryUseCase } from "../../../usecases/admin/revenue/revenuePayoutHistory.UseCase";
 
 
 export const adminModule ={
@@ -55,6 +58,11 @@ export const adminModule ={
     //demographics
     _dashBoardDemographicsUsecase: asClass(DashBoardDemographicsUseCase).scoped(),
     _dashBoardEntityBreakDownUseCase: asClass(DashBoardEntityBreakDownUseCase).scoped(),
+
+    // revenue dashboard
+    _revenueDashbaordStatistics: asClass(RevenueDashboardStatisticsUseCase).scoped(),
+    _revenueDashboardChartUsecase: asClass(RevenueDashboardChartUseCase).scoped(),
+    _revenuePayoutHistoryUsecase: asClass(RevenuePayoutHistoryUseCase).scoped(),
 
     // controllers
     adminAuthController: asClass(AdminAuthController).scoped(),

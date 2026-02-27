@@ -1,3 +1,4 @@
+import { AdminPayoutPaginationDTO, TopArtistDTO } from "../../application/dto/admin/revenue/revenue-dashboard.dto";
 import { payoutHistory } from "../entities/payoutHistory.entity"
 
 export interface Last12MonthsRevenueItem {
@@ -15,4 +16,6 @@ export interface IPayoutHistoryRepository{
     getLifetimeEarnings(artistId: string): Promise<number>;
     getLast12MonthsHistory(artistId: string): Promise<Last12MonthsRevenueItem[]>;
     getAllPayouts(artistId: string): Promise<any[]>
+    getTopArtistsByRevenue(limit?: number): Promise<TopArtistDTO[]>;
+    getPayoutHistory(page: number,limit: number): Promise<AdminPayoutPaginationDTO>
 }

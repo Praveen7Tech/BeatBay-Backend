@@ -2,6 +2,8 @@ import { Types } from "mongoose";
 import { IPayoutHistoryRepository, Last12MonthsRevenueItem } from "../../../../domain/repositories/payoutHistory.repository";
 import { PayoutHistoryModel } from "../models/payout.history.model";
 import { payoutHistory } from "../../../../domain/entities/payoutHistory.entity";
+import { ArtistModel } from "../models/artist.model";
+import { AdminPayoutPaginationDTO, TopArtistDTO } from "../../../../application/dto/admin/revenue/revenue-dashboard.dto";
 
 export class PayoutHistoryRepository implements IPayoutHistoryRepository{
 
@@ -74,5 +76,97 @@ export class PayoutHistoryRepository implements IPayoutHistoryRepository{
             artistId: new Types.ObjectId(artistId) 
         }).sort({ createdAt: -1 }); 
     }
+
+    async getTopArtistsByRevenue(limit = 5): Promise<TopArtistDTO[]> {
+        const result = await PayoutHistoryModel.aggregate([
+        { $match: { status: "completed" } },
+        {
+            $group: {
+            _id: "$artistId",
+            revenue: { $sum: "$amount" },
+            streams: { $sum: "$totalPlaysInPeriod" }
+            }
+        },
+        { $sort: { revenue: -1 } },
+        { $limit: limit },
+        {
+            $lookup: {
+                from: ArtistModel.collection.name, 
+                localField: "_id",
+                foreignField: "_id",
+                as: "artist"
+            }
+        },
+
+        { $unwind: "$artist" },
+        {
+            $project: {
+            _id: 0,
+            artistId: { $toString: "$_id" },
+            revenue: {
+            $round: [
+                { $divide: ["$revenue", 100] },
+                2
+            ]
+            },
+            streams: 1,
+            name: "$artist.name",
+            profilePicture: "$artist.profilePicture"
+            }
+        }
+        ]);
+
+        return result.map((r, index) => ({
+        ...r,
+        rank: index + 1
+        })) as TopArtistDTO[];
+    }
+
+    async getPayoutHistory(page: number,limit: number): Promise<AdminPayoutPaginationDTO> {
+        const skip = (page - 1) * limit;
+
+        const [data, total] = await Promise.all([
+            PayoutHistoryModel.aggregate([
+            { $sort: { createdAt: -1 } },
+            { $skip: skip },
+            { $limit: limit },
+            {
+                $lookup: {
+                from: ArtistModel.collection.name,
+                localField: "artistId",
+                foreignField: "_id",
+                as: "artist"
+                }
+            },
+            { $unwind: "$artist" },
+            {
+                $project: {
+                _id: 0,
+                id: { $toString: "$stripeTransferId" },
+                artist: "$artist.name",
+                amount: { $divide: ["$amount", 100] },
+                status: "$status",
+                method: "Stripe",
+                date: {
+                    $dateToString: {
+                        format: "%b %d, %Y",
+                        date: "$createdAt"
+                    }
+                }
+                }
+            }
+            ]),
+
+            PayoutHistoryModel.countDocuments()
+        ]);
+
+        return {
+            items: data,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit)
+        };
+        }
 
 }

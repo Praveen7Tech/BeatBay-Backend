@@ -20,6 +20,9 @@ import { IToggleAlbumStatusUseCase } from "../../../../application/interfaces/us
 import { IDashBoardDemographicsUseCase } from "../../../../application/interfaces/usecase/admin/dashboard/dahsboard-demographics-usecase.interface";
 import { IDashBoardEntityBreakDownUseCase } from "../../../../application/interfaces/usecase/admin/dashboard/entity-breakdown-usecase.interface";
 import { SortType } from "../../../../domain/interfaces/songRequest";
+import { IRevenueDashBoardStatsUseCase } from "../../../../application/interfaces/usecase/admin/revenue/revenue-dashboard-stats-usecase.interface";
+import { IRevenueDashBoardChartUseCase, RevenueRange } from "../../../../application/interfaces/usecase/admin/revenue/revenue-dashboardDetails-usecase.interface";
+import { IRevenuePayoutHistoryUseCase } from "../../../../application/interfaces/usecase/admin/revenue/revenue-payout-history-usecase.interface";
 
 export class AdminFeaturesController{
     constructor(
@@ -39,7 +42,10 @@ export class AdminFeaturesController{
         private readonly _getAlbumDetailsUseCase: IAdminGetAlbumDetailsByIdUseCase,
         private readonly _toggleAlbumStatusUseCase: IToggleAlbumStatusUseCase,
         private readonly _dashBoardDemographicsUsecase : IDashBoardDemographicsUseCase,
-        private readonly _dashBoardEntityBreakDownUseCase: IDashBoardEntityBreakDownUseCase
+        private readonly _dashBoardEntityBreakDownUseCase: IDashBoardEntityBreakDownUseCase,
+        private readonly _revenueDashbaordStatistics: IRevenueDashBoardStatsUseCase,
+        private readonly _revenueDashboardChartUsecase: IRevenueDashBoardChartUseCase,
+        private readonly _revenuePayoutHistoryUsecase: IRevenuePayoutHistoryUseCase
     ){}
 
     getAllUser = async(req: AuthRequest, res: Response, next: NextFunction)=>{
@@ -305,4 +311,47 @@ export class AdminFeaturesController{
             next(error)
         }
     }
+
+    revenueDashboard = async(req:AuthRequest, res:Response, next:NextFunction)=>{
+        try {
+            const adminId = req.user?.id
+            if(!adminId){
+                return res.status(StatusCode.NOT_FOUND).json(MESSAGES.UNAUTHORIZED)
+            }
+            
+            const status = await this._revenueDashbaordStatistics.execute()
+console.log("stats ", status)
+            return res.status(StatusCode.OK).json(status)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    getRevenueChart = async(req:AuthRequest, res:Response,next:NextFunction)=>{
+        try {
+            const range = (req.query.range as RevenueRange) || "monthly";
+            if(!range){
+                return res.status(StatusCode.BAD_REQUEST).json("invalid entiry or range")
+            }
+
+            const result = await this._revenueDashboardChartUsecase.execute(range)
+    console.log("chart ", result)        
+            return res.status(StatusCode.OK).json(result)
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    getPayoutHistory = async (req: AuthRequest,res: Response,next: NextFunction) => {
+        try {
+            const page = Number(req.query.page) || 1;
+            const limit = Number(req.query.limit) || 5;
+
+            const result = await this._revenuePayoutHistoryUsecase.execute(page, limit);
+
+            return res.status(StatusCode.OK).json(result);
+        } catch (error) {
+            next(error);
+        }
+    };
 }

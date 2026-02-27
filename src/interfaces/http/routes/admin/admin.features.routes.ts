@@ -34,5 +34,9 @@ export default (container: AwilixContainer): Router=>{
     router.get('/demographics', adminFeaturesController.demographics)
     router.get('/dashboard-entity', adminFeaturesController.entityBreakDown)
 
+    router.get('/revenue/stats', adminFeaturesController.revenueDashboard)
+    router.get('/revenue/chart', adminFeaturesController.getRevenueChart)
+    router.get('/revenue/payout', adminFeaturesController.getPayoutHistory)
+
     return router
 }

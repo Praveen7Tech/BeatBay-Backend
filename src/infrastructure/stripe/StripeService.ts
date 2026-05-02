@@ -19,6 +19,7 @@ export class StripeService implements IStripeService{
                 await stripe.customers.retrieve(stripeCustomerId);
             } catch (error) {
                 stripeCustomerId = undefined; 
+                console.error(error)
             }
         }
 

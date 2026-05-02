@@ -88,7 +88,7 @@ export class ArtistRevenueUseCase implements IArtistRevenueUseCase {
             songStats,
             payOutsHistory: rawHistory.map(p => ({
                 id: p._id.toString(),
-                date: p.createdAt,
+                date: p.createdAt.toString(),
                 amount: p.amount / 100, 
                 status: p.status, 
                 method: "Stripe Transfer",

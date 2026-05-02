@@ -7,7 +7,6 @@ import { IUploadSongUseCase } from "../../../application/interfaces/usecase/song
 import { SongNew } from "../../../domain/entities/song.entity";
 import { IArtistDailyAnalyticsRepository } from "../../../domain/repositories/artist.daily.analytics.repository";
 import { IJobQueueService } from "../../../domain/services/notification/job-queue.service";
-import logger from "../../../infrastructure/utils/logger/logger";
 
 export class UploadSongUseCase implements IUploadSongUseCase{
     constructor(

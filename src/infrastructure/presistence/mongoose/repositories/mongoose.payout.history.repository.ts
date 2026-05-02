@@ -18,7 +18,7 @@ export class PayoutHistoryRepository implements IPayoutHistoryRepository{
         return count > 0
     }
 
-    async create(data: any): Promise<payoutHistory> {
+    async create(data: Partial<payoutHistory>): Promise<payoutHistory> {
         const payout = await PayoutHistoryModel.create(data)
         return payout.toObject()
     }
@@ -71,7 +71,7 @@ export class PayoutHistoryRepository implements IPayoutHistoryRepository{
         ]);
     }
 
-    async getAllPayouts(artistId: string): Promise<any[]> {
+    async getAllPayouts(artistId: string): Promise<payoutHistory[]> {
         return await PayoutHistoryModel.find({ 
             artistId: new Types.ObjectId(artistId) 
         }).sort({ createdAt: -1 }); 

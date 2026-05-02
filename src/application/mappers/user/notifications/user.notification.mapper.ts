@@ -1,4 +1,3 @@
-import { response } from "express";
 import { Notification } from "../../../../domain/entities/notification.entity";
 import { NotificationResponse } from "../../../dto/notifications/send.notification.dto";
 

@@ -14,4 +14,5 @@ export interface payoutHistory{
     sharePercentage: number
     period:Period
     status: Status
+    createdAt: Date
 }

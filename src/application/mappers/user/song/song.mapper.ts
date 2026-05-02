@@ -11,13 +11,4 @@ export class SongMapper {
     duration: song.duration
   });
 
-  // static toSongDetailsDTO(song: any): AlbumSongDetailsDTO {
-  //   return {
-  //     id: song._id.toString(),
-  //     title: song.title,
-  //     coverImageUrl: song.coverImageUrl,
-  //     audioUrl: song.audioUrl,
-  //     duration: song.duration,
-  //   };
-  // }
 }

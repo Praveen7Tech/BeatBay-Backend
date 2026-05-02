@@ -86,7 +86,7 @@ export class SubscriptionRepository implements ISubscriptionRepository{
         const now = new Date();
 
         let startDate: Date;
-        let buckets: string[] = [];
+        const buckets: string[] = [];
         let format: string;
 
         if (range === "weekly") {

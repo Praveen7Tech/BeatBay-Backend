@@ -1,20 +1,6 @@
-
-// export interface UploadSongDTO {
-//     title: string;
-//     description: string;
-//     genre: string,
-//     tags: string[], 
-//     songFilePath: string;
-//     audioPublicId: string; 
-//     coverImagePath: string;
-//     coverImagePublicId: string; 
-//     lrcFilePath: string;
-//     lyricsPublicId: string; 
-//     duration: number;
-
 import { SongNew } from "../../../domain/entities/song.entity";
 
-// }
+
 export interface UploadSongDTO {
     uploadId: string
     title: string;
@@ -68,13 +54,13 @@ export interface SongResponseDTO {
   audioUrl: string;
 }
 
-export type PreparedSong = {
+export interface PreparedSong {
   song: SongNew;
   coverImageUrl: string;
   audioUrl: string;
 };
 
-export type PreparedTopResult = {
+export interface PreparedTopResult {
   song: SongNew;
   coverImageUrl: string;
 };

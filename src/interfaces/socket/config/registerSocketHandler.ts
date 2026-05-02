@@ -2,7 +2,7 @@ import { Server, Socket } from "socket.io";
 import { ConnectionController } from "../controller/connection.controller";
 import { RoomController } from "../controller/roomController";
 import container from "../../../infrastructure/di/container";
-import { AcceptInviteEvent, AddToQueueEvent, InviteSendEvent, LeaveRoomEvent, PlayerActionEvent, PlayerTickEvent, RejectInviteEvent, RemoveFromQueueEvent, RemoveUserEvent } from "../../../application/dto/private-room/private.room.dto";
+import { AcceptInviteEvent, AddToQueueEvent, InviteSendEvent, LeaveRoomEvent, PlayerActionEvent, RejectInviteEvent, RemoveFromQueueEvent, RemoveUserEvent } from "../../../application/dto/private-room/private.room.dto";
 import logger from "../../../infrastructure/utils/logger/logger";
 
 export const registerSocketHandlers = (io: Server) => {

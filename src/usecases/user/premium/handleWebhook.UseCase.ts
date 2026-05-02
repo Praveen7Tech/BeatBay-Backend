@@ -82,10 +82,10 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
                 }
 
 
-                const latestInvoice = await stripe.invoices.retrieve(subscription.latest_invoice as string);
+                //const latestInvoice = await stripe.invoices.retrieve(subscription.latest_invoice as string);
 
                 const amountUSD = item.price.unit_amount || 0
-                const actualPaidToday = latestInvoice.amount_paid / 100 || 0
+                //const actualPaidToday = latestInvoice.amount_paid / 100 || 0
 
                 await this._stripeService.upsertSubscription({
                     userId: subscription.metadata.userId, 
@@ -151,9 +151,18 @@ export class HandleWebHookUseCase implements IHandleWebHookUsecase{
 
                 logger.info("invoice failed event trigger")
 
-                 const invoice = event.data.object as Stripe.Invoice;
-                 const subscriptionId = (invoice as any).subscription as string;
-              
+                const invoice = event.data.object as Stripe.Invoice;
+                let subscriptionId: string | null = null;
+
+                if (
+                    invoice.parent?.type === 'subscription_details' &&
+                    invoice.parent.subscription_details?.subscription
+                ) {
+                    const sub = invoice.parent.subscription_details.subscription;
+                    // subscription can be an expanded object or just a string ID
+                    subscriptionId = typeof sub === 'string' ? sub : sub.id;
+                }
+
                 if (subscriptionId) {
                     await this._stripeService.handlePaymentFailure(subscriptionId);
                     logger.info(`Payment failure for subscription: ${subscriptionId}`);

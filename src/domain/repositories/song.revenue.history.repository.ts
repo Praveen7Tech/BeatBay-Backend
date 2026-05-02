@@ -4,7 +4,7 @@ import { SongRevenueHistory } from "../entities/song.revenue.history";
 import { TopSongDTO } from "../../application/dto/admin/revenue/revenue-dashboard.dto";
 
 // Lean type after populate
-export type SongRevenueHistoryLean = {
+export interface SongRevenueHistoryLean {
   payoutId: { _id: Types.ObjectId } | string; // could be populated object or string
   revenueAmount: number;
   periodStart: Date;

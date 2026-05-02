@@ -15,7 +15,7 @@ export interface IPayoutHistoryRepository{
     create(data: Partial<payoutHistory>): Promise<payoutHistory>;
     getLifetimeEarnings(artistId: string): Promise<number>;
     getLast12MonthsHistory(artistId: string): Promise<Last12MonthsRevenueItem[]>;
-    getAllPayouts(artistId: string): Promise<any[]>
+    getAllPayouts(artistId: string): Promise<payoutHistory[]>
     getTopArtistsByRevenue(limit?: number): Promise<TopArtistDTO[]>;
     getPayoutHistory(page: number,limit: number): Promise<AdminPayoutPaginationDTO>
 }

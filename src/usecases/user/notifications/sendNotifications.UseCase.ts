@@ -1,4 +1,3 @@
-import { NotFound } from "@aws-sdk/client-s3";
 import { NotificationResponse, NotificationSendData } from "../../../application/dto/notifications/send.notification.dto";
 import { ISendNotificationsUseCase } from "../../../application/interfaces/usecase/notifications/send-notifications-usecase.interface";
 import { NotificationMapper } from "../../../application/mappers/user/notifications/user.notification.mapper";

@@ -9,7 +9,7 @@ export class GetSongRevenueDashboardUseCase
     private readonly _songRevenueRepository: ISongRevenueHistoryRepository
   ) {}
 
-  async execute(songId: string,year: number): Promise<SongRevenueDashboardResponseDTO> {
+  async execute(songId: string): Promise<SongRevenueDashboardResponseDTO> {
 
     // lifetime revenue
     const lifetimeRevenue = await this._songRevenueRepository.getLifetimeRevenue(songId);

@@ -1,11 +1,11 @@
 import { ArtistDailyAnalytics } from "../../../../domain/entities/artist.daily.analytics.entity";
-import { IArtistDailyAnalyticsRepository } from "../../../../domain/repositories/artist.daily.analytics.repository";
+import { Fields, IArtistDailyAnalyticsRepository } from "../../../../domain/repositories/artist.daily.analytics.repository";
 import { ArtistDailyAnalyticsModel } from "../models/artist.daily.analytics.model";
 
 
 export class ArtistDailyAnalyticsRepository implements IArtistDailyAnalyticsRepository {
 
-  async incrementField(artistId: string, date: string, field: any, value: number): Promise<void> {
+  async incrementField(artistId: string, date: string, field: Fields, value: number): Promise<void> {
     await ArtistDailyAnalyticsModel.updateOne(
       { artistId, date },
       { $inc: { [field]: value } },

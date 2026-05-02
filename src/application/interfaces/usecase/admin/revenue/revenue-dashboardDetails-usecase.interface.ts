@@ -1,4 +1,4 @@
-import { AdminRevenueDashBoardChartDTO, AdminRevenueDashboardDTO } from "../../../../dto/admin/revenue/revenue-dashboard.dto";
+import { AdminRevenueDashBoardChartDTO } from "../../../../dto/admin/revenue/revenue-dashboard.dto";
 
 export type RevenueRange = "weekly" | "monthly" | "yearly"
 

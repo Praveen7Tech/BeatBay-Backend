@@ -13,7 +13,6 @@ import { IAuthStatusUsecase } from '../../../../application/interfaces/usecase/u
 import { IVerifyEmailUsecase } from '../../../../application/interfaces/usecase/user-auth/verify-email-usecase.interface';
 import { IResetPasswordUsecase } from '../../../../application/interfaces/usecase/user-auth/reset-password-usecase.terface';
 import { IGoogleLoginUsecase } from '../../../../application/interfaces/usecase/user-auth/goggle-login-usecase.interface';
-import logger from '../../../../infrastructure/utils/logger/logger';
 
 
 export class AuthController {

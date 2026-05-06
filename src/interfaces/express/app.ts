@@ -26,7 +26,12 @@ app.use(
           "https://beatbay.online"
         ],
         credentials:true,
-        methods: ['GET','POST','PUT','PATCH','OPTIONS','DELETE']
+        methods: ['GET','POST','PUT','PATCH','OPTIONS','DELETE'],
+        allowedHeaders:[
+          'Content-Type',
+          'Authorization',
+          'x-client-type',
+        ]
     })
 );
 

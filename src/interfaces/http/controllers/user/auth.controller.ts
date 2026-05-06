@@ -64,8 +64,18 @@ export class AuthController {
   async login(req: Request, res: Response, next: NextFunction){
     try {
       const dto: LoginRequestDTO= LoginRequestSchema.parse(req.body)
+      const isNativeClient = req.headers['x-client-type'] === "mobile"
 
       const result = await this._loginUsecase.execute(dto)
+
+      if(isNativeClient){
+          return res.status(StatusCode.OK).json({
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
+          user: result.user
+        })
+      }
+      
 
       // send access and refresh token
       res.cookie('refreshToken', result.refreshToken, COOKIE_OPTIONS);

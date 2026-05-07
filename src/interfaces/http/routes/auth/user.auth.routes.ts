@@ -15,5 +15,8 @@ export default (container: AwilixContainer): Router => {
   router.post('/verify-email', (req,res, next)=> authController.verifyEmail(req,res, next))
   router.put('/reset-password', (req,res,next) => authController.resetPassword(req,res,next))
   router.post('/google-signup',(req,res, next)=> authController.googleSignup(req,res, next))
+
+  // native route
+  router.post("/refreshToken", (req,res,next)=> authController.refreshToken(req,res,next))
   return router;
 };

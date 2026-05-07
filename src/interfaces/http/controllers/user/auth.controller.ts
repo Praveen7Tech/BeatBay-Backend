@@ -13,6 +13,7 @@ import { IAuthStatusUsecase } from '../../../../application/interfaces/usecase/u
 import { IVerifyEmailUsecase } from '../../../../application/interfaces/usecase/user-auth/verify-email-usecase.interface';
 import { IResetPasswordUsecase } from '../../../../application/interfaces/usecase/user-auth/reset-password-usecase.terface';
 import { IGoogleLoginUsecase } from '../../../../application/interfaces/usecase/user-auth/goggle-login-usecase.interface';
+import { IRefreshTokenValidateUsecase } from '../../../../application/interfaces/usecase/refreshToken/refreshToken-validate.usecase.interface';
 
 
 export class AuthController {
@@ -24,7 +25,9 @@ export class AuthController {
     private readonly _authStatusUsecase: IAuthStatusUsecase,
     private readonly _verifyEmailUsecase: IVerifyEmailUsecase,
     private readonly _resetPasswordUsecase: IResetPasswordUsecase,
-    private readonly _googleLoginUsecase: IGoogleLoginUsecase
+    private readonly _googleLoginUsecase: IGoogleLoginUsecase,
+
+    private readonly _refrshTokenValidationUsecase: IRefreshTokenValidateUsecase
   ) {}
 
   async signup(req: Request, res: Response, next: NextFunction) {
@@ -147,6 +150,26 @@ export class AuthController {
     
        res.cookie("refreshToken", response.refreshToken, COOKIE_OPTIONS)
        return res.status(StatusCode.CREATED).json({ message:MESSAGES.GOOGLE_LOGIN,accessToken:response.accessToken, user: response.user})
+    } catch (error) {
+      next(error)
+    }
+  }
+
+
+  async refreshToken(req:Request, res:Response, next:NextFunction){
+    try {
+      const { refreshToken} = req.body;
+      if(!refreshToken){
+        return res.status(StatusCode.OK).json({ user: null, accessToken: null });
+      }
+
+      const result = await this._refrshTokenValidationUsecase.execute(refreshToken);
+
+      return res.status(StatusCode.CREATED).json({
+        refreshToken: result.refreshToken,
+        accessToken: result.accessToken
+      })
+
     } catch (error) {
       next(error)
     }

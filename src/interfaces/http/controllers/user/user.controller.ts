@@ -46,6 +46,7 @@ import { IUpgradeSubscriptionUseCase } from "../../../../application/interfaces/
 import { UploadFile } from "../../../../application/interfaces/usecase/artist-features/edit-profile-usecase.interface"
 import { IDeleteNotificationUseCase } from "../../../../application/interfaces/usecase/notifications/delete-notification-usecase.interface"
 import { IDeleteAllNotificationsUseCase } from "../../../../application/interfaces/usecase/notifications/delete-all-notifications-usecase.interface"
+import { IFetchUserDataUseCase } from "../../../../application/interfaces/usecase/refreshToken/fetchUserData.UseCase.interface"
 export class UserController{
     constructor(
         private readonly _editProfileUserUsecase: IEditProfileUseCase,
@@ -85,7 +86,9 @@ export class UserController{
         private readonly _getPremiumPricesUsecase: IGetPremiumPricesUseCase,
         private readonly _upgradeSubcriptionCheckOutUsecase: IUpgradeSubscriptionUseCase,
         private readonly _deleteNotificationUsecase: IDeleteNotificationUseCase,
-        private readonly _deleteAllNotificationUsecase: IDeleteAllNotificationsUseCase
+        private readonly _deleteAllNotificationUsecase: IDeleteAllNotificationsUseCase,
+
+        private readonly _fetchUserDataUsecase: IFetchUserDataUseCase
     ){}
 
     editProfile = async (req: AuthRequest, res: Response, next: NextFunction) => {
@@ -697,6 +700,21 @@ export class UserController{
 
             return res.status(StatusCode.OK).json(response)
 
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    fetchUser = async(req:AuthRequest, res: Response, next: NextFunction)=>{
+        try {
+            const userId = req.user?.id
+            if(!userId ){
+                return res.status(StatusCode.UNAUTHORIZED).json(MESSAGES.MISSING_FIELDS);
+            }
+
+            const user = await this._fetchUserDataUsecase.execute(userId)
+
+            return res.status(StatusCode.OK).json({user:user})
         } catch (error) {
             next(error)
         }

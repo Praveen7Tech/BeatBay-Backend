@@ -53,6 +53,7 @@ import { IPlayRepository } from "../../../domain/repositories/play.repository";
 import { SongPlayRepository } from "../../presistence/mongoose/repositories/mongoose.plays.repository";
 import { ICloudinaryStorageService } from "../../../domain/services/cloudinary.storage.service";
 import { CloudinaryStorageService } from "../../services/storage/cloudinary.storage.service";
+import { FetchUserDataUseCase } from "../../../usecases/user/refreshToken/fetchUerData.UseCase";
 
 export const userModule = {
     // Repository
@@ -119,6 +120,9 @@ export const userModule = {
 
     // song play
     _trackSongPlayUsecase: asClass(TrackSongPlaysUseCase).scoped(),
+
+    // Native usecases
+    _fetchUserDataUsecase: asClass(FetchUserDataUseCase).scoped(),
 
     // controller
     userController: asClass(UserController).scoped(),

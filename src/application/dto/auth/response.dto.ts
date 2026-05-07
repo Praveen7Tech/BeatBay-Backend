@@ -1,3 +1,4 @@
+import { string } from "zod";
 
 export interface SignupResponseDTO {
   otp: string;
@@ -42,3 +43,15 @@ export interface GoogleAuthResponseDTO {
   refreshToken: string; 
 }
 
+export interface RefreshTokenValidateResponse{
+  accessToken: string;
+  refreshToken: string;
+}
+
+
+export interface FetchUserDTO{
+  id: string
+  name: string
+  email: string
+  profilePicture: string
+}

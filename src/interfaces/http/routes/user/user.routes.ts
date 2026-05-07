@@ -64,5 +64,8 @@ export default (container: AwilixContainer): Router=> {
     router.delete('/notification/:id', userController.deleteNotification)
     router.delete('/delete-all/notifications', userController.deleteAllNotifications)
 
+    //native route
+    router.get('/fetchUser', userController.fetchUser)
+
     return router
 }

@@ -22,6 +22,7 @@ import { ResetPasswordUsecase } from '../../../usecases/user/auth/reset-password
 import { GoogleLoginUsecase } from '../../../usecases/user/auth/googleLogin.useCase';
 import { IGoogleAuthService } from '../../../domain/services/google-auth.service';
 import { GoogleAuthService } from '../../services/googleAuth/google-auth.service';
+import { RefreshTokenValidateUseCase } from '../../../usecases/user/refreshToken/refreshTokenValidate.Usecase';
 
 export const authModule = {
       // as value
@@ -45,6 +46,9 @@ export const authModule = {
       _verifyEmailUsecase: asClass(VerifyEmailUsecase).scoped(),
       _resetPasswordUsecase:asClass(ResetPasswordUsecase).scoped(),
       _googleLoginUsecase: asClass(GoogleLoginUsecase).scoped(),
+
+      //native usecases
+      _refrshTokenValidationUsecase: asClass(RefreshTokenValidateUseCase).scoped(),
     
       // Controllers
       authController: asClass(AuthController).scoped(),

@@ -145,7 +145,11 @@ export class AuthController {
 
   async googleSignup(req:Request, res:Response, next: NextFunction){
     try {
-       const isNativeClient = req.headers['x-client-type'] === "mobile"
+       const clientTypeHeader = req.headers['x-client-type'];
+       const clientType = Array.isArray(clientTypeHeader)
+         ? clientTypeHeader[0]
+         : clientTypeHeader;
+       const isNativeClient = clientType?.toLowerCase() === "mobile";
        const dto : GoogleLoginRequestDTO = GoogleLoginRequestSchema.parse(req.body)
        const response = await this._googleLoginUsecase.execute(dto)
 

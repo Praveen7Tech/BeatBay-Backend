@@ -145,8 +145,17 @@ export class AuthController {
 
   async googleSignup(req:Request, res:Response, next: NextFunction){
     try {
+       const isNativeClient = req.headers['x-client-type'] === "mobile"
        const dto : GoogleLoginRequestDTO = GoogleLoginRequestSchema.parse(req.body)
        const response = await this._googleLoginUsecase.execute(dto)
+
+        if(isNativeClient){
+          return res.status(StatusCode.OK).json({
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken,
+          user: response.user
+        })
+      }
     
        res.cookie("refreshToken", response.refreshToken, COOKIE_OPTIONS)
        return res.status(StatusCode.CREATED).json({ message:MESSAGES.GOOGLE_LOGIN,accessToken:response.accessToken, user: response.user})
